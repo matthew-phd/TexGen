@@ -14,7 +14,7 @@ CTextileBraid::CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth
 	, m_dGapSize(0)
 	, m_dFabricThickness(dThickness)
 	, m_iResolution(40)
-	, m_dbraidAngle((PI/2)-dBraidAngle)
+	, m_dbraidAngle(dBraidAngle)
 {
 	m_Pattern.resize(iNumWeftYarns*iNumWarpYarns);
 	YARNDATA YarnData;
@@ -92,21 +92,21 @@ bool CTextileBraid::BuildTextile() const
 			{
 				if (Cell[k] == PATTERN_WEFTYARN)
 				{
-					m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(cos(m_dbraidAngle), sin(m_dbraidAngle), 0)));
+					m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(sin(m_dbraidAngle), cos(m_dbraidAngle), 0)));
 					++iYarn;
 				}
 				z += m_dFabricThickness / Cell.size();
 			}
 			if (j < m_iNumWarpYarns)
 			{
-				x += m_WarpYarnData[j].dSpacing*cos(m_dbraidAngle);
-				y += m_WeftYarnData[j].dSpacing*sin(m_dbraidAngle);
+				x += m_WarpYarnData[j].dSpacing*sin(m_dbraidAngle);
+				y += m_WeftYarnData[j].dSpacing*cos(m_dbraidAngle);
 				
 			}
 			
 		}
-		startx += m_WarpYarnData[i].dSpacing*cos(m_dbraidAngle);
-		starty += m_WarpYarnData[i].dSpacing*sin(m_dbraidAngle)*-1;
+		startx += m_WarpYarnData[i].dSpacing*sin(m_dbraidAngle);
+		starty += m_WarpYarnData[i].dSpacing*cos(m_dbraidAngle)*-1;
 		
 	}
 
@@ -138,21 +138,21 @@ bool CTextileBraid::BuildTextile() const
 			{
 				if (Cell[k] == PATTERN_WARPYARN)
 				{
-					m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(cos(m_dbraidAngle), -1*sin(m_dbraidAngle), 0)));
+					m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(sin(m_dbraidAngle), -1*cos(m_dbraidAngle), 0)));
 					++iYarn;
 				}
 				z += m_dFabricThickness / Cell.size();
 			}
 			if (i < m_iNumWeftYarns)
 			{
-				y -= m_WeftYarnData[i].dSpacing*sin(m_dbraidAngle);
-				x += m_WarpYarnData[i].dSpacing*cos(m_dbraidAngle);
+				y -= m_WeftYarnData[i].dSpacing*cos(m_dbraidAngle);
+				x += m_WarpYarnData[i].dSpacing*sin(m_dbraidAngle);
 				
 			}
 			
 		}
-		startx += m_WeftYarnData[j].dSpacing*cos(m_dbraidAngle);
-		starty += m_WeftYarnData[j].dSpacing*sin(m_dbraidAngle);
+		startx += m_WeftYarnData[j].dSpacing*sin(m_dbraidAngle);
+		starty += m_WeftYarnData[j].dSpacing*cos(m_dbraidAngle);
 		
 	}
 
@@ -218,7 +218,7 @@ const vector<PATTERNBIAX>& TexGen::CTextileBraid::GetCell(int x, int y) const
 double CTextileBraid::GetWidthWarp() const {
 	double dWidthWarp = 0;
 	for (int i = 0; i < m_iNumWarpYarns; i++) {
-		dWidthWarp += m_WarpYarnData[i].dSpacing*cos(m_dbraidAngle);
+		dWidthWarp += m_WarpYarnData[i].dSpacing*sin(m_dbraidAngle);
 	}
 	return dWidthWarp;
 }
@@ -226,7 +226,7 @@ double CTextileBraid::GetWidthWarp() const {
 double CTextileBraid::GetHeightWarp() const {
 	double dHeightWarp = 0;
 	for (int i = 0; i < m_iNumWeftYarns; i++) {
-		dHeightWarp += m_WeftYarnData[i].dSpacing*sin(m_dbraidAngle);
+		dHeightWarp += m_WeftYarnData[i].dSpacing*cos(m_dbraidAngle);
 	}
 	return dHeightWarp;
 }
@@ -234,7 +234,7 @@ double CTextileBraid::GetHeightWarp() const {
 double CTextileBraid::GetWidthWeft() const {
 	double dWidthWeft = 0;
 	for (int i = 0; i < m_iNumWeftYarns; i++) {
-		dWidthWeft += m_WeftYarnData[i].dSpacing*cos(m_dbraidAngle);
+		dWidthWeft += m_WeftYarnData[i].dSpacing*sin(m_dbraidAngle);
 	}
 	return dWidthWeft;
 }
@@ -242,7 +242,7 @@ double CTextileBraid::GetWidthWeft() const {
 double CTextileBraid::GetHeightWeft() const {
 	double dHeightWeft = 0;
 	for (int i = 0; i < m_iNumWeftYarns; i++) {
-		dHeightWeft += m_WarpYarnData[i].dSpacing*sin(m_dbraidAngle);
+		dHeightWeft += m_WarpYarnData[i].dSpacing*cos(m_dbraidAngle);
 	}
 	return dHeightWeft;
 }
@@ -297,21 +297,21 @@ CDomainPlanes CTextileBraid::GetDefaultDomain(bool bSheared, bool bAddedHeight)
 	double dGap = 0.0;
 	if (bAddedHeight)
 		dGap = 0.05*m_dFabricThickness;
-	Min.x = -10;
-	Min.y = -10;
-	Min.z = -5;
-	Max.x = 10;
-	Max.y = 10;
-	Max.z = 5;
+	//Min.x = -10;
+	//Min.y = -10;
+	//Min.z = -5;
+	//Max.x = 10;
+	//Max.y = 10;
+	//Max.z = 5;
 
-	//Min.x = -0.5*m_WarpYarnData[m_iNumWarpYarns - 1].dSpacing;
-	//Min.y = -0.5*m_WeftYarnData[m_iNumWeftYarns - 1].dSpacing;
+	Min.x = 0;
+	Min.y = -1*m_WarpYarnData[m_iNumWarpYarns - 1].dSpacing*cos(m_dbraidAngle)*m_iNumWarpYarns;
 	//	Min.x = m_YYarnData[0].dSpacing;
 	//	Min.y = m_XYarnData[0].dSpacing;
-	//Min.z = -dGap;
-	//Max.x = Min.x + GetWidth();
-	//Max.y = Min.y + GetHeight();
-	//Max.z = m_dFabricThickness + dGap;
+	Min.z = -dGap;
+	Max.x =2*m_WeftYarnData[m_iNumWeftYarns -1].dSpacing*sin(m_dbraidAngle)*m_iNumWeftYarns ;
+	Max.y = m_WarpYarnData[m_iNumWarpYarns - 1].dSpacing*cos(m_dbraidAngle)*m_iNumWarpYarns;
+	Max.z = m_dFabricThickness + dGap;
 	return CDomainPlanes(Min, Max);
 }
 
