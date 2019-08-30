@@ -33,6 +33,11 @@ namespace TexGen
 		void SwapPosition(int x, int y);
 		virtual CDomainPlanes GetDefaultDomain(bool bSheared = false, bool bAddedHeight = true);
 		void AssignDefaultDomain(bool bSheared, bool bAddedHeight);
+		int GetNumWeftYarns() const { return m_iNumWeftYarns; }
+		int GetNumWarpYarns() const { return m_iNumWarpYarns; }
+		double GetYarnSpacing() const; 
+		double GetYarnWidth() const;
+		double GetFabricThickness() const { return m_dFabricThickness; }
 		
 	protected:
 		vector<PATTERNBIAX> &GetCell(int x, int y);

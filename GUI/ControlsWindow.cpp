@@ -90,6 +90,7 @@ void CControlsWindow::BuildTextilesPage()
 	pSubSizer->Add(new wxButton(pControls, ID_Create2DWeave, wxT("Weave"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT), SizerFlags);
 	pSubSizer->Add(new wxButton(pControls, ID_Create3DTextile, wxT("3D Weave"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT), SizerFlags);
 	pSubSizer->Add(new wxButton(pControls, ID_CreateLayeredTextile, wxT("Layered"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT), SizerFlags);
+	pSubSizer->Add(new wxButton(pControls, ID_CreateBraid, wxT("Braid"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT), SizerFlags); 
 //	pSubSizer->Add(new wxButton(pControls, wxID_ANY, "Braid", wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT), SizerFlags);
 	pMainSizer->Add(pSubSizer, SizerFlags);
 	SubSizers.push_back(pSubSizer);
@@ -122,6 +123,7 @@ void CControlsWindow::BuildTextilesPage()
 	pMenu->Append(ID_Create3DTextile, wxT("Create 3D Weave..."));
 	pMenu->Append(ID_CreateLayeredTextile, wxT("Create Layered..."));
 	pMenu->Append(ID_SetLayerOffsets, wxT("Set Layer Offsets"));
+	pMenu->Append(ID_CreateBraid, wxT("Create Braid..."));
 	//pMenu->Append(ID_NestLayers, wxT("&Nest Layers"));
 	{
 		wxMenu *pNestingSubMenu = new wxMenu;

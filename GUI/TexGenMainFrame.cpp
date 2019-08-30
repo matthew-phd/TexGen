@@ -32,6 +32,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "PythonConverter.h"
 #include "LayersOffsetDialog.h"
 #include "PatternDraftDialog.h"
+#include "BraidWizard.h"
 
 #include "TexGen.xpm"
 
@@ -70,7 +71,7 @@ BEGIN_EVENT_TABLE(CTexGenMainFrame, wxFrame)
 
 	EVT_CHECKBOX_MENU_RANGE(ID_RenderNodes, ID_TrimtoDomain, CTexGenMainFrame::OnRendering)
 	EVT_BUTTON_MENU_RANGE(ID_ChangeBackgroundColor, ID_ChangeSurfaceColor, CTexGenMainFrame::OnRendering)
-	EVT_BUTTON_MENU_RANGE(ID_CreateEmptyTextile, ID_RotateTextile, CTexGenMainFrame::OnTextiles)
+	EVT_BUTTON_MENU_RANGE(ID_CreateEmptyTextile, ID_CreateBraid, CTexGenMainFrame::OnTextiles)
 	EVT_BUTTON_MENU_RANGE(ID_CreateYarn, ID_YarnFibreVolumeFraction, CTexGenMainFrame::OnModeller)
 	EVT_RADIOBUTTON_MENU_RANGE(ID_SelectTool, ID_ScaleTool, CTexGenMainFrame::OnModeller)
 	EVT_CHECKBOX_MENU_RANGE(ID_FilterNodes, ID_Relative, CTexGenMainFrame::OnModeller)
@@ -1215,273 +1216,286 @@ void CTexGenMainFrame::OnTextiles(wxCommandEvent& event)
 	switch (event.GetId())
 	{
 	case ID_DeleteTextile:
+	{
+		string TextileName = GetTextileSelection();
+		if (!TextileName.empty())
 		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
+			if (wxMessageBox(wxT("Do you wish to delete the textile?"), wxT("Delete textile"), wxNO_DEFAULT | wxYES_NO | wxICON_INFORMATION, this) == wxYES)
 			{
-				if ( wxMessageBox( wxT("Do you wish to delete the textile?"), wxT("Delete textile"), wxNO_DEFAULT|wxYES_NO|wxICON_INFORMATION, this ) == wxYES )
-				{
-					string Command = "DeleteTextile('" + TextileName + "')";
-					SendPythonCode(Command);	
-				}
+				string Command = "DeleteTextile('" + TextileName + "')";
+				SendPythonCode(Command);
 			}
 		}
-		break;
+	}
+	break;
 	case ID_EditTextile:
+	{
+		string TextileName = GetTextileSelection();
+		if (!TextileName.empty())
 		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
+			CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
+			string Type = pTextile->GetType();
+			if (pTextile && (Type == "CTextileWeave2D" || Type == "CShearedTextileWeave2D" ||
+				Type == "CTextileOrthogonal" || Type == "CTextileAngleInterlock" || Type == "CTextileOffsetAngleInterlock" || Type == "CTextileLayerToLayer"))
 			{
-				CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
-				string Type = pTextile->GetType();
-				if (pTextile && (Type == "CTextileWeave2D" || Type == "CShearedTextileWeave2D" ||
-					Type == "CTextileOrthogonal" || Type == "CTextileAngleInterlock" || Type == "CTextileOffsetAngleInterlock" || Type == "CTextileLayerToLayer"))
+				string Command;
+				if (Type == "CTextileWeave2D" || Type == "CShearedTextileWeave2D")
 				{
-					string Command;
-					if (Type == "CTextileWeave2D" || Type == "CShearedTextileWeave2D")
-					{
-						CWeaveWizard Wizard(this, wxID_ANY);
-						if (Type == "CTextileWeave2D")
-							Wizard.LoadSettings(*((CTextileWeave2D*)pTextile));
-						else
-							Wizard.LoadSettings(*((CShearedTextileWeave2D*)pTextile));
+					CWeaveWizard Wizard(this, wxID_ANY);
+					if (Type == "CTextileWeave2D")
+						Wizard.LoadSettings(*((CTextileWeave2D*)pTextile));
+					else
+						Wizard.LoadSettings(*((CShearedTextileWeave2D*)pTextile));
 
-						if ( Wizard.RunIt() )
-						{
-							Command = Wizard.GetCreateTextileCommand(TextileName);
-						}
-					}
-					else // if (pTextile->GetType() == "CTextileWeave3D")
+					if (Wizard.RunIt())
 					{
-						CWeaveWizard3D Wizard(this, wxID_ANY);
-						Wizard.LoadSettings(*((CTextile3DWeave*)pTextile));
-						if ( Wizard.RunIt() )
-						{
-							Command = Wizard.GetCreateTextileCommand(TextileName);
-						}
-					}
-					
-					if (!Command.empty())
-					{
-						SendPythonCode(Command);
-						RefreshTextile(TextileName);
+						Command = Wizard.GetCreateTextileCommand(TextileName);
 					}
 				}
-			}
-		}
-		break;
-	case ID_RotateTextile:
-		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
-			{
-				wxDialog RotateInput;
-				if (wxXmlResource::Get()->LoadDialog(&RotateInput, this, wxT("RotateTextile")))
+				else // if (pTextile->GetType() == "CTextileWeave3D")
 				{
-					int iAxisChoice;
-					bool bRotateDomain;
-					wxString Angle;
-
-					XRCCTRL(RotateInput, "AxisChoice", wxChoice)->SetValidator(wxGenericValidator(&iAxisChoice));
-					XRCCTRL(RotateInput, "Angle", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &Angle));
-					XRCCTRL(RotateInput, "RotateDomain", wxCheckBox)->SetValidator(wxGenericValidator(&bRotateDomain));
-
-					if (RotateInput.ShowModal() == wxID_OK)
+					CWeaveWizard3D Wizard(this, wxID_ANY);
+					Wizard.LoadSettings(*((CTextile3DWeave*)pTextile));
+					if (Wizard.RunIt())
 					{
-						CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
-						if ( !pTextile )
-						{
-							TGERROR("Cannot rotate textile - no textile loaded");
-							break;
-						}
-						
-						stringstream Command;
-			
-						Command << "Weave= GetTextile('" << TextileName << "' )" << endl;
-
-						string Axis;
-						switch (iAxisChoice)
-						{
-						case 0:
-							Axis = "1,0,0";
-							break;
-						case 1:
-							Axis = "0,1,0";
-							break;
-						case 2:
-							Axis = "0,0,1";
-							break;
-						}
-
-						Command << "Weave.Rotate(WXYZ(XYZ(" << Axis << "),math.radians(" << ConvertString(Angle) << ")),XYZ(0,0,0))" << endl;
-						if ( bRotateDomain && pTextile->GetDomain() )
-						{
-							Command << "Domain = Weave.GetDomain()" << endl;
-							Command << "Domain.Rotate(WXYZ(XYZ(" << Axis << "),math.radians(" << ConvertString(Angle) << ")))" << endl;
-						}
-						if ( pTextile->GetType() == "CTextileWeave2D" && iAxisChoice < 2 )
-						{
-							Command << "weave2D = Weave.GetWeave2D()" << endl;
-							Command << "weave2D.SetInPlaneTangents( False )" << endl;
-						}
-							
-						SendPythonCode(Command.str());
-						RefreshTextile( TextileName );
+						Command = Wizard.GetCreateTextileCommand(TextileName);
 					}
 				}
-			}
-		}
-		break;
-	case ID_CreateEmptyTextile:
-		{
-			wxTextEntryDialog dlg(this, wxT("Please enter the name of the textile to create (or leave blank for default):"), wxT("Textile name"));
-			if (dlg.ShowModal() != wxID_OK)
-				return;
-			wxString TextileName = dlg.GetValue();
 
-			stringstream StringStream; 
-			if (TextileName.IsEmpty())
-				StringStream << "AddTextile(CTextile())" << endl;
-			else
-				StringStream << "AddTextile('" << ConvertString(TextileName) << "', CTextile())" << endl;
-			SendPythonCode(StringStream.str());
-			/*else if (!TEXGEN.AddTextile(ConvertString(TextileName), CTextile()))
-			{
-				wxMessageBox(wxT("Textile with name \"") + TextileName + wxT("\" already exists!"), wxT("Error"), wxOK | wxICON_EXCLAMATION);
-			}*/
-		}
-		break;
-	case ID_Create2DWeave:
-		{
-			CWeaveWizard Wizard(this, wxID_ANY); 
-			if (Wizard.RunIt())
-			{
-				string Command = Wizard.GetCreateTextileCommand();
 				if (!Command.empty())
 				{
 					SendPythonCode(Command);
+					RefreshTextile(TextileName);
 				}
 			}
 		}
-		break;
-	case ID_GeometrySolve:
+	}
+	break;
+	case ID_RotateTextile:
+	{
+		string TextileName = GetTextileSelection();
+		if (!TextileName.empty())
 		{
-			OnGeometrySolve(event);
+			wxDialog RotateInput;
+			if (wxXmlResource::Get()->LoadDialog(&RotateInput, this, wxT("RotateTextile")))
+			{
+				int iAxisChoice;
+				bool bRotateDomain;
+				wxString Angle;
+
+				XRCCTRL(RotateInput, "AxisChoice", wxChoice)->SetValidator(wxGenericValidator(&iAxisChoice));
+				XRCCTRL(RotateInput, "Angle", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &Angle));
+				XRCCTRL(RotateInput, "RotateDomain", wxCheckBox)->SetValidator(wxGenericValidator(&bRotateDomain));
+
+				if (RotateInput.ShowModal() == wxID_OK)
+				{
+					CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
+					if (!pTextile)
+					{
+						TGERROR("Cannot rotate textile - no textile loaded");
+						break;
+					}
+
+					stringstream Command;
+
+					Command << "Weave= GetTextile('" << TextileName << "' )" << endl;
+
+					string Axis;
+					switch (iAxisChoice)
+					{
+					case 0:
+						Axis = "1,0,0";
+						break;
+					case 1:
+						Axis = "0,1,0";
+						break;
+					case 2:
+						Axis = "0,0,1";
+						break;
+					}
+
+					Command << "Weave.Rotate(WXYZ(XYZ(" << Axis << "),math.radians(" << ConvertString(Angle) << ")),XYZ(0,0,0))" << endl;
+					if (bRotateDomain && pTextile->GetDomain())
+					{
+						Command << "Domain = Weave.GetDomain()" << endl;
+						Command << "Domain.Rotate(WXYZ(XYZ(" << Axis << "),math.radians(" << ConvertString(Angle) << ")))" << endl;
+					}
+					if (pTextile->GetType() == "CTextileWeave2D" && iAxisChoice < 2)
+					{
+						Command << "weave2D = Weave.GetWeave2D()" << endl;
+						Command << "weave2D.SetInPlaneTangents( False )" << endl;
+					}
+
+					SendPythonCode(Command.str());
+					RefreshTextile(TextileName);
+				}
+			}
 		}
-		break;
+	}
+	break;
+	case ID_CreateEmptyTextile:
+	{
+		wxTextEntryDialog dlg(this, wxT("Please enter the name of the textile to create (or leave blank for default):"), wxT("Textile name"));
+		if (dlg.ShowModal() != wxID_OK)
+			return;
+		wxString TextileName = dlg.GetValue();
+
+		stringstream StringStream;
+		if (TextileName.IsEmpty())
+			StringStream << "AddTextile(CTextile())" << endl;
+		else
+			StringStream << "AddTextile('" << ConvertString(TextileName) << "', CTextile())" << endl;
+		SendPythonCode(StringStream.str());
+		/*else if (!TEXGEN.AddTextile(ConvertString(TextileName), CTextile()))
+		{
+			wxMessageBox(wxT("Textile with name \"") + TextileName + wxT("\" already exists!"), wxT("Error"), wxOK | wxICON_EXCLAMATION);
+		}*/
+	}
+	break;
+	case ID_Create2DWeave:
+	{
+		CWeaveWizard Wizard(this, wxID_ANY);
+		if (Wizard.RunIt())
+		{
+			string Command = Wizard.GetCreateTextileCommand();
+			if (!Command.empty())
+			{
+				SendPythonCode(Command);
+			}
+		}
+	}
+	break;
+	case ID_CreateBraid:
+	{
+		CBraidWizard Wizard(this, wxID_ANY);
+		if (Wizard.RunIt())
+		{
+			string Command = Wizard.getCreateTextileCommand();
+			if (!Command.empty())
+			{
+				SendPythonCode(Command);
+			}
+		}
+	}
+	break;
+	case ID_GeometrySolve:
+	{
+		OnGeometrySolve(event);
+	}
+	break;
 
 	case ID_Create3DTextile:
+	{
+		CWeaveWizard3D Wizard(this, wxID_ANY);
+		if (Wizard.RunIt())
 		{
-			CWeaveWizard3D Wizard(this, wxID_ANY);
-			if ( Wizard.RunIt() )
+			string Command = Wizard.GetCreateTextileCommand();
+			if (!Command.empty())
 			{
-				string Command = Wizard.GetCreateTextileCommand();
-				if ( !Command.empty() )
-				{
-					SendPythonCode(Command);
-				}
+				SendPythonCode(Command);
 			}
 		}
-		break;
+	}
+	break;
 	case ID_CreateLayeredTextile:
+	{
+		CTextileLayersDialog Dialog;
+		if (Dialog.ShowModal() == wxID_OK)
 		{
-			CTextileLayersDialog Dialog;
-			if ( Dialog.ShowModal() == wxID_OK )
+			vector<string> LayerNames;
+			Dialog.GetLayerNames(LayerNames);
+			if (!LayerNames.empty())
 			{
-				vector<string> LayerNames;
-				Dialog.GetLayerNames( LayerNames );
-				if ( !LayerNames.empty() ) 
-				{
-					// Create python code with list of names
-					string Command = ConvertMultiWeaveLayered( LayerNames );
-					SendPythonCode( Command );
-				}
+				// Create python code with list of names
+				string Command = ConvertMultiWeaveLayered(LayerNames);
+				SendPythonCode(Command);
 			}
 		}
-		break;
+	}
+	break;
 	case ID_SetLayerOffsets:
+	{
+		string TextileName = GetTextileSelection();
+		if (!TextileName.empty())
 		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
+			CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
+			string Type = pTextile->GetType();
+			if (Type != "CTextileLayered")
 			{
-				CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
-				string Type = pTextile->GetType();
-				if ( Type != "CTextileLayered" )
+				TGERROR("Cannot set layers: not a layered textile");
+				break;
+			}
+
+			CLayersOffsetDialog Dialog;
+			XYZ Min, Max;
+			CDomain* Domain = pTextile->GetDomain();
+			((CDomainPlanes*)Domain)->GetBoxLimits(Min, Max);
+			XY DomainSize(Max.x - Min.x, Max.y - Min.y);
+			Dialog.LoadSettings(dynamic_cast<CTextileLayered*>(pTextile)->GetOffsets(), DomainSize);
+
+			if (Dialog.ShowModal() == wxID_OK)
+			{
+				vector<XY> LayerOffsets;
+				int iOption = Dialog.GetOption();
+				stringstream StringStream;
+
+				switch (iOption)
 				{
-					TGERROR("Cannot set layers: not a layered textile");
+				case CONSTANT:
+				{
+					XY Offset;
+					Dialog.GetConstantOffset(Offset);
+					StringStream << "textile = GetTextile('" << TextileName << "')" << endl;
+					StringStream << "LayeredTextile = textile.GetLayeredTextile()" << endl;
+					StringStream << "Offset = XY(" << Offset << ")" << endl;
+					StringStream << "LayeredTextile.SetOffsets( Offset )" << endl;
 					break;
 				}
-				
-				CLayersOffsetDialog Dialog;
-				XYZ Min,Max;
-				CDomain* Domain = pTextile->GetDomain();
-				((CDomainPlanes*)Domain)->GetBoxLimits(Min, Max);
-				XY DomainSize( Max.x-Min.x, Max.y-Min.y );
-				Dialog.LoadSettings( dynamic_cast<CTextileLayered*>(pTextile)->GetOffsets(), DomainSize );
-				
-				if (Dialog.ShowModal() == wxID_OK)
-				{
-					vector<XY> LayerOffsets;
-					int iOption = Dialog.GetOption();
-					stringstream StringStream;
-
-					switch ( iOption )
+				case RANDOM:
+				case EDIT:
+					Dialog.GetEditOffsets(LayerOffsets);
+					StringStream << "textile = GetTextile('" << TextileName << "')" << endl;
+					StringStream << "LayeredTextile = textile.GetLayeredTextile()" << endl;
+					StringStream << "Offsets = XYVector()" << endl;
+					for (int i = 0; i < (int)LayerOffsets.size(); ++i)
 					{
-						case CONSTANT:
-							{
-							XY Offset;
-							Dialog.GetConstantOffset( Offset );
-							StringStream << "textile = GetTextile('" << TextileName << "')" << endl;
-							StringStream << "LayeredTextile = textile.GetLayeredTextile()" << endl;
-							StringStream << "Offset = XY(" << Offset << ")" << endl;
-							StringStream << "LayeredTextile.SetOffsets( Offset )" << endl;
-							break;
-							}
-						case RANDOM:
-						case EDIT:
-							Dialog.GetEditOffsets( LayerOffsets );
-							StringStream << "textile = GetTextile('" << TextileName << "')" << endl;
-							StringStream << "LayeredTextile = textile.GetLayeredTextile()" << endl;
-							StringStream << "Offsets = XYVector()" << endl;
-							for (int i=0; i<(int)LayerOffsets.size(); ++i)
-							{
-								StringStream << "Offsets.append(XY(" << LayerOffsets[i] << "))" << endl;
-							}
-							StringStream << "LayeredTextile.SetOffsets( Offsets )" << endl;
-							break;
+						StringStream << "Offsets.append(XY(" << LayerOffsets[i] << "))" << endl;
 					}
-					SendPythonCode( StringStream.str() );
-					RefreshTextile( TextileName );
+					StringStream << "LayeredTextile.SetOffsets( Offsets )" << endl;
+					break;
 				}
+				SendPythonCode(StringStream.str());
+				RefreshTextile(TextileName);
 			}
 		}
-		break;
+	}
+	break;
 	case ID_NestLayers:
 	case ID_MaxNestLayers:
+	{
+		string TextileName = GetTextileSelection();
+		if (!TextileName.empty())
 		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
+			CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
+			string Type = pTextile->GetType();
+			if (Type != "CTextileLayered")
 			{
-				CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
-				string Type = pTextile->GetType();
-				if ( Type != "CTextileLayered" )
-				{
-					TGERROR("Cannot nest layers: not a layered textile");
-					break;
-				}
-
-				stringstream StringStream;
-				StringStream << "textile = GetTextile('" << TextileName << "')" << endl;
-				StringStream << "LayeredTextile = textile.GetLayeredTextile()" << endl;
-				if ( event.GetId() == ID_NestLayers )
-					StringStream << "LayeredTextile.NestLayers()" << endl;
-				else
-					StringStream << "LayeredTextile.MaxNestLayers()" << endl;
-				SendPythonCode( StringStream.str() );
-				RefreshTextile( TextileName );
+				TGERROR("Cannot nest layers: not a layered textile");
+				break;
 			}
+
+			stringstream StringStream;
+			StringStream << "textile = GetTextile('" << TextileName << "')" << endl;
+			StringStream << "LayeredTextile = textile.GetLayeredTextile()" << endl;
+			if (event.GetId() == ID_NestLayers)
+				StringStream << "LayeredTextile.NestLayers()" << endl;
+			else
+				StringStream << "LayeredTextile.MaxNestLayers()" << endl;
+			SendPythonCode(StringStream.str());
+			RefreshTextile(TextileName);
 		}
-		break;
+	}
+	break;
 	}
 }
 

@@ -320,3 +320,28 @@ void CTextileBraid::AssignDefaultDomain(bool bSheared, bool bAddedHeight)
 	CDomainPlanes Domain = GetDefaultDomain(bSheared, bAddedHeight);
 	AssignDomain(Domain);
 }
+
+double CTextileBraid::GetYarnSpacing() const
+{
+	double dSpacing = 0; 
+	for (int i = 0; i < m_iNumWeftYarns; i++) {
+		dSpacing += m_WeftYarnData[i].dSpacing;
+	}
+	for (int i = 0; i < m_iNumWarpYarns; i++) {
+		dSpacing += m_WarpYarnData[i].dSpacing;
+	}
+	return dSpacing = dSpacing / (m_iNumWarpYarns + m_iNumWeftYarns);
+	
+}
+
+double CTextileBraid::GetYarnWidth() const
+{
+	double dWidth = 0;
+	for (int i = 0; i < m_iNumWeftYarns; i++) {
+		dWidth += m_WeftYarnData[i].dWidth;
+	}
+	for (int i = 0; i < m_iNumWarpYarns; i++) {
+		dWidth += m_WarpYarnData[i].dWidth;
+	}
+	return dWidth = dWidth / (m_iNumWarpYarns + m_iNumWeftYarns);
+}
