@@ -100,13 +100,13 @@ bool CTextileBraid::BuildTextile() const
 			if (j < m_iNumWarpYarns)
 			{
 				x += m_WarpYarnData[j].dSpacing*sin(m_dbraidAngle);
-				y += m_WeftYarnData[j].dSpacing*cos(m_dbraidAngle);
+				y += m_WarpYarnData[j].dSpacing*cos(m_dbraidAngle);
 				
 			}
 			
 		}
-		startx += m_WarpYarnData[i].dSpacing*sin(m_dbraidAngle);
-		starty += m_WarpYarnData[i].dSpacing*cos(m_dbraidAngle)*-1;
+		startx += m_WeftYarnData[i].dSpacing*sin(m_dbraidAngle);
+		starty += m_WeftYarnData[i].dSpacing*cos(m_dbraidAngle)*-1;
 		
 	}
 
@@ -146,13 +146,13 @@ bool CTextileBraid::BuildTextile() const
 			if (i < m_iNumWeftYarns)
 			{
 				y -= m_WeftYarnData[i].dSpacing*cos(m_dbraidAngle);
-				x += m_WarpYarnData[i].dSpacing*sin(m_dbraidAngle);
+				x += m_WeftYarnData[i].dSpacing*sin(m_dbraidAngle);
 				
 			}
 			
 		}
-		startx += m_WeftYarnData[j].dSpacing*sin(m_dbraidAngle);
-		starty += m_WeftYarnData[j].dSpacing*cos(m_dbraidAngle);
+		startx += m_WarpYarnData[j].dSpacing*sin(m_dbraidAngle);
+		starty += m_WarpYarnData[j].dSpacing*cos(m_dbraidAngle);
 		
 	}
 
@@ -202,7 +202,7 @@ bool CTextileBraid::BuildTextile() const
 	{
 		itYarn->AssignInterpolation(CInterpolationBezier());
 		itYarn->SetResolution(m_iResolution);
-		itYarn->AddRepeat(XYZ(dWidthWarp, -dHeightWarp, 0));
+		itYarn->AddRepeat(XYZ(dWidthWeft, -dHeightWeft, 0));
 		itYarn->AddRepeat(XYZ(dWidthWarp, dHeightWarp, 0));
 	}
 
@@ -225,8 +225,8 @@ double CTextileBraid::GetWidthWarp() const {
 
 double CTextileBraid::GetHeightWarp() const {
 	double dHeightWarp = 0;
-	for (int i = 0; i < m_iNumWeftYarns; i++) {
-		dHeightWarp += m_WeftYarnData[i].dSpacing*cos(m_dbraidAngle);
+	for (int i = 0; i < m_iNumWarpYarns; i++) {
+		dHeightWarp += m_WarpYarnData[i].dSpacing*cos(m_dbraidAngle);
 	}
 	return dHeightWarp;
 }
@@ -242,7 +242,7 @@ double CTextileBraid::GetWidthWeft() const {
 double CTextileBraid::GetHeightWeft() const {
 	double dHeightWeft = 0;
 	for (int i = 0; i < m_iNumWeftYarns; i++) {
-		dHeightWeft += m_WarpYarnData[i].dSpacing*cos(m_dbraidAngle);
+		dHeightWeft += m_WeftYarnData[i].dSpacing*cos(m_dbraidAngle);
 	}
 	return dHeightWeft;
 }
@@ -305,11 +305,11 @@ CDomainPlanes CTextileBraid::GetDefaultDomain(bool bSheared, bool bAddedHeight)
 	//Max.z = 5;
 
 	Min.x = 0;
-	Min.y = -1*m_WarpYarnData[m_iNumWarpYarns - 1].dSpacing*cos(m_dbraidAngle)*m_iNumWarpYarns;
+	Min.y = -1*m_WarpYarnData[m_iNumWarpYarns - 1].dSpacing*cos(m_dbraidAngle)*m_iNumWeftYarns;
 	//	Min.x = m_YYarnData[0].dSpacing;
 	//	Min.y = m_XYarnData[0].dSpacing;
 	Min.z = -dGap;
-	Max.x =2*m_WeftYarnData[m_iNumWeftYarns -1].dSpacing*sin(m_dbraidAngle)*m_iNumWeftYarns ;
+	Max.x = (m_WeftYarnData[m_iNumWeftYarns -1].dSpacing*sin(m_dbraidAngle)*m_iNumWarpYarns)+(m_WeftYarnData[m_iNumWeftYarns - 1].dSpacing*sin(m_dbraidAngle)*(m_iNumWeftYarns-1));
 	Max.y = m_WarpYarnData[m_iNumWarpYarns - 1].dSpacing*cos(m_dbraidAngle)*m_iNumWarpYarns;
 	Max.z = m_dFabricThickness + dGap;
 	return CDomainPlanes(Min, Max);
@@ -345,3 +345,60 @@ double CTextileBraid::GetYarnWidth() const
 	}
 	return dWidth = dWidth / (m_iNumWarpYarns + m_iNumWeftYarns);
 }
+
+double CTextileBraid::GetWeftYarnWidth(int iIndex) const
+{
+	if (iIndex < 0 || iIndex >= m_iNumWeftYarns)
+	{
+		TGERROR("Unable to get yarn width, index out of range: " << iIndex);
+		return 0;
+	}
+	return m_WeftYarnData[iIndex].dWidth;
+}
+
+double CTextileBraid::GetWarpYarnWidth(int iIndex) const
+{
+	if (iIndex < 0 || iIndex >= m_iNumWarpYarns)
+	{
+		TGERROR("Unable to get the yarn width, index out of range: " << iIndex);
+		return 0;
+	}
+	return m_WarpYarnData[iIndex].dWidth;
+}
+
+double CTextileBraid::GetWeftYarnHeight(int iIndex) const
+{
+	if (iIndex < 0 || iIndex >= m_iNumWeftYarns)
+	{
+		TGERROR("Unable to get the yarn height, index out of range: " << iIndex);
+	}
+	return m_WeftYarnData[iIndex].dHeight;
+}
+
+double CTextileBraid::GetWarpYarnHeight(int iIndex) const
+{
+	if (iIndex < 0 || iIndex >= m_iNumWarpYarns)
+	{
+		TGERROR("Unable to get the yarn height, index out of range: " << iIndex);
+	}
+	return m_WarpYarnData[iIndex].dHeight;
+}
+
+double CTextileBraid::GetWeftYarnSpacing(int iIndex) const
+{
+	if (iIndex < 0 || iIndex >= m_iNumWeftYarns)
+	{
+		TGERROR("Unable to get the yarn height, index out of range: " << iIndex);
+	}
+	return m_WeftYarnData[iIndex].dSpacing;
+}
+
+double CTextileBraid::GetWarpYarnSpacing(int iIndex) const
+{
+	if (iIndex < 0 || iIndex >= m_iNumWarpYarns)
+	{
+		TGERROR("Unable to get the yarn height, index out of range: " << iIndex);
+	}
+	return m_WarpYarnData[iIndex].dSpacing;
+}
+

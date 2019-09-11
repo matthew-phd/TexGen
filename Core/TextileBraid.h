@@ -38,7 +38,14 @@ namespace TexGen
 		double GetYarnSpacing() const; 
 		double GetYarnWidth() const;
 		double GetFabricThickness() const { return m_dFabricThickness; }
-		
+
+		double GetWeftYarnWidth(int iIndex) const;
+		double GetWarpYarnWidth(int iIndex) const;
+		double GetWeftYarnHeight(int iIndex) const;
+		double GetWarpYarnHeight(int iIndex) const;
+		double GetWeftYarnSpacing(int iIndex) const;
+		double GetWarpYarnSpacing(int iIndex) const;
+
 	protected:
 		vector<PATTERNBIAX> &GetCell(int x, int y);
 		bool BuildTextile() const;

@@ -4,10 +4,11 @@
 #include "PythonConverter.h"
 #include "Wizard.xpm"
 #include "RangeValidator.h"
-#include "BraidPatternCtrl.h"
+#include "WeavePatternCtrl.h"
+//#include "BraidPatternCtrl.h"
 
 BEGIN_EVENT_TABLE(CBraidWizard, wxWizard)
-	//EVT_WIZARD_PAGE_CHANGING(wxID_ANY, CBraidWizard::OnWizardPageChanging)
+	EVT_WIZARD_PAGE_CHANGING(wxID_ANY, CBraidWizard::OnWizardPageChanging)
 	EVT_TEXT(ID_Width, CBraidWizard::OnWidthChanged)
 	EVT_TEXT(ID_Spacing, CBraidWizard::OnSpacingChanged)
 	EVT_TEXT(ID_Thickness, CBraidWizard::OnThicknessChanged)
@@ -21,11 +22,10 @@ CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 	//, m_pBraidPatternCtrl(NULL)
 	, m_pWeftYarnsSpin(NULL)
 	, m_pWarpYarnsSpin(NULL)
-	, m_YarnSpacing(wxT("1"))
-	, m_YarnWidth(wxT("0.8"))
-	, m_FabricThickness(wxT("0.2"))
-	//, m_GapSize(wxT("0"))
-	, m_BraidAngle(wxT("0.0"))
+	, m_YarnSpacing(wxT("3.5"))
+	, m_YarnWidth(wxT("3"))
+	, m_FabricThickness(wxT("1.0"))
+	, m_BraidAngle(wxT("55"))
 	, m_bCreateDomain(true)
 	, m_bWidthChanged(false)
 	, m_bSpacingChanged(false)
@@ -38,8 +38,8 @@ CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 
 CBraidWizard::CBraidWizard(void)
 {
-	//if (m_pBraidPatternDialog)
-		//m_pBraidPatternDialog->Destroy(); 
+	if (m_pWeavePatternDialog)
+		m_pWeavePatternDialog->Destroy(); 
 }
 
 bool CBraidWizard::RunIt()
@@ -50,6 +50,8 @@ bool CBraidWizard::RunIt()
 void CBraidWizard::BuildPages()
 {
 	m_pFirstPage = BuildFirstPage();
+	m_pWeavePatternDialog = BuildWeavePatternDialog();
+
 	
 }
 
@@ -83,19 +85,26 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 		pControl->SetToolTip(wxT("Sets the spacing between yarns"));
 
 		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Yarn Width:")), SizerFlags);
-		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Spacing, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_YarnSpacing)), SizerFlags);
+		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Width, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_YarnWidth)), SizerFlags);
 		pControl->SetToolTip(wxT("Sets the width of the yarns"));
 
 		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Fabric Thickness:")), SizerFlags);
-		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Spacing, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_YarnSpacing)), SizerFlags);
+		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Thickness, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_FabricThickness)), SizerFlags);
 		pControl->SetToolTip(wxT("Sets the thickness of the fabic"));
 
 		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Braid Angle:")), SizerFlags);
-		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Spacing, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_YarnSpacing)), SizerFlags);
+		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_BraidAngle, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, RangeValidator( &m_BraidAngle, 0, 89)), SizerFlags);
 		pControl->SetToolTip(wxT("Sets the braid angle of the fabic"));
 
+		
+		
+		const wxString choices[3] = { "Diamond", "Regular", "Hercules" };
+		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Braid Pattern: ")), SizerFlags);
+		pSubSizer->Add(pBraidPattern = new wxChoice(pPage, ID_BraidPattern, wxDefaultPosition, wxDefaultSize, 3, choices,0, wxDefaultValidator), SizerFlags);
 		wxCheckBox* pDomainBox;
 		pSubSizer->Add(pDomainBox = new wxCheckBox(pPage, ID_DefaultDomain, wxT("Create Default Domain"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bCreateDomain)), SizerFlags);
+		
+		
 	}
 	pMainSizer->Add(pSubSizer, SizerFlags);
 	SizerFlags.Align(0);
@@ -106,14 +115,147 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 	m_pWeftYarnsSpin->SetValue(2);
 	m_pWarpYarnsSpin->SetValue(2);
 
+
 	return pPage; 
 
 }
+wxDialog* CBraidWizard::BuildWeavePatternDialog()
+{
+	//	wxDialog* pDailog = new wxDialog(NULL, wxID_ANY, wxT("Weave pattern"));
+	wxDialog* pDailog = new wxDialog();
 
+	pDailog->Create(this, wxID_ANY, wxT("Weave pattern"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX);
+
+	wxBoxSizer *pMainSizer = new wxBoxSizer(wxVERTICAL);
+	wxSizerFlags SizerFlags(0);
+	SizerFlags.Border();
+	SizerFlags.Expand();
+
+	pMainSizer->Add(new wxStaticText(pDailog, wxID_ANY, wxT("Set the weave pattern. Right click on top or side bars to change individual yarn settings")), SizerFlags);
+
+	SizerFlags.Proportion(1);
+
+	m_pWeavePatternCtrl = new wxWeavePatternCtrl(pDailog, wxID_ANY);
+	pMainSizer->Add(m_pWeavePatternCtrl, SizerFlags);
+
+	wxSizer* pSubSizer = pDailog->CreateStdDialogButtonSizer(wxOK | wxCANCEL);
+	if (pSubSizer)
+	{
+		SizerFlags.Proportion(0);
+		pMainSizer->Add(pSubSizer, SizerFlags);
+	}
+
+	pDailog->SetSizer(pMainSizer);
+	pMainSizer->Fit(pDailog);
+
+	return pDailog;
+}
+
+/*wxWizardPageSimple* CBraidWizard::BuildPatternPage()
+{
+	wxWizardPageSimple *pPage = new wxWizardPageSimple(this);
+
+	wxBoxSizer *pMainSizer = new wxBoxSizer(wxVERTICAL);
+	wxSizerFlags SizerFlags(0);
+	SizerFlags.Border();
+	SizerFlags.Expand();
+
+	wxSizer *pSubSizer;
+	pMainSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Decide the Pattern of the braided fabic: ")), SizerFlags);
+
+}
+*/
 string CBraidWizard::getCreateTextileCommand(string ExistingTextile)
 {
 	stringstream StringStream;
-	StringStream << "Braid" << endl;
+	double dYarnSpacing, dFabricThickness, dWidth, dHeight, dBraidAngle;
+	int iNumWeftYarns, iNumWarpYarns;
+	string braidPattern;
+	m_YarnSpacing.ToDouble(&dYarnSpacing);
+	m_YarnWidth.ToDouble(&dWidth);
+	m_FabricThickness.ToDouble(&dFabricThickness);
+	m_BraidAngle.ToDouble(&dBraidAngle);
+	dHeight = dFabricThickness / 2;
+	iNumWeftYarns = m_pWeftYarnsSpin->GetValue();
+	iNumWarpYarns = m_pWarpYarnsSpin->GetValue();
+	
+	braidPattern = pBraidPattern->GetString(pBraidPattern->GetSelection());
+	if (braidPattern == "Diamond")
+	{
+		StringStream << "braid = CTextileBraid(" << 2 << ", " << 2 << ", " << dWidth << ", " << dHeight << ", " << dYarnSpacing << ", " << dFabricThickness << ", " << dBraidAngle * PI / 180.0 << ")" << endl;
+			for (int i = 0; i <= 2; i++) {
+				for (int j = 0; j <= 2; j++) {
+					if (i % 2 == 0 && j% 2 != 0)
+					{
+						StringStream << "braid.SwapPosition(" << i <<","<< j << ")" << endl;
+					}
+					if (i % 2 != 0 && j % 2 == 0)
+					{
+						StringStream << "braid.SwapPosition(" << i << "," << j << ")" << endl;
+					}
+				}
+			}
+			
+	
+	}
+	else if (braidPattern == "Regular")
+	{
+		StringStream << "braid = CTextileBraid(" << 4 << ", " << 4 << ", " << dWidth << ", " << dHeight << ", " << dYarnSpacing << ", " << dFabricThickness << ", " << dBraidAngle * PI / 180.0 << ")" << endl;
+		StringStream << "braid.SwapPosition(0,2)" << endl;
+		StringStream << "braid.SwapPosition(0,3)" << endl;
+		StringStream << "braid.SwapPosition(1,1)" << endl;
+		StringStream << "braid.SwapPosition(1,2)" << endl;
+		StringStream << "braid.SwapPosition(2,1)" << endl;
+		StringStream << "braid.SwapPosition(2,0)" << endl;
+		StringStream << "braid.SwapPosition(3,0)" << endl;
+		StringStream << "braid.SwapPosition(3,3)" << endl;
+
+
+	}
+	else if (braidPattern == "Hercules")
+	{
+		StringStream << "braid = CTextileBraid(" << 6 << ", " << 6 << ", " << dWidth << ", " << dHeight << ", " << dYarnSpacing << ", " << dFabricThickness << ", " << dBraidAngle * PI / 180.0 << ")" << endl;
+		StringStream << "braid.SwapPosition(0,3)" << endl;
+		StringStream << "braid.SwapPosition(0,4)" << endl;
+		StringStream << "briad.SwapPosition(0,5)" << endl;
+		StringStream << "braid.SwapPosition(1,3)" << endl;
+		StringStream << "braid.SwapPosition(1,4)" << endl;
+		StringStream << "briad.SwapPosition(1,5)" << endl;
+		StringStream << "braid.SwapPosition(2,3)" << endl;
+		StringStream << "braid.SwapPosition(2,4)" << endl;
+		StringStream << "briad.SwapPosition(2,5)" << endl;
+		StringStream << "briad.SwapPosition(3,0)" << endl;
+		StringStream << "braid.SwapPosition(3,1)" << endl;
+		StringStream << "braid.SwapPosition(3,2)" << endl;
+		StringStream << "briad.SwapPosition(4,0)" << endl;
+		StringStream << "braid.SwapPosition(4,1)" << endl;
+		StringStream << "braid.SwapPosition(4,2)" << endl;
+		StringStream << "briad.SwapPosition(5,0)" << endl;
+		StringStream << "braid.SwapPosition(5,1)" << endl;
+		StringStream << "braid.SwapPosition(5,2)" << endl;
+		
+	}
+	else
+	{
+		StringStream << "braid = CTextileBraid(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dYarnSpacing << ", " << dFabricThickness << ", " << dBraidAngle * PI / 180.0 << ")" << endl;
+	}
+	int i, j;
+	for (i = 0; i<iNumWarpYarns; ++i)
+	{
+		for (j = 0; j<iNumWeftYarns; ++j)
+		{
+			if (GetPatternCell(i, j))
+			{
+				StringStream << "braid.SwapPosition(" << i << ", " << j/*iHeight-(j+1)*/ << ")" << endl;
+			}
+		}
+	}
+
+	if (m_bCreateDomain)
+	{
+		StringStream << "braid.AssignDefaultDomain(False, True)" << endl;
+	}
+	StringStream << "AddTextile(braid)" << endl;
 	return StringStream.str();
 }
 
@@ -128,4 +270,57 @@ void CBraidWizard::LoadSettings(const CTextileBraid& Braid)
 	m_YarnWidth << Braid.GetYarnWidth();
 	m_YarnSpacing << Braid.GetYarnSpacing();
 
+}
+bool CBraidWizard::GetPatternCell(int i, int j)
+{
+	return !m_pWeavePatternCtrl->GetCellStatus(i, j);
+}
+
+void CBraidWizard::OnWizardPageChanging(wxWizardEvent& event)
+{
+	if (event.GetPage() == m_pFirstPage && event.GetDirection() == true)
+	{
+		RebuildWeavePatternCtrl();
+		if (m_pWeavePatternDialog->ShowModal() != wxID_OK)
+			event.Veto();
+	}
+}
+
+bool CBraidWizard::RebuildWeavePatternCtrl()
+{
+	if (!m_pWeavePatternCtrl || !m_pWeftYarnsSpin || !m_pWarpYarnsSpin)
+		return false;
+
+	int iNumWidth = m_pWarpYarnsSpin->GetValue(), iNumHeight = m_pWeftYarnsSpin->GetValue();
+	if (m_pWeavePatternCtrl->GetWeaveWidth() != iNumWidth ||
+		m_pWeavePatternCtrl->GetWeaveHeight() != iNumHeight )
+	{
+		m_pWeavePatternCtrl->SetWeaveSize(iNumWidth, iNumHeight, false);
+		m_bWidthChanged = true;
+		m_bSpacingChanged = true;
+		m_bThicknessChanged = true;
+	}
+
+	CTextileWeave &Weave = m_pWeavePatternCtrl->GetWeave();
+
+	double dWidth = 1;
+	double dSpacing = 1;
+	double dThickness = 1;
+
+	m_YarnWidth.ToDouble(&dWidth);
+	m_YarnSpacing.ToDouble(&dSpacing);
+	m_FabricThickness.ToDouble(&dThickness);
+
+	if (m_bWidthChanged)
+		Weave.SetYarnWidths(dWidth);
+	if (m_bSpacingChanged)
+		Weave.SetYarnSpacings(dSpacing);
+	if (m_bThicknessChanged)
+		Weave.SetThickness(dThickness);
+
+	m_bWidthChanged = false;
+	m_bSpacingChanged = false;
+	m_bThicknessChanged = false;
+
+	return true;
 }

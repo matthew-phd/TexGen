@@ -1,5 +1,7 @@
 #pragma once
 
+class wxWeavePatternCtrl;
+
 class CBraidWizard : public wxWizard
 {
 public:
@@ -10,31 +12,37 @@ public:
 	void LoadSettings(const CTextileBraid& Braid);
 
 protected:
+	void OnWizardPageChanging(wxWizardEvent& event);
 	void BuildPages();
 	wxWizardPageSimple* BuildFirstPage();
+	wxDialog* BuildWeavePatternDialog();
+	bool RebuildWeavePatternCtrl();
+	//wxWizardPageSimple* BuildPatternPage();
 	//wxDialog* BuildBraidPatternDialog();
 	void OnWidthChanged(wxCommandEvent& event) { m_bWidthChanged = true; }
 	void OnSpacingChanged(wxCommandEvent& event) { m_bSpacingChanged = true; }
 	void OnThicknessChanged(wxCommandEvent& event) { m_bThicknessChanged = true; }
 	void OnInit(wxInitDialogEvent& event) { m_bWidthChanged = m_bSpacingChanged = m_bThicknessChanged = false; }
-
+	bool GetPatternCell(int i, int y);
 	wxSpinCtrl *m_pWeftYarnsSpin;
 	wxSpinCtrl *m_pWarpYarnsSpin;
-	// wxBraidPatternCtrl *m_pBraidPatternCtrl;
+	wxWeavePatternCtrl *m_pWeavePatternCtrl;
 	wxString m_YarnSpacing;
 	wxString m_YarnWidth;
 	wxString m_FabricThickness;
-	//wxString m_GapSize;
 	wxString m_BraidAngle;
-
+	//wxString m_BraidPattern;
+	wxChoice* pBraidPattern;
 	bool m_bCreateDomain;
-	//bool m_bAddedDomainHeight;
-
+	
+	
 	bool m_bWidthChanged;
 	bool m_bSpacingChanged;
 	bool m_bThicknessChanged;
 
 	wxWizardPageSimple *m_pFirstPage;
+	wxDialog *m_pWeavePatternDialog;
+	//wxWizardPageSimple *m_pBraidPatternPage;
 	//wxDialog *m_pBraidPatternDialog; 
 
 	DECLARE_EVENT_TABLE()

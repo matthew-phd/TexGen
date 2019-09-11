@@ -122,6 +122,7 @@ enum
 	ID_InPlaneTangents,
 	ID_ShearTextile,
 	ID_ShearAngle,
+	ID_BraidAngle,
 	ID_ShearedDomain,
 	ID_DefaultDomain,
 	ID_CreateLayers,
@@ -163,6 +164,8 @@ enum
 	ID_OffsetAngleInterlockText,
 	ID_AngleInterlockText,
 	ID_LayerToLayerText,
+
+	ID_BraidPattern,
 
 };
 
