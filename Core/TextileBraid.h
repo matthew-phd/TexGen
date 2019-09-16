@@ -28,6 +28,8 @@ namespace TexGen
 		double GetHeightWarp() const;
 		double GetWidthWeft() const;
 		double GetHeightWeft() const;
+		double GetWidth() const; // Calculates the width of the unit cell
+		double GetHeight() const; // Calculates the height of the unit cell
 		//void GetWarpSpacings() const;
 		//void GetWeftSpacings() const;
 		void SwapPosition(int x, int y);
@@ -45,6 +47,13 @@ namespace TexGen
 		double GetWarpYarnHeight(int iIndex) const;
 		double GetWeftYarnSpacing(int iIndex) const;
 		double GetWarpYarnSpacing(int iIndex) const;
+
+		double SetWarpYarnWidths(int iIndex, double dWidth);
+		double SetWeftYarnWidths(int iIndex, double dWidht);
+		double SetWarpYarnHeights(int iIndex, double dHeight);
+		double SetWeftYarnHeights(int iIndex, double dHeight);
+		double SetWarpYarnSpacings(int iIndex, double dSpacing);
+		double SetWeftYarnSpacings(int iIndex, double dSpacing);
 
 	protected:
 		vector<PATTERNBIAX> &GetCell(int x, int y);
