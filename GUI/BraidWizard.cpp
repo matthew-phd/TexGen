@@ -4,7 +4,7 @@
 #include "PythonConverter.h"
 #include "Wizard.xpm"
 #include "RangeValidator.h"
-#include "WeavePatternCtrl.h"
+#include "BraidPatternCtrl.h"
 //#include "BraidPatternCtrl.h"
 
 BEGIN_EVENT_TABLE(CBraidWizard, wxWizard)
@@ -38,8 +38,8 @@ CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 
 CBraidWizard::CBraidWizard(void)
 {
-	if (m_pWeavePatternDialog)
-		m_pWeavePatternDialog->Destroy(); 
+	if (m_pBraidPatternDialog)
+		m_pBraidPatternDialog->Destroy(); 
 }
 
 bool CBraidWizard::RunIt()
@@ -50,7 +50,7 @@ bool CBraidWizard::RunIt()
 void CBraidWizard::BuildPages()
 {
 	m_pFirstPage = BuildFirstPage();
-	m_pWeavePatternDialog = BuildWeavePatternDialog();
+	m_pBraidPatternDialog = BuildBraidPatternDialog();
 
 	
 }
@@ -119,24 +119,24 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 	return pPage; 
 
 }
-wxDialog* CBraidWizard::BuildWeavePatternDialog()
+wxDialog* CBraidWizard::BuildBraidPatternDialog()
 {
 	//	wxDialog* pDailog = new wxDialog(NULL, wxID_ANY, wxT("Weave pattern"));
 	wxDialog* pDailog = new wxDialog();
 
-	pDailog->Create(this, wxID_ANY, wxT("Weave pattern"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX);
+	pDailog->Create(this, wxID_ANY, wxT("Braid pattern"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX);
 
 	wxBoxSizer *pMainSizer = new wxBoxSizer(wxVERTICAL);
 	wxSizerFlags SizerFlags(0);
 	SizerFlags.Border();
 	SizerFlags.Expand();
 
-	pMainSizer->Add(new wxStaticText(pDailog, wxID_ANY, wxT("Set the weave pattern. Right click on top or side bars to change individual yarn settings")), SizerFlags);
+	pMainSizer->Add(new wxStaticText(pDailog, wxID_ANY, wxT("Set the braid pattern. Right click on top or side bars to change individual yarn settings")), SizerFlags);
 
 	SizerFlags.Proportion(1);
 
-	m_pWeavePatternCtrl = new wxWeavePatternCtrl(pDailog, wxID_ANY);
-	pMainSizer->Add(m_pWeavePatternCtrl, SizerFlags);
+	m_pBraidPatternCtrl = new wxBraidPatternCtrl(pDailog, wxID_ANY);
+	pMainSizer->Add(m_pBraidPatternCtrl, SizerFlags);
 
 	wxSizer* pSubSizer = pDailog->CreateStdDialogButtonSizer(wxOK | wxCANCEL);
 	if (pSubSizer)
@@ -273,35 +273,35 @@ void CBraidWizard::LoadSettings(const CTextileBraid& Braid)
 }
 bool CBraidWizard::GetPatternCell(int i, int j)
 {
-	return !m_pWeavePatternCtrl->GetCellStatus(i, j);
+	return !m_pBraidPatternCtrl->GetCellStatus(i, j);
 }
 
 void CBraidWizard::OnWizardPageChanging(wxWizardEvent& event)
 {
 	if (event.GetPage() == m_pFirstPage && event.GetDirection() == true)
 	{
-		RebuildWeavePatternCtrl();
-		if (m_pWeavePatternDialog->ShowModal() != wxID_OK)
+		RebuildBraidPatternCtrl();
+		if (m_pBraidPatternDialog->ShowModal() != wxID_OK)
 			event.Veto();
 	}
 }
 
-bool CBraidWizard::RebuildWeavePatternCtrl()
+bool CBraidWizard::RebuildBraidPatternCtrl()
 {
-	if (!m_pWeavePatternCtrl || !m_pWeftYarnsSpin || !m_pWarpYarnsSpin)
+	if (!m_pBraidPatternCtrl || !m_pWeftYarnsSpin || !m_pWarpYarnsSpin)
 		return false;
 
 	int iNumWidth = m_pWarpYarnsSpin->GetValue(), iNumHeight = m_pWeftYarnsSpin->GetValue();
-	if (m_pWeavePatternCtrl->GetWeaveWidth() != iNumWidth ||
-		m_pWeavePatternCtrl->GetWeaveHeight() != iNumHeight )
+	if (m_pBraidPatternCtrl->GetBraidWidth() != iNumWidth ||
+		m_pBraidPatternCtrl->GetBraidHeight() != iNumHeight )
 	{
-		m_pWeavePatternCtrl->SetWeaveSize(iNumWidth, iNumHeight, false);
+		m_pBraidPatternCtrl->SetBraidSize(iNumWidth, iNumHeight, false);
 		m_bWidthChanged = true;
 		m_bSpacingChanged = true;
 		m_bThicknessChanged = true;
 	}
 
-	CTextileWeave &Weave = m_pWeavePatternCtrl->GetWeave();
+	CTextileBraid &braid = m_pBraidPatternCtrl->GetBraid();
 
 	double dWidth = 1;
 	double dSpacing = 1;
@@ -312,11 +312,11 @@ bool CBraidWizard::RebuildWeavePatternCtrl()
 	m_FabricThickness.ToDouble(&dThickness);
 
 	if (m_bWidthChanged)
-		Weave.SetYarnWidths(dWidth);
+		braid.SetYarnWidths(dWidth);
 	if (m_bSpacingChanged)
-		Weave.SetYarnSpacings(dSpacing);
+		braid.SetYarnSpacings(dSpacing);
 	if (m_bThicknessChanged)
-		Weave.SetThickness(dThickness);
+		braid.SetThickness(dThickness);
 
 	m_bWidthChanged = false;
 	m_bSpacingChanged = false;

@@ -417,7 +417,37 @@ double CTextileBraid::GetWarpYarnSpacing(int iIndex) const
 	return m_WarpYarnData[iIndex].dSpacing;
 }
 
-double CTextileBraid::SetWarpYarnWidths(int iIndex, double dWidth)
+double CTextileBraid::GetWeftGapSize(int iIndex) const
+{
+	if (iIndex < 0 || iIndex >= m_iNumWeftYarns)
+	{
+		TGERROR("Unable to get yarn spacing, index out of range: " << iIndex);
+		return 0;
+	}
+	double dGapSize = m_WeftYarnData[iIndex].dSpacing;
+	dGapSize -= 0.5*m_WeftYarnData[iIndex].dWidth;
+	if (iIndex == m_iNumWeftYarns - 1)
+		dGapSize -= 0.5*m_WeftYarnData[0].dWidth;
+	else dGapSize -= 0.5*m_WeftYarnData[iIndex + 1].dWidth;
+	return dGapSize;
+}
+
+double CTextileBraid::GetWarpGapSize(int iIndex) const
+{
+	if (iIndex < 0 || iIndex >= m_iNumWarpYarns)
+	{
+		TGERROR("Unable to get yarn spacing, index out of range: " << iIndex);
+		return 0;
+	}
+	double dGapSize = m_WarpYarnData[iIndex].dSpacing;
+	dGapSize -= 0.5*m_WarpYarnData[iIndex].dWidth;
+	if (iIndex == m_iNumWarpYarns - 1)
+		dGapSize -= 0.5*m_WarpYarnData[0].dWidth;
+	else dGapSize -= 0.5*m_WarpYarnData[iIndex + 1].dWidth;
+	return dGapSize;
+}
+
+void CTextileBraid::SetWarpYarnWidths(int iIndex, double dWidth)
 {
 	if (iIndex < 0 || iIndex >= m_iNumWarpYarns)
 	{
@@ -428,7 +458,7 @@ double CTextileBraid::SetWarpYarnWidths(int iIndex, double dWidth)
 	m_bNeedsBuilding = true;
 }
 
-double CTextileBraid::SetWeftYarnWidths(int iIndex, double dWidth)
+void CTextileBraid::SetWeftYarnWidths(int iIndex, double dWidth)
 {
 	if (iIndex < 0 || iIndex >= m_iNumWeftYarns)
 	{
@@ -439,7 +469,7 @@ double CTextileBraid::SetWeftYarnWidths(int iIndex, double dWidth)
 	m_bNeedsBuilding = true;
 }
 
-double CTextileBraid::SetWarpYarnHeights(int iIndex, double dHeight)
+void CTextileBraid::SetWarpYarnHeights(int iIndex, double dHeight)
 {
 	if (iIndex < 0 || iIndex >= m_iNumWarpYarns)
 	{
@@ -450,7 +480,7 @@ double CTextileBraid::SetWarpYarnHeights(int iIndex, double dHeight)
 	m_bNeedsBuilding = true;
 }
 
-double CTextileBraid::SetWeftYarnHeights(int iIndex, double dHeight)
+void CTextileBraid::SetWeftYarnHeights(int iIndex, double dHeight)
 {
 	if (iIndex < 0 || iIndex >= m_iNumWeftYarns)
 	{
@@ -461,7 +491,7 @@ double CTextileBraid::SetWeftYarnHeights(int iIndex, double dHeight)
 	m_bNeedsBuilding = true;
 }
 
-double CTextileBraid::SetWarpYarnSpacings(int iIndex, double dSpacing)
+void CTextileBraid::SetWarpYarnSpacings(int iIndex, double dSpacing)
 {
 	if (iIndex < 0 || iIndex >= m_iNumWarpYarns)
 	{
@@ -472,7 +502,7 @@ double CTextileBraid::SetWarpYarnSpacings(int iIndex, double dSpacing)
 	m_bNeedsBuilding = true;
 }
 
-double CTextileBraid::SetWeftYarnSpacings(int iIndex, double dSpacing)
+void CTextileBraid::SetWeftYarnSpacings(int iIndex, double dSpacing)
 {
 	if (iIndex < 0 || iIndex >= m_iNumWeftYarns)
 	{
@@ -480,5 +510,77 @@ double CTextileBraid::SetWeftYarnSpacings(int iIndex, double dSpacing)
 		return;
 	}
 	m_WeftYarnData[iIndex].dSpacing = dSpacing;
+	m_bNeedsBuilding = true;
+}
+
+void CTextileBraid::SetWeftYarnWidths(double dWidth)
+{
+	for (int i = 0; i < m_iNumWeftYarns; i++)
+	{
+		SetWeftYarnWidths(i, dWidth);
+	}
+}
+
+void CTextileBraid::SetWarpYarnWidths(double dWidth)
+{
+	for (int i = 0; i < m_iNumWarpYarns; i++)
+	{
+		SetWarpYarnWidths(i, dWidth);
+	}
+}
+
+void CTextileBraid::SetWeftYarnHeights(double dHeight)
+{
+	for (int i = 0; i < m_iNumWeftYarns; i++)
+	{
+		SetWeftYarnHeights(i, dHeight);
+	}
+}
+
+void CTextileBraid::SetWarpYarnHeights(double dHeight)
+{
+	for (int i = 0; i < m_iNumWarpYarns; i++)
+	{
+		SetWarpYarnHeights(i, dHeight);
+	}
+}
+
+void CTextileBraid::SetWeftYarnSpacings(double dSpacing)
+{
+	for (int i = 0; i < m_iNumWeftYarns; i++)
+	{
+		SetWeftYarnSpacings(i, dSpacing);
+	}
+}
+
+void CTextileBraid::SetWarpYarnSpacings(double dSpacing)
+{
+	for (int i = 0; i < m_iNumWarpYarns; i++)
+	{
+		SetWarpYarnSpacings(i, dSpacing);
+	}
+}
+
+void CTextileBraid::SetYarnWidths(double dWidth)
+{
+	SetWeftYarnWidths(dWidth);
+	SetWarpYarnWidths(dWidth);
+}
+
+void CTextileBraid::SetYarnHeights(double dHeight)
+{
+	SetWeftYarnHeights(dHeight);
+	SetWarpYarnHeights(dHeight);
+}
+
+void CTextileBraid::SetYarnSpacings(double dSpacing)
+{
+	SetWeftYarnSpacings(dSpacing);
+	SetWarpYarnSpacings(dSpacing);
+}
+
+void CTextileBraid::SetThickness(double dThickness)
+{
+	m_dFabricThickness = dThickness;
 	m_bNeedsBuilding = true;
 }

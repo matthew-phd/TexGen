@@ -1,6 +1,6 @@
 #pragma once
 
-class wxWeavePatternCtrl;
+class wxBraidPatternCtrl;
 
 class CBraidWizard : public wxWizard
 {
@@ -15,8 +15,8 @@ protected:
 	void OnWizardPageChanging(wxWizardEvent& event);
 	void BuildPages();
 	wxWizardPageSimple* BuildFirstPage();
-	wxDialog* BuildWeavePatternDialog();
-	bool RebuildWeavePatternCtrl();
+	wxDialog* BuildBraidPatternDialog();
+	bool RebuildBraidPatternCtrl();
 	//wxWizardPageSimple* BuildPatternPage();
 	//wxDialog* BuildBraidPatternDialog();
 	void OnWidthChanged(wxCommandEvent& event) { m_bWidthChanged = true; }
@@ -26,7 +26,7 @@ protected:
 	bool GetPatternCell(int i, int y);
 	wxSpinCtrl *m_pWeftYarnsSpin;
 	wxSpinCtrl *m_pWarpYarnsSpin;
-	wxWeavePatternCtrl *m_pWeavePatternCtrl;
+	wxBraidPatternCtrl *m_pBraidPatternCtrl;
 	wxString m_YarnSpacing;
 	wxString m_YarnWidth;
 	wxString m_FabricThickness;
@@ -41,7 +41,7 @@ protected:
 	bool m_bThicknessChanged;
 
 	wxWizardPageSimple *m_pFirstPage;
-	wxDialog *m_pWeavePatternDialog;
+	wxDialog *m_pBraidPatternDialog;
 	//wxWizardPageSimple *m_pBraidPatternPage;
 	//wxDialog *m_pBraidPatternDialog; 
 

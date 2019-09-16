@@ -23,15 +23,15 @@ public:
 		const wxValidator& validator = wxDefaultValidator);
 
 	/// Sets the mode to 3d, this must be called before set weave size
-	void SetWeaveSize(int iNumYYarns, int iNumXYarns, bool b3DMode);
-	void SetWeaveSize(const CTextileWeave &Weave);
-	int GetWeaveWidth();
-	int GetWeaveHeight();
+	void SetBraidSize(int iNumYYarns, int iNumXYarns, bool b3DMode);
+	void SetBraidSize(const CTextileBraid &Braid);
+	int GetBraidWidth();
+	int GetBraidHeight();
 	bool GetCellStatus(int i, int j);
 	//	void SetCellStatus(int i, int j, bool bVal);
-	bool bHasWeave() { return m_WeavePattern ? true : false; }
-	CTextileWeave &GetWeave() { return *m_WeavePattern; }
-	bool Get3DMode() { return m_b3DMode; }
+	bool bHasBraid() { return m_BraidPattern ? true : false; }
+	CTextileBraid &GetBraid() { return *m_BraidPattern; }
+	//bool Get3DMode() { return m_b3DMode; }
 
 protected:
 	enum
@@ -99,8 +99,8 @@ protected:
 	// the first is the index along the length of the yarn in the x axis
 	// the second is the height index
 	pair<int, int> m_SelectedIndices;
-	vector<bool> m_SelectedYYarns;
-	vector<bool> m_SelectedXYarns;
+	vector<bool> m_SelectedWarpYarns;
+	vector<bool> m_SelectedWeftYarns;
 	wxPoint m_MarqueeStart;
 	wxPoint m_MarqueeEnd;
 };
@@ -110,24 +110,24 @@ protected:
 /// Circle range control event class
 class wxBraidPatternCtrlEvent : public wxCommandEvent
 {
-	friend class wxWeavePatternCtrl;
+	friend class wxBraidPatternCtrl;
 public:
-	wxWeavePatternCtrlEvent(wxEventType commandType = wxEVT_NULL, int id = 0)
+	wxBraidPatternCtrlEvent(wxEventType commandType = wxEVT_NULL, int id = 0)
 		: wxCommandEvent(commandType, id)
 	{}
-	wxWeavePatternCtrlEvent(const wxWeavePatternCtrlEvent& event)
+	wxBraidPatternCtrlEvent(const wxBraidPatternCtrlEvent& event)
 		: wxCommandEvent(event)
 	{}
 	virtual wxEvent *Clone() const
 	{
-		return new wxWeavePatternCtrlEvent(*this);
+		return new wxBraidPatternCtrlEvent(*this);
 	}
 
 protected:
-	DECLARE_DYNAMIC_CLASS(wxWeavePatternCtrlEvent);
+	DECLARE_DYNAMIC_CLASS(wxBraidPatternCtrlEvent);
 };
 
-typedef void (wxEvtHandler::*wxCircleRangeCtrlEventFunction) (wxWeavePatternCtrlEvent&);
+typedef void (wxEvtHandler::*wxCircleRangeCtrlEventFunction) (wxBraidPatternCtrlEvent&);
 
 // Circle range control events and macros for handling them
 BEGIN_DECLARE_EVENT_TYPES()

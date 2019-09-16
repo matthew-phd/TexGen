@@ -308,14 +308,14 @@ void wxBraidPatternCtrl::DrawCell(wxDC &dc, int i, int j, bool bDirection)
 	}
 }
 
-int wxBraidPatternCtrl::GetWeaveWidth()
+int wxBraidPatternCtrl::GetBraidWidth()
 {
 	if (!m_BraidPattern)
 		return 0;
 	return m_BraidPattern->GetNumWarpYarns();
 }
 
-int wxBraidPatternCtrl::GetWeaveHeight()
+int wxBraidPatternCtrl::GetBraidHeight()
 {
 	if (!m_BraidPattern)
 		return 0;
@@ -364,7 +364,7 @@ void wxBraidPatternCtrl::DrawTopIcons(wxDC &dc)
 		//if (iLayers)
 			//NumLayers << iLayers;
 
-		if (m_SelectedYYarns[i])
+		if (m_SelectedWarpYarns[i])
 			dc.SetBrush(*wxRED_BRUSH);
 		else
 			dc.SetBrush(*wxWHITE_BRUSH);
@@ -394,7 +394,7 @@ void wxBraidPatternCtrl::DrawLeftIcons(wxDC &dc)
 		//if (iLayers)
 			//NumLayers << iLayers;
 
-		if (m_SelectedXYarns[i])
+		if (m_SelectedWeftYarns[i])
 			dc.SetBrush(*wxRED_BRUSH);
 		else
 			dc.SetBrush(*wxWHITE_BRUSH);
@@ -437,7 +437,7 @@ void wxBraidPatternCtrl::HandleIconSelect(wxRect MarqueeSelect)
 		{
 			if (GetTopIconRect(i).Intersects(MarqueeSelect))
 			{
-				m_SelectedYYarns[i] = true;
+				m_SelectedWarpYarns[i] = true;
 				m_dLastSelectedWidth = m_BraidPattern->GetWarpYarnWidth(i);
 				m_dLastSelectedHeight = m_BraidPattern->GetWarpYarnHeight(i);
 				m_dLastSelectedSpacing = m_BraidPattern->GetWarpYarnSpacing(i);
@@ -451,7 +451,7 @@ void wxBraidPatternCtrl::HandleIconSelect(wxRect MarqueeSelect)
 		{
 			if (GetLeftIconRect(i).Intersects(MarqueeSelect))
 			{
-				m_SelectedXYarns[i] = true;
+				m_SelectedWeftYarns[i] = true;
 				m_dLastSelectedWidth = m_BraidPattern->GetWeftYarnWidth(i);
 				m_dLastSelectedHeight = m_BraidPattern->GetWeftYarnHeight(i);
 				m_dLastSelectedSpacing = m_BraidPattern->GetWeftYarnSpacing(i);
@@ -471,7 +471,7 @@ bool wxBraidPatternCtrl::HandleIconSelect(wxPoint Position)
 		{
 			if (GetTopIconRect(i).Contains(Position))
 			{
-				m_SelectedYYarns[i] = true;
+				m_SelectedWarpYarns[i] = true;
 				m_dLastSelectedWidth = m_BraidPattern->GetWarpYarnWidth(i);
 				m_dLastSelectedHeight = m_BraidPattern->GetWarpYarnHeight(i);
 				m_dLastSelectedSpacing = m_BraidPattern->GetWarpYarnSpacing(i);
@@ -491,7 +491,7 @@ bool wxBraidPatternCtrl::HandleIconSelect(wxPoint Position)
 		{
 			if (GetLeftIconRect(i).Contains(Position))
 			{
-				m_SelectedXYarns[i] = true;
+				m_SelectedWeftYarns[i] = true;
 				m_dLastSelectedWidth = m_BraidPattern->GetWeftYarnWidth(i);
 				m_dLastSelectedHeight = m_BraidPattern->GetWeftYarnHeight(i);
 				m_dLastSelectedSpacing = m_BraidPattern->GetWeftYarnSpacing(i);
@@ -530,7 +530,7 @@ void wxBraidPatternCtrl::CalculatePixelRatio()
 	double dHeight = m_BraidPattern->GetHeight();
 	Rect.width -= m_iIconSpace;
 	Rect.height -= m_iIconSpace;
-	dHeight += m_WeavePattern->GetFabricThickness();
+	dHeight += m_BraidPattern->GetFabricThickness();
 	Rect.height -= m_iBorderSpace;
 	m_dPixelRatio = min(Rect.width / dWidth, Rect.height / dHeight);
 	m_iFreeWidth = Rect.width - m_dPixelRatio * dWidth;
@@ -583,19 +583,19 @@ wxBraidPatternCtrl::YARN_POS_DATA wxBraidPatternCtrl::GetWeftCoordinate(int iInd
 	for (i = 0; i<iNumWarpYarns; ++i)
 	{
 		dWidth = m_BraidPattern->GetWarpYarnWidth(i);
-		//if (i>0)
-			//dGapBefore = 0.5*m_WeavePattern->GetYYarnGapSize(i - 1);
-		//else
-			//dGapBefore = 0.5*m_WeavePattern->GetYYarnGapSize(iNumYYarns - 1);
-		//dGapAfter = 0.5*m_WeavePattern->GetYYarnGapSize(i);
+		if (i>0)
+			dGapBefore = 0.5*m_BraidPattern->GetWarpGapSize(i - 1);
+		else
+			dGapBefore = 0.5*m_BraidPattern->GetWarpGapSize(iNumWarpYarns - 1);
+		dGapAfter = 0.5*m_BraidPattern->GetWarpGapSize(i);
 		if (iIndex == i)
 		{
 			dCellMin = dAccumulated;
-			dYarnMin = dCellMin;// + dGapBefore;
+			dYarnMin = dCellMin + dGapBefore;
 			dYarnMax = dYarnMin + dWidth;
-			dCellMax = dYarnMax; //+ dGapAfter;
+			dCellMax = dYarnMax+ dGapAfter;
 		}
-		dAccumulated += dWidth;// +dGapBefore + dGapAfter;
+		dAccumulated += dWidth +dGapBefore + dGapAfter;
 		dTotalSpacingWarp += m_BraidPattern->GetWarpYarnSpacing(i);
 	}
 	dCellMin /= dTotalSpacingWarp;
@@ -623,19 +623,19 @@ wxBraidPatternCtrl::YARN_POS_DATA wxBraidPatternCtrl::GetWarpCoordinate(int iInd
 	for (i = 0; i<iNumXYarns; ++i)
 	{
 		dWidth = m_BraidPattern->GetWeftYarnWidth(i);
-		//if (i>0)
-			//dGapBefore = 0.5*m_WeavePattern->GetXYarnGapSize(i - 1);
-		//else
-			//dGapBefore = 0.5*m_WeavePattern->GetXYarnGapSize(iNumXYarns - 1);
-		//dGapAfter = 0.5*m_WeavePattern->GetXYarnGapSize(i);
+		if (i>0)
+			dGapBefore = 0.5*m_BraidPattern->GetWeftGapSize(i - 1);
+		else
+			dGapBefore = 0.5*m_BraidPattern->GetWeftGapSize(iNumXYarns - 1);
+		dGapAfter = 0.5*m_BraidPattern->GetWeftGapSize(i);
 		if (iIndex == i)
 		{
 			dCellMin = dAccumulated;
-			dYarnMin = dCellMin;// +dGapBefore;
+			dYarnMin = dCellMin +dGapBefore;
 			dYarnMax = dYarnMin + dWidth;
-			dCellMax = dYarnMax;// +dGapAfter;
+			dCellMax = dYarnMax +dGapAfter;
 		}
-		dAccumulated += dWidth;// +dGapBefore + dGapAfter;
+		dAccumulated += dWidth +dGapBefore + dGapAfter;
 		dTotalSpacingWeft += m_BraidPattern->GetWeftYarnSpacing(i);
 	}
 	dCellMin /= dTotalSpacingWeft;
@@ -767,12 +767,12 @@ void wxBraidPatternCtrl::OnMenu(wxCommandEvent& event)
 			int i;
 			for (i = 0; i<m_BraidPattern->GetNumWarpYarns(); ++i)
 			{
-				if (m_SelectedYYarns[i])
+				if (m_SelectedWarpYarns[i])
 					m_BraidPattern->SetWarpYarnWidths(i, dVal);
 			}
 			for (i = 0; i<m_BraidPattern->GetNumWeftYarns(); ++i)
 			{
-				if (m_SelectedXYarns[i])
+				if (m_SelectedWeftYarns[i])
 					m_BraidPattern->SetWeftYarnWidths(i, dVal);
 			}
 		}
@@ -788,12 +788,12 @@ void wxBraidPatternCtrl::OnMenu(wxCommandEvent& event)
 			int i;
 			for (i = 0; i<m_BraidPattern->GetNumWarpYarns(); ++i)
 			{
-				if (m_SelectedYYarns[i])
+				if (m_SelectedWarpYarns[i])
 					m_BraidPattern->SetWarpYarnHeights(i, dVal);
 			}
 			for (i = 0; i<m_BraidPattern->GetNumWeftYarns(); ++i)
 			{
-				if (m_SelectedXYarns[i])
+				if (m_SelectedWeftYarns[i])
 					m_BraidPattern->SetWeftYarnHeights(i, dVal);
 			}
 		}
@@ -809,12 +809,12 @@ void wxBraidPatternCtrl::OnMenu(wxCommandEvent& event)
 			int i;
 			for (i = 0; i<m_BraidPattern->GetNumWarpYarns(); ++i)
 			{
-				if (m_SelectedYYarns[i])
+				if (m_SelectedWarpYarns[i])
 					m_BraidPattern->SetWarpYarnSpacings(i, dVal);
 			}
 			for (i = 0; i<m_BraidPattern->GetNumWeftYarns(); ++i)
 			{
-				if (m_SelectedXYarns[i])
+				if (m_SelectedWeftYarns[i])
 					m_BraidPattern->SetWeftYarnSpacings(i, dVal);
 			}
 		}
@@ -831,22 +831,22 @@ void wxBraidPatternCtrl::OnMouseEvent(wxMouseEvent& event)
 	{
 		if (!event.ShiftDown() && !event.ControlDown() && GetNumSelected() > 0)
 		{
-			fill(m_SelectedYYarns.begin(), m_SelectedYYarns.end(), false);
-			fill(m_SelectedXYarns.begin(), m_SelectedXYarns.end(), false);
+			fill(m_SelectedWarpYarns.begin(), m_SelectedWarpYarns.end(), false);
+			fill(m_SelectedWeftYarns.begin(), m_SelectedWeftYarns.end(), false);
 			RefreshRect(GetTopIconsRegion());
 			RefreshRect(GetLeftIconsRegion());
 		}
 		wxPoint MousePos = event.GetPosition();
 		pair<int, int> Indices = GetCellIndices(MousePos);
-		if (//!m_b3DMode)
-		{
-			/*if (Indices.first >= 0 && Indices.first < m_WeavePattern->GetNumYYarns() &&
-				Indices.second >= 0 && Indices.second < m_WeavePattern->GetNumXYarns())
+		//if (!m_b3DMode)
+		//{
+			if (Indices.first >= 0 && Indices.first < m_BraidPattern->GetNumWarpYarns() &&
+				Indices.second >= 0 && Indices.second < m_BraidPattern->GetNumWeftYarns())
 			{
-				CTextileWeave2D* pWeave2D = dynamic_cast<CTextileWeave2D*>(&*m_WeavePattern);
-				if (pWeave2D)
+				CTextileBraid* pBraid = dynamic_cast<CTextileBraid*>(&*m_BraidPattern);
+				if (pBraid)
 				{
-					pWeave2D->SwapPosition(Indices.first, Indices.second);
+					pBraid->SwapPosition(Indices.first, Indices.second);
 					RefreshRect(GetCellRegion(Indices.first, Indices.second));
 					RefreshRect(GetCrossSectionRegion());
 				}
@@ -855,11 +855,11 @@ void wxBraidPatternCtrl::OnMouseEvent(wxMouseEvent& event)
 			{
 				if (!HandleIconSelect(MousePos))
 					m_MarqueeStart = MousePos;
-			}*/
-		}
-		else
+			}
+		//}
+		/*else
 		{
-			if (Indices.second >= 0 && Indices.second < m_WeavePattern->GetNumXYarns())
+			if (Indices.second >= 0 && Indices.second < m_BraidPattern->GetNumWeftYarns())
 			{
 				m_iCrossSectionIndex = Indices.second;
 				Refresh();
@@ -867,7 +867,7 @@ void wxBraidPatternCtrl::OnMouseEvent(wxMouseEvent& event)
 			else
 			{
 				Indices = GetCellHeight(MousePos);
-				if (Indices.first >= 0 && Indices.first < m_WeavePattern->GetNumYYarns())
+				if (Indices.first >= 0 && Indices.first < m_BraidPattern->GetNumWarpYarns())
 				{
 					m_SelectedIndices = Indices;
 				}
@@ -877,7 +877,7 @@ void wxBraidPatternCtrl::OnMouseEvent(wxMouseEvent& event)
 						m_MarqueeStart = MousePos;
 				}
 			}
-		}
+		//}*/
 	}
 	if (event.RightDown())
 	{
@@ -950,8 +950,8 @@ void wxBraidPatternCtrl::OnMouseEvent(wxMouseEvent& event)
 int wxBraidPatternCtrl::GetNumSelected()
 {
 	int iNum = 0;
-	iNum += count(m_SelectedYYarns.begin(), m_SelectedYYarns.end(), true);
-	iNum += count(m_SelectedXYarns.begin(), m_SelectedXYarns.end(), true);
+	iNum += count(m_SelectedWarpYarns.begin(), m_SelectedWarpYarns.end(), true);
+	iNum += count(m_SelectedWeftYarns.begin(), m_SelectedWeftYarns.end(), true);
 	return iNum;
 }
 
@@ -971,12 +971,12 @@ wxRect wxBraidPatternCtrl::GetMarqueeRect()
 	return MarqueeRect;
 }
 
-void wxBraidPatternCtrl::SetWeaveSize(int iNumYYarns, int iNumXYarns, bool b3DMode)
+void wxBraidPatternCtrl::SetBraidSize(int iNumWarpYarns, int iNumWeftYarns, bool b3DMode)
 {
 	//m_b3DMode = b3DMode;
 	//if (!b3DMode)
 	//{
-	m_BraidPattern = CTextileBraid(iNumYYarns, iNumXYarns, 1, 1, false);
+	m_BraidPattern = CTextileBraid(iNumWarpYarns, iNumWeftYarns, 1, 1, 1, 1, 0.95);
 	//}
 	/*else
 	{
@@ -985,17 +985,17 @@ void wxBraidPatternCtrl::SetWeaveSize(int iNumYYarns, int iNumXYarns, bool b3DMo
 		Weave3D.AddXLayers(1);
 		m_WeavePattern = Weave3D;
 	}*/
-	m_SelectedYYarns.resize(m_WeavePattern->GetNumYYarns());
-	m_SelectedXYarns.resize(m_WeavePattern->GetNumXYarns());
+	m_SelectedWarpYarns.resize(m_BraidPattern->GetNumWarpYarns());
+	m_SelectedWeftYarns.resize(m_BraidPattern->GetNumWeftYarns());
 }
 
-void wxWeavePatternCtrl::SetWeaveSize(const CTextileWeave &Weave)
+void wxBraidPatternCtrl::SetBraidSize(const CTextileBraid &Braid)
 {
-	if (Weave.GetType() == "CTextileWeave3D")
-		m_b3DMode = true;
-	else
-		m_b3DMode = false;
-	m_WeavePattern = Weave;
-	m_SelectedYYarns.resize(m_WeavePattern->GetNumYYarns());
-	m_SelectedXYarns.resize(m_WeavePattern->GetNumXYarns());
+	//if (Weave.GetType() == "CTextileWeave3D")
+	//	m_b3DMode = true;
+	//else
+	//	m_b3DMode = false;
+	m_BraidPattern = Braid;
+	m_SelectedWarpYarns.resize(m_BraidPattern->GetNumWarpYarns());
+	m_SelectedWeftYarns.resize(m_BraidPattern->GetNumWeftYarns());
 }
