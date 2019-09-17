@@ -584,3 +584,9 @@ void CTextileBraid::SetThickness(double dThickness)
 	m_dFabricThickness = dThickness;
 	m_bNeedsBuilding = true;
 }
+
+void CTextileBraid::SetResolution(int iResolution)
+{
+	m_iResolution = iResolution;
+	m_bNeedsBuilding = true;
+}

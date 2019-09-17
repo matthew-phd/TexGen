@@ -70,6 +70,7 @@ namespace TexGen
 		void SetYarnSpacings(double dSpacing);
 
 		void SetThickness(double dThickness);
+		void SetResolution(int iResolution);
 
 
 	protected:
