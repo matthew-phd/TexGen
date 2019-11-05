@@ -31,6 +31,10 @@ protected:
 	wxString m_YarnWidth;
 	wxString m_FabricThickness;
 	wxString m_BraidAngle;
+	wxString m_Radius;
+	wxString m_HornGearVelocity;
+	wxSpinCtrl *m_pHornGearSpin;
+	wxString m_Velocity;
 	//wxString m_BraidPattern;
 	wxChoice* pBraidPattern;
 	bool m_bCreateDomain;

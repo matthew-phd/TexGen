@@ -8,14 +8,37 @@ using namespace TexGen;
 
 
 CTextileBraid::CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth, 
-	double dHeight, double dSpacing, double dThickness, double dBraidAngle)
+	double dHeight, double dThickness, double dRadius,
+	double dHornGearVelocity, int iNumHornGear, double dVelocity, bool bRefine)
 	: m_iNumWeftYarns(iNumWeftYarns)
 	, m_iNumWarpYarns(iNumWarpYarns)
 	, m_dGapSize(0)
 	, m_dFabricThickness(dThickness)
 	, m_iResolution(40)
-	, m_dbraidAngle(dBraidAngle)
+	, m_dRadius(dRadius)
+	, m_dHornGearVelocity(dHornGearVelocity)
+	, m_iNumHornGear(iNumHornGear)
+	, m_dVelocity(dVelocity)
+	, m_bRefine(bRefine)
 {
+	// calculate the braid angle based on machine inputs
+	m_dbraidAngle = atan((2 * m_dHornGearVelocity * m_dRadius) / (m_iNumHornGear*m_dVelocity));
+	double vol_fraction = (1 - (((dWidth / 1000)*iNumHornGear) / (4 * PI*dRadius*cos(m_dbraidAngle))));
+	m_dCoverFactor = 1 - pow(vol_fraction, 2.0);
+	if (m_dCoverFactor > 1)
+	{
+		TGERROR("Cover Factor greater than one");
+	}
+
+	// Solve the quadractic equation to calculate the distance between yarns
+	double a = m_dCoverFactor;
+	double b = (2 * m_dCoverFactor*(dWidth / 1000)) - (2 * (dWidth / 1000));
+	double c = (m_dCoverFactor - 1)*((dWidth / 1000)*(dWidth / 1000));
+
+	double gap, dSpacing;
+	gap = ((-b) + sqrt((b*b) - (4 * a*c))) / (2 * a);
+	dSpacing = ((gap * 1000)/ cos(m_dbraidAngle - 0.7853)) + (dWidth/cos(m_dbraidAngle-0.7853));
+
 	m_Pattern.resize(iNumWeftYarns*iNumWarpYarns);
 	YARNDATA YarnData;
 	YarnData.dSpacing = dSpacing;
@@ -23,6 +46,7 @@ CTextileBraid::CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth
 	YarnData.dHeight = m_dFabricThickness / 2;
 	m_WeftYarnData.resize(iNumWeftYarns, YarnData);
 	m_WarpYarnData.resize(iNumWarpYarns, YarnData);
+	
 
 	vector<bool> Cell;
 	Cell.push_back(PATTERN_WARPYARN);
@@ -35,6 +59,7 @@ CTextileBraid::CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth
 			GetCell(i, j) = Cell;
 		}
 	}
+
 }
 
 
@@ -205,6 +230,9 @@ bool CTextileBraid::BuildTextile() const
 		itYarn->AddRepeat(XYZ(dWidthWeft, -dHeightWeft, 0));
 		itYarn->AddRepeat(XYZ(dWidthWarp, dHeightWarp, 0));
 	}
+	if (!m_bRefine)
+		return true;
+	Refine(true); 
 
 	return true;
 	
@@ -589,4 +617,171 @@ void CTextileBraid::SetResolution(int iResolution)
 {
 	m_iResolution = iResolution;
 	m_bNeedsBuilding = true;
+}
+
+void CTextileBraid::SetGapSize(double dGapSize)
+{
+	m_dGapSize = dGapSize;
+	m_bNeedsBuilding = true;
+}
+
+void CTextileBraid::CorrectBraidYarnWidths() const
+{
+
+	TGLOGINDENT("Adjusting yarn wdiths for \"" << GetName() << "\" with gap size of " << m_dGapSize); 
+	
+	vector<vector<int> > *pTransverseYarns;
+	vector<vector<int> > *pLongitudinalYarns;
+	int iTransverseNum;
+	int iLongitudinalNum;
+	int iDir;
+	int i, j;
+	CMesh TransverseYarnsMesh;
+	vector<int>::iterator itpYarn;
+	vector<pair<int, int> > RepeatLimits;
+	vector<pair<double, XYZ> > Intersections;
+	XYZ Centre, P;
+	const CYarnSection* pYarnSection;
+	const CInterpolation* pInterpolation;
+	CSlaveNode Node;
+	XYZ Side, Up;
+	YARN_POSITION_INFORMATION YarnPosInfo;
+
+	RepeatLimits.resize(2, pair<int, int>(-1, 0));
+	vector<double> YarnMaxWidth;
+	YarnMaxWidth.resize(m_Yarns.size(), -1);
+
+	// Find the max width of the yarns....
+	for (iDir = 0; iDir < 2; iDir++)
+	{
+		switch (iDir)
+		{
+		case 0:
+			pTransverseYarns = &m_WarpYarns;
+			pLongitudinalYarns = &m_WeftYarns;
+			iTransverseNum = m_iNumWarpYarns;
+			iLongitudinalNum = m_iNumWeftYarns;
+			break;
+		case 1:
+			pTransverseYarns = &m_WeftYarns;
+			pLongitudinalYarns = &m_WarpYarns;
+			iTransverseNum = m_iNumWeftYarns;
+			iLongitudinalNum = m_iNumWarpYarns;
+			break;
+		}
+		for (i = 0; i < iTransverseNum; i++)
+		{
+			TransverseYarnsMesh.Clear();
+			for (itpYarn = (*pTransverseYarns)[i].begin(); itpYarn != (*pTransverseYarns)[i].end(); itpYarn++)
+			{
+				m_Yarns[*itpYarn].AddSurfaceToMesh(TransverseYarnsMesh, RepeatLimits);
+			}
+			TransverseYarnsMesh.Convert3Dto2D();
+			TransverseYarnsMesh.ConvertQuadstoTriangles();
+			for (j = 0; j < iLongitudinalNum; j++)
+			{
+				for (itpYarn = (*pLongitudinalYarns)[j].begin(); itpYarn != (*pLongitudinalYarns)[j].end(); itpYarn++)
+				{
+					YarnPosInfo.iSection = i;
+					YarnPosInfo.dSectionPosition = 0;
+					YarnPosInfo.SectionLengths = m_Yarns[*itpYarn].GetYarnSectionLengths();
+					pInterpolation = m_Yarns[*itpYarn].GetInterpolation();
+					Node = pInterpolation->GetNode(m_Yarns[*itpYarn].GetMasterNodes(), i, 0);
+					Up = Node.GetUp();
+					Side = CrossProduct(Node.GetTangent(), Up);
+
+					pYarnSection = m_Yarns[*itpYarn].GetYarnSection();
+
+					vector<XY> Points = pYarnSection->GetSection(YarnPosInfo, 2);
+					Centre = m_Yarns[*itpYarn].GetMasterNodes()[i].GetPosition();
+					vector<XY>::iterator itPoint;
+					for (itPoint = Points.begin(); itPoint != Points.end(); itPoint++)
+					{
+						P = itPoint->x *Side + itPoint->y*Up + Centre;
+						// Find intersection of the side points of longitudinal yarn with transvery yarn meshes
+						if (TransverseYarnsMesh.IntersectLine(Centre, P, Intersections, make_pair(true, false)))
+						{
+							double dU = Intersections[0].first;
+							XYZ Normal = Intersections[0].second;
+							double dProjectedGap = m_dGapSize / DotProduct(Normal, Centre - P);
+							dU -= 0.5*dProjectedGap;
+							if (dU < 0)
+								dU = 0;
+							if (dU < 1)
+							{
+								double dWidth = 2 * GetLength(*itPoint) * dU;
+								if (YarnMaxWidth[*itpYarn] < 0 || dWidth < YarnMaxWidth[*itpYarn])
+								{
+									YarnMaxWidth[*itpYarn] = dWidth;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	// Adjust Yarn Widths
+	double dWidth, dHeight;
+	for (int i = 0; i < m_iNumWeftYarns; i++)
+	{
+		for (itpYarn = m_WeftYarns[i].begin(); itpYarn != m_WeftYarns[i].end(); itpYarn++)
+		{
+			if (YarnMaxWidth[*itpYarn] >= 0)
+			{
+				if (m_WeftYarnData[i].dWidth > YarnMaxWidth[*itpYarn])
+				{
+					TGLOG("Changing Weft Yarn wdith " << i << " from " << m_WeftYarnData[i].dWidth << " to " << YarnMaxWidth[*itpYarn]);
+					m_WeftYarnData[i].dWidth = YarnMaxWidth[*itpYarn];
+				}
+			}
+		}
+	}
+	for (int i = 0; i < m_iNumWarpYarns; i++)
+	{
+		for (itpYarn = m_WarpYarns[i].begin(); itpYarn != m_WarpYarns[i].end(); itpYarn++)
+		{
+			if (YarnMaxWidth[*itpYarn] >= 0)
+			{
+				if (m_WarpYarnData[i].dWidth > YarnMaxWidth[*itpYarn])
+				{
+					TGLOG("Changing Warp Yarn wdith " << i << " from " << m_WarpYarnData[i].dWidth << " to " << YarnMaxWidth[*itpYarn]);
+					m_WarpYarnData[i].dWidth = YarnMaxWidth[*itpYarn];
+				}
+			}
+		}
+	}
+	// Assign new sections to yarns
+	for (int i = 0; i < m_iNumWeftYarns; i++)
+	{
+		dWidth = m_WeftYarnData[i].dWidth;
+		dHeight = m_WeftYarnData[i].dHeight;
+		CSectionEllipse Section(dWidth, dHeight);
+		if (m_pSectionMesh)
+			Section.AssignSectionMesh(*m_pSectionMesh);
+		for (itpYarn = m_WeftYarns[i].begin(); itpYarn != m_WeftYarns[i].end(); itpYarn++)
+		{
+			m_Yarns[*itpYarn].AssignSection(CYarnSectionConstant(Section));
+		}
+	}
+	for (int i = 0; i < m_iNumWarpYarns; i++)
+	{
+		dWidth = m_WarpYarnData[i].dWidth;
+		dHeight = m_WarpYarnData[i].dHeight;
+		CSectionEllipse Section(dWidth, dHeight);
+		if (m_pSectionMesh)
+			Section.AssignSectionMesh(*m_pSectionMesh);
+		for (itpYarn = m_WarpYarns[i].begin(); itpYarn != m_WarpYarns[i].end(); itpYarn++)
+		{
+			m_Yarns[*itpYarn].AssignSection(CYarnSectionConstant(Section));
+		}
+	}
+}
+
+void CTextileBraid::Refine(bool bCorrectWidths) const
+{
+	if (bCorrectWidths)
+	{
+		CorrectBraidYarnWidths();
+	}
 }

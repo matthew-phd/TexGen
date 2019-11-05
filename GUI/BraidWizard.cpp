@@ -23,9 +23,13 @@ CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 	, m_pWeftYarnsSpin(NULL)
 	, m_pWarpYarnsSpin(NULL)
 	, m_YarnSpacing(wxT("3.5"))
-	, m_YarnWidth(wxT("3"))
+	, m_YarnWidth(wxT("3.5"))
 	, m_FabricThickness(wxT("1.0"))
 	, m_BraidAngle(wxT("55"))
+	, m_Radius(wxT("36"))
+	, m_HornGearVelocity(wxT("43"))
+	, m_pHornGearSpin(NULL)
+	, m_Velocity(wxT("3"))
 	, m_bCreateDomain(true)
 	, m_bWidthChanged(false)
 	, m_bSpacingChanged(false)
@@ -80,9 +84,9 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 		m_pWarpYarnsSpin->SetToolTip(wxT("Controls the number of warp yarns contained within the unit cell"));
 
 		wxTextCtrl* pControl;
-		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Yarn Spacing:")), SizerFlags);
-		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Spacing, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_YarnSpacing)), SizerFlags);
-		pControl->SetToolTip(wxT("Sets the spacing between yarns"));
+		//pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Yarn Spacing:")), SizerFlags);
+		//pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Spacing, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_YarnSpacing)), SizerFlags);
+		//pControl->SetToolTip(wxT("Sets the spacing between yarns"));
 
 		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Yarn Width:")), SizerFlags);
 		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Width, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_YarnWidth)), SizerFlags);
@@ -92,11 +96,25 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Thickness, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_FabricThickness)), SizerFlags);
 		pControl->SetToolTip(wxT("Sets the thickness of the fabic"));
 
-		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Braid Angle:")), SizerFlags);
-		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_BraidAngle, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, RangeValidator( &m_BraidAngle, 0, 89)), SizerFlags);
-		pControl->SetToolTip(wxT("Sets the braid angle of the fabic"));
+		//pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Braid Angle:")), SizerFlags);
+		//pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_BraidAngle, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, RangeValidator( &m_BraidAngle, 0, 89)), SizerFlags);
+		//pControl->SetToolTip(wxT("Sets the braid angle of the fabic"));
 
-		
+		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Number of Horn Gears: ")), SizerFlags);
+		pSubSizer->Add(m_pHornGearSpin = new wxSpinCtrl(pPage, wxID_ANY, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 3000), SizerFlags);
+		m_pHornGearSpin->SetToolTip(wxT("Controls the number of Horn gears on braider used to make fabric"));
+
+		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Radius of Mandrel (in mm): ")), SizerFlags);
+		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Radius, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_Radius)), SizerFlags);
+		pControl->SetToolTip(wxT("Sets the radius of Mandrel."));
+
+		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Horn Gear Velocity (in RPM): ")), SizerFlags);
+		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_HornGearVelocity, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_HornGearVelocity)), SizerFlags);
+		pControl->SetToolTip(wxT("Sets the horn gear velocity in rpm"));
+
+		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Take up Velocity (in mm/s): ")), SizerFlags);
+		pSubSizer->Add(pControl = new wxTextCtrl(pPage, ID_Velocity, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NUMERIC, &m_Velocity)), SizerFlags);
+		pControl->SetToolTip(wxT("Sets the mandrel take up velocity in mm/s"));
 		
 		const wxString choices[3] = { "Diamond", "Regular", "Hercules" };
 		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Braid Pattern: ")), SizerFlags);
@@ -114,6 +132,7 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 
 	m_pWeftYarnsSpin->SetValue(2);
 	m_pWarpYarnsSpin->SetValue(2);
+	m_pHornGearSpin->SetValue(48);
 
 
 	return pPage; 
@@ -168,19 +187,25 @@ wxDialog* CBraidWizard::BuildBraidPatternDialog()
 string CBraidWizard::getCreateTextileCommand(string ExistingTextile)
 {
 	stringstream StringStream;
-	double dYarnSpacing, dFabricThickness, dWidth, dHeight, dBraidAngle;
-	int iNumWeftYarns, iNumWarpYarns;
+	double dFabricThickness, dWidth, dHeight, dRadius, dHornGearVelocity, dVelocity;
+	int iNumWeftYarns, iNumWarpYarns, iNumHornGear;
+	bool bRefine;
 	string braidPattern;
-	m_YarnSpacing.ToDouble(&dYarnSpacing);
+	//m_YarnSpacing.ToDouble(&dYarnSpacing);
 	m_YarnWidth.ToDouble(&dWidth);
 	m_FabricThickness.ToDouble(&dFabricThickness);
-	m_BraidAngle.ToDouble(&dBraidAngle);
+	m_Radius.ToDouble(&dRadius);
+	m_HornGearVelocity.ToDouble(&dHornGearVelocity);
+	m_Velocity.ToDouble(&dVelocity);
+	//m_BraidAngle.ToDouble(&dBraidAngle);
 	dHeight = dFabricThickness / 2;
 	iNumWeftYarns = m_pWeftYarnsSpin->GetValue();
 	iNumWarpYarns = m_pWarpYarnsSpin->GetValue();
+	iNumHornGear = m_pHornGearSpin->GetValue();
+	bRefine = false;
 	
 	braidPattern = pBraidPattern->GetString(pBraidPattern->GetSelection());
-	if (braidPattern == "Diamond")
+	/*if (braidPattern == "Diamond")
 	{
 		StringStream << "braid = CTextileBraid(" << 2 << ", " << 2 << ", " << dWidth << ", " << dHeight << ", " << dYarnSpacing << ", " << dFabricThickness << ", " << dBraidAngle * PI / 180.0 << ")" << endl;
 			for (int i = 0; i <= 2; i++) {
@@ -235,9 +260,10 @@ string CBraidWizard::getCreateTextileCommand(string ExistingTextile)
 		StringStream << "braid.SwapPosition(5,2)" << endl;
 		
 	}
-	else
+	else*/
 	{
-		StringStream << "braid = CTextileBraid(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dYarnSpacing << ", " << dFabricThickness << ", " << dBraidAngle * PI / 180.0 << ")" << endl;
+		StringStream << "braid = CTextileBraid(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dFabricThickness << ", "
+			<< dRadius/1000 <<", "<< dHornGearVelocity *((2*PI)/60) <<", "<< iNumHornGear << ", "<< dVelocity/1000 << ", bool(" << bRefine << "))" << endl;
 	}
 	int i, j;
 	for (i = 0; i<iNumWarpYarns; ++i)

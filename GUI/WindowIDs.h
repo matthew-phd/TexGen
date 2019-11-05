@@ -166,6 +166,9 @@ enum
 	ID_LayerToLayerText,
 
 	ID_BraidPattern,
+	ID_Radius,
+	ID_HornGearVelocity,
+	ID_Velocity
 
 };
 

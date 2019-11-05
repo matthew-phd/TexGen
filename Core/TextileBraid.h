@@ -20,7 +20,10 @@ namespace TexGen
 	class CLASS_DECLSPEC CTextileBraid: public CTextile
 	{
 	public:
-		CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth, double dHeight, double dSpacing, double dThickness, double dBraidAngle);
+		CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth, 
+			double dHeight, double dThickness, 
+			double dPerimeter,double dHornGearVelocity, int iNumHornGear,
+			double dVelocity, bool bRefine);
 		virtual ~CTextileBraid();
 		virtual CTextile* Copy() const { return new CTextileBraid(*this); }
 		string GetType() const { return "CTextileBraid"; }
@@ -71,12 +74,16 @@ namespace TexGen
 
 		void SetThickness(double dThickness);
 		void SetResolution(int iResolution);
+		void SetGapSize(double dGapSize);
 
 
 	protected:
 		vector<PATTERNBIAX> &GetCell(int x, int y);
 		bool BuildTextile() const;
+		void CorrectBraidYarnWidths() const;
+		void Refine(bool bCorrectWidths) const;
 
+		
 		struct YARNDATA
 		{
 			double dWidth;
@@ -90,12 +97,20 @@ namespace TexGen
 		double m_dFabricThickness;
 		double m_dbraidAngle;
 		int m_iResolution;
+		bool m_bRefine; 
 		CObjectContainer<CSectionMesh> m_pSectionMesh;
 
 		mutable vector<YARNDATA> m_WeftYarnData;
 		mutable vector<YARNDATA> m_WarpYarnData;
 		mutable vector<vector<int> > m_WeftYarns;
 		mutable vector<vector<int> > m_WarpYarns;
+
+		double m_dRadius;
+		double m_dHornGearVelocity;
+		int m_iNumHornGear;
+		double m_dVelocity;
+		double m_dCoverFactor;
+		
 	};
 
 }
