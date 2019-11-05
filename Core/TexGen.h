@@ -64,7 +64,10 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "PatternDraft.h"
 #include "AdjustMeshInterference.h"
 #include "Materials.h"
+<<<<<<< HEAD
 #include "TextileBraid.h"
+=======
+>>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
 
 /// Helper macro to get the texgen instance
 #define TEXGEN (CTexGen::GetInstance())

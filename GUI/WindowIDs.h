@@ -76,7 +76,10 @@ enum
 	ID_NestLayers,
 	ID_MaxNestLayers,
 	ID_RotateTextile,
+<<<<<<< HEAD
 	ID_CreateBraid,
+=======
+>>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
 
 	ID_CreateYarn,
 	ID_AssignSection,
@@ -122,7 +125,10 @@ enum
 	ID_InPlaneTangents,
 	ID_ShearTextile,
 	ID_ShearAngle,
+<<<<<<< HEAD
 	ID_BraidAngle,
+=======
+>>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
 	ID_ShearedDomain,
 	ID_DefaultDomain,
 	ID_CreateLayers,
@@ -165,10 +171,13 @@ enum
 	ID_AngleInterlockText,
 	ID_LayerToLayerText,
 
+<<<<<<< HEAD
 	ID_BraidPattern,
 	ID_Radius,
 	ID_HornGearVelocity,
 	ID_Velocity
 
+=======
+>>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
 };
 

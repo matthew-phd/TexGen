@@ -830,10 +830,13 @@ CTextileAngleInterlock* CTextile::GetAngleInterlockWeave()
 	return dynamic_cast<CTextileAngleInterlock*>(this);
 }
 
+<<<<<<< HEAD
 CTextileBraid* CTextile::GetBraid()
 {
 	return dynamic_cast<CTextileBraid*>(this);
 }
+=======
+>>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
 /*int CTextile::AdjustInterference(vector<float> &DistanceToSurface, CMesh *pInterferingPoints)
 {
 	if (!BuildTextileIfNeeded())

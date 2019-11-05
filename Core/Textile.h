@@ -30,7 +30,10 @@ namespace TexGen
 	class CTextileLayerToLayer;
 	class CTextileAngleInterlock;
 	class CTextileWeave2D;
+<<<<<<< HEAD
 	class CTextileBraid;
+=======
+>>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
 
 	using namespace std;
 
@@ -262,7 +265,10 @@ namespace TexGen
 		CTextileLayered* GetLayeredTextile();
 		CTextileLayerToLayer* GetLayerToLayerWeave();
 		CTextileAngleInterlock* GetAngleInterlockWeave();
+<<<<<<< HEAD
 		CTextileBraid* GetBraid();
+=======
+>>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
 
 		// Accessor methods
 		int GetNumYarns() const;
