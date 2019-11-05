@@ -203,6 +203,8 @@ namespace std
 >>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
 %include "../Core/StaggeredPeriodicBoundaries.h"
 %include "../Core/Materials.h"
+%include "../Core/ShellElementExport.h"
+%include "../Core/SurfaceMesh.h"
 
 %include "../Core/PatternDraft.h"
 

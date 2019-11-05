@@ -44,6 +44,7 @@ enum
 	ID_ToggleOutliner,
 	ID_SaveABAQUS,
 	ID_SaveABAQUSVoxels,
+	ID_SaveABAQUSSurface,
 	ID_SaveTetgenMesh,
 
 //	ID_CreateRenderWindow,
@@ -63,6 +64,7 @@ enum
 	ID_TrimtoDomain,
 	ID_ChangeBackgroundColor,
 	ID_ChangeSurfaceColor,
+	ID_RefreshView,
 //	ID_ClearScene,
 
 	ID_CreateEmptyTextile,

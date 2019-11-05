@@ -50,6 +50,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "StaggeredVoxelMesh.h"
 #include "RotatedVoxelMesh.h"
 #include "TetgenMesh.h"
+#include "SurfaceMesh.h"
 #include "PeriodicBoundaries.h"
 #include "Textile3DWeave.h"
 #include "TextileOrthogonal.h"
@@ -65,9 +66,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "AdjustMeshInterference.h"
 #include "Materials.h"
 <<<<<<< HEAD
+<<<<<<< HEAD
 #include "TextileBraid.h"
 =======
 >>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
+=======
+#include "ShellElementExport.h"
+>>>>>>> upstream/master
 
 /// Helper macro to get the texgen instance
 #define TEXGEN (CTexGen::GetInstance())

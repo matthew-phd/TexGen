@@ -57,7 +57,7 @@ Section "TexGen (required)" ;No components page, name is not important
   File ..\GUI\TexGen.xrc	
   File msvcp140.dll
   File vcruntime140.dll
-  File ..\Docs\TexGen.chm
+  ;File ..\Docs\TexGen.chm
   File TexGenGUI.exe.manifest
 
   SetOutPath $INSTDIR\Python\libstd
@@ -221,7 +221,7 @@ Section "Uninstall"
   Delete $INSTDIR\msvcp140.dll
   Delete $INSTDIR\vcruntime140.dll
   Delete $INSTDIR\TexGenGUI.exe.manifest
-  Delete $INSTDIR\TexGen.chm
+  ;Delete $INSTDIR\TexGen.chm
   Delete $INSTDIR\Python27.dll
 
   Delete $INSTDIR\Scripts\2dweave.py

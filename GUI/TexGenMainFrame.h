@@ -75,6 +75,7 @@ protected:
 	void OnSaveSTEP(wxCommandEvent& event);
 	void OnSaveABAQUS(wxCommandEvent& event);
 	void OnSaveABAQUSVoxels(wxCommandEvent& event);
+	void OnSaveABAQUSSurface(wxCommandEvent& event);
 	void OnSaveTetgenMesh(wxCommandEvent& event);
 
 	void OnWindow(wxCommandEvent& event);
@@ -171,6 +172,18 @@ public:
 
 private:
 	void OnPeriodicBoundariesUpdate(wxUpdateUIEvent& event);
+
+	DECLARE_EVENT_TABLE()
+};
+
+class CSurfaceMeshOptions : public wxDialog
+{
+public:
+	CSurfaceMeshOptions(wxWindow* parent);
+
+private:
+	void OnFillYarnEndsUpdate(wxUpdateUIEvent& event);
+	void OnSeedSizeUpdate(wxUpdateUIEvent& event);
 
 	DECLARE_EVENT_TABLE()
 };
