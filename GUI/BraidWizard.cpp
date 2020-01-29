@@ -5,7 +5,7 @@
 #include "Wizard.xpm"
 #include "RangeValidator.h"
 #include "BraidPatternCtrl.h"
-//#include "BraidPatternCtrl.h"
+
 
 BEGIN_EVENT_TABLE(CBraidWizard, wxWizard)
 	EVT_WIZARD_PAGE_CHANGING(wxID_ANY, CBraidWizard::OnWizardPageChanging)
@@ -14,6 +14,7 @@ BEGIN_EVENT_TABLE(CBraidWizard, wxWizard)
 	EVT_TEXT(ID_Thickness, CBraidWizard::OnThicknessChanged)
 	EVT_INIT_DIALOG(CBraidWizard::OnInit)
 END_EVENT_TABLE()
+
 
 CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 	: wxWizard(parent, id, wxT("Braid Wizard"), wxBitmap(Wizard_xpm))
@@ -26,11 +27,12 @@ CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 	, m_YarnWidth(wxT("3.5"))
 	, m_FabricThickness(wxT("1.0"))
 	, m_BraidAngle(wxT("55"))
-	, m_Radius(wxT("36"))
-	, m_HornGearVelocity(wxT("43"))
+	, m_Radius(wxT("16"))
+	, m_HornGearVelocity(wxT("20"))
 	, m_pHornGearSpin(NULL)
 	, m_Velocity(wxT("3"))
 	, m_bCreateDomain(true)
+	, m_bRefine(true)
 	, m_bWidthChanged(false)
 	, m_bSpacingChanged(false)
 	, m_bThicknessChanged(false)
@@ -40,7 +42,8 @@ CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 	GetPageAreaSizer()->Add(m_pFirstPage);
 }
 
-CBraidWizard::CBraidWizard(void)
+
+CBraidWizard::~CBraidWizard(void)
 {
 	if (m_pBraidPatternDialog)
 		m_pBraidPatternDialog->Destroy(); 
@@ -120,9 +123,11 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Braid Pattern: ")), SizerFlags);
 		pSubSizer->Add(pBraidPattern = new wxChoice(pPage, ID_BraidPattern, wxDefaultPosition, wxDefaultSize, 3, choices,0, wxDefaultValidator), SizerFlags);
 		wxCheckBox* pDomainBox;
+		wxCheckBox* pRefineBox;
+		wxCheckBox* pCurvedBox;
 		pSubSizer->Add(pDomainBox = new wxCheckBox(pPage, ID_DefaultDomain, wxT("Create Default Domain"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bCreateDomain)), SizerFlags);
-		
-		
+		pSubSizer->Add(pRefineBox = new wxCheckBox(pPage, ID_Refine, wxT("Refine model"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bRefine)), SizerFlags);
+		pSubSizer->Add(pCurvedBox = new wxCheckBox(pPage, ID_Curved, wxT("Curved Unit Cell"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bCurved)), SizerFlags);
 	}
 	pMainSizer->Add(pSubSizer, SizerFlags);
 	SizerFlags.Align(0);
@@ -130,9 +135,9 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 	pPage->SetSizer(pMainSizer);
 	pMainSizer->Fit(pPage);
 
-	m_pWeftYarnsSpin->SetValue(2);
-	m_pWarpYarnsSpin->SetValue(2);
-	m_pHornGearSpin->SetValue(48);
+	m_pWeftYarnsSpin->SetValue(4);
+	m_pWarpYarnsSpin->SetValue(4);
+	m_pHornGearSpin->SetValue(24);
 
 
 	return pPage; 
@@ -184,12 +189,12 @@ wxDialog* CBraidWizard::BuildBraidPatternDialog()
 
 }
 */
-string CBraidWizard::getCreateTextileCommand(string ExistingTextile)
+string CBraidWizard::GetCreateTextileCommand(string ExistingTextile)
 {
 	stringstream StringStream;
 	double dFabricThickness, dWidth, dHeight, dRadius, dHornGearVelocity, dVelocity;
 	int iNumWeftYarns, iNumWarpYarns, iNumHornGear;
-	bool bRefine;
+	//bool bRefine, bCurved;
 	string braidPattern;
 	//m_YarnSpacing.ToDouble(&dYarnSpacing);
 	m_YarnWidth.ToDouble(&dWidth);
@@ -202,69 +207,14 @@ string CBraidWizard::getCreateTextileCommand(string ExistingTextile)
 	iNumWeftYarns = m_pWeftYarnsSpin->GetValue();
 	iNumWarpYarns = m_pWarpYarnsSpin->GetValue();
 	iNumHornGear = m_pHornGearSpin->GetValue();
-	bRefine = false;
+	//bRefine = false;
+	//bCurved = false;
 	
 	braidPattern = pBraidPattern->GetString(pBraidPattern->GetSelection());
-	/*if (braidPattern == "Diamond")
-	{
-		StringStream << "braid = CTextileBraid(" << 2 << ", " << 2 << ", " << dWidth << ", " << dHeight << ", " << dYarnSpacing << ", " << dFabricThickness << ", " << dBraidAngle * PI / 180.0 << ")" << endl;
-			for (int i = 0; i <= 2; i++) {
-				for (int j = 0; j <= 2; j++) {
-					if (i % 2 == 0 && j% 2 != 0)
-					{
-						StringStream << "braid.SwapPosition(" << i <<","<< j << ")" << endl;
-					}
-					if (i % 2 != 0 && j % 2 == 0)
-					{
-						StringStream << "braid.SwapPosition(" << i << "," << j << ")" << endl;
-					}
-				}
-			}
-			
+
+	StringStream << "braid = CTextileBraid(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dFabricThickness << ", "
+		<< dRadius/1000 <<", "<< dHornGearVelocity *((2*PI)/60) <<", "<< iNumHornGear << ", "<< dVelocity/1000 << ", bool(" << m_bCurved <<")" << ", bool(" << m_bRefine << "))" << endl;
 	
-	}
-	else if (braidPattern == "Regular")
-	{
-		StringStream << "braid = CTextileBraid(" << 4 << ", " << 4 << ", " << dWidth << ", " << dHeight << ", " << dYarnSpacing << ", " << dFabricThickness << ", " << dBraidAngle * PI / 180.0 << ")" << endl;
-		StringStream << "braid.SwapPosition(0,2)" << endl;
-		StringStream << "braid.SwapPosition(0,3)" << endl;
-		StringStream << "braid.SwapPosition(1,1)" << endl;
-		StringStream << "braid.SwapPosition(1,2)" << endl;
-		StringStream << "braid.SwapPosition(2,1)" << endl;
-		StringStream << "braid.SwapPosition(2,0)" << endl;
-		StringStream << "braid.SwapPosition(3,0)" << endl;
-		StringStream << "braid.SwapPosition(3,3)" << endl;
-
-
-	}
-	else if (braidPattern == "Hercules")
-	{
-		StringStream << "braid = CTextileBraid(" << 6 << ", " << 6 << ", " << dWidth << ", " << dHeight << ", " << dYarnSpacing << ", " << dFabricThickness << ", " << dBraidAngle * PI / 180.0 << ")" << endl;
-		StringStream << "braid.SwapPosition(0,3)" << endl;
-		StringStream << "braid.SwapPosition(0,4)" << endl;
-		StringStream << "briad.SwapPosition(0,5)" << endl;
-		StringStream << "braid.SwapPosition(1,3)" << endl;
-		StringStream << "braid.SwapPosition(1,4)" << endl;
-		StringStream << "briad.SwapPosition(1,5)" << endl;
-		StringStream << "braid.SwapPosition(2,3)" << endl;
-		StringStream << "braid.SwapPosition(2,4)" << endl;
-		StringStream << "briad.SwapPosition(2,5)" << endl;
-		StringStream << "briad.SwapPosition(3,0)" << endl;
-		StringStream << "braid.SwapPosition(3,1)" << endl;
-		StringStream << "braid.SwapPosition(3,2)" << endl;
-		StringStream << "briad.SwapPosition(4,0)" << endl;
-		StringStream << "braid.SwapPosition(4,1)" << endl;
-		StringStream << "braid.SwapPosition(4,2)" << endl;
-		StringStream << "briad.SwapPosition(5,0)" << endl;
-		StringStream << "braid.SwapPosition(5,1)" << endl;
-		StringStream << "braid.SwapPosition(5,2)" << endl;
-		
-	}
-	else*/
-	{
-		StringStream << "braid = CTextileBraid(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dFabricThickness << ", "
-			<< dRadius/1000 <<", "<< dHornGearVelocity *((2*PI)/60) <<", "<< iNumHornGear << ", "<< dVelocity/1000 << ", bool(" << bRefine << "))" << endl;
-	}
 	int i, j;
 	for (i = 0; i<iNumWarpYarns; ++i)
 	{

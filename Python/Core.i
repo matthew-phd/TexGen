@@ -141,10 +141,7 @@ namespace std
 %include "../Core/TextileOffsetAngleInterlock.h"
 %include "../Core/ShearedTextileWeave2D.h"
 %include "../Core/TextileLayered.h"
-<<<<<<< HEAD
 %include "../Core/TextileBraid.h"
-=======
->>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
 
 %include "../Core/TextileDeformer.h"
 %include "../Core/TextileDeformerVolumeMesh.h"
@@ -196,11 +193,8 @@ namespace std
 %include "../Core/RotatedVoxelMesh.h"
 %include "../Core/TetgenMesh.h"
 %include "../Core/PeriodicBoundaries.h"
-<<<<<<< HEAD
+
 %include "../Core/ShearedPeriodicBoundaries.h";
-=======
-%include "../Core/ShearedPeriodicBoundaries.h"
->>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
 %include "../Core/StaggeredPeriodicBoundaries.h"
 %include "../Core/Materials.h"
 %include "../Core/ShellElementExport.h"

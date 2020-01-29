@@ -976,7 +976,7 @@ void wxBraidPatternCtrl::SetBraidSize(int iNumWarpYarns, int iNumWeftYarns, bool
 	//m_b3DMode = b3DMode;
 	//if (!b3DMode)
 	//{
-	m_BraidPattern = CTextileBraid(iNumWarpYarns, iNumWeftYarns, 1, 1, 1, 0.07, 9.85, 48, 0.03, false);
+	m_BraidPattern = CTextileBraid(iNumWarpYarns, iNumWeftYarns, 1, 1, 1, 0.07, 9.85, 48, 0.03, false, false);
 	//}
 	/*else
 	{

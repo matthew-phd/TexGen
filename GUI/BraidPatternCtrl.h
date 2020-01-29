@@ -1,4 +1,5 @@
 #pragma once
+//(c) Copyright Joe Eastwood 2019 - All rights reserved
 
 /// Weave pattern control used for setting the weave pattern
 class wxBraidPatternCtrl : public wxControl

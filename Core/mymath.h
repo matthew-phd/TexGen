@@ -98,6 +98,17 @@ namespace TexGen
 		XYZ(double Coords[3]) {x=Coords[0];y=Coords[1];z=Coords[2];}
 	};
 
+	struct RThetaZ
+	{
+		double r, theta, z;
+		/// Set all coordinates to 0 as default constructor
+		RThetaZ() { r = theta = z = 0; }
+		/// Set Coordinates to those specified in the constructor
+		RThetaZ(double R, double Theta, double Z) { r = R; theta = Theta; z = Z; }
+		/// Set coordinates to those specified in the constructor 
+		RThetaZ(double Coords[3]) { r = Coords[0]; theta = Coords[1]; z = Coords[2]; }
+	};
+
 	/// Struct for representing points in 2D space
 	struct XY
 	{

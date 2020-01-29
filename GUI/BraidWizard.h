@@ -6,9 +6,9 @@ class CBraidWizard : public wxWizard
 {
 public:
 	CBraidWizard(wxWindow* parent, wxWindowID id = wxID_ANY);
-	CBraidWizard(void);
+	~CBraidWizard(void);
 	bool RunIt();
-	string getCreateTextileCommand(string ExisitingTextile = "");
+	string GetCreateTextileCommand(string ExisitingTextile = "");
 	void LoadSettings(const CTextileBraid& Braid);
 
 protected:
@@ -38,6 +38,8 @@ protected:
 	//wxString m_BraidPattern;
 	wxChoice* pBraidPattern;
 	bool m_bCreateDomain;
+	bool m_bRefine;
+	bool m_bCurved;
 	
 	
 	bool m_bWidthChanged;

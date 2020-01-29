@@ -32,11 +32,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "PythonConverter.h"
 #include "LayersOffsetDialog.h"
 #include "PatternDraftDialog.h"
-<<<<<<< HEAD
 #include "BraidWizard.h"
-=======
->>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
-
 #include "TexGen.xpm"
 
 #define SURVEY_COUNTER	30
@@ -46,99 +42,91 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
 BEGIN_EVENT_TABLE(CTexGenMainFrame, wxFrame)
-	EVT_MENU(ID_Quit, CTexGenMainFrame::OnQuit)
-	EVT_MENU(ID_About, CTexGenMainFrame::OnAbout)
-	EVT_MENU(ID_UserGuide, CTexGenMainFrame::OnUserGuide)
-	EVT_MENU(ID_Open, CTexGenMainFrame::OnOpen)
-	EVT_MENU(ID_Save, CTexGenMainFrame::OnSave)
-	EVT_MENU(ID_SaveScreenshot, CTexGenMainFrame::OnSaveScreenshot)
-	EVT_MENU(ID_OpenWiseTex, CTexGenMainFrame::OnOpenWiseTex)
-	EVT_MENU(ID_OpenTexGenv2, CTexGenMainFrame::OnOpenTexGenv2)
-	EVT_MENU(ID_OpenWeavePattern, CTexGenMainFrame::OnOpenWeavePattern)
-	EVT_MENU(ID_SaveGrid, CTexGenMainFrame::OnSaveGrid)
-	EVT_MENU(ID_SaveVoxel, CTexGenMainFrame::OnSaveVoxel)
-	EVT_MENU(ID_SaveVolumeMesh, CTexGenMainFrame::OnSaveVolumeMesh)
-	EVT_MENU(ID_SaveSurfaceMesh, CTexGenMainFrame::OnSaveSurfaceMesh)
-	EVT_MENU(ID_SaveIGES, CTexGenMainFrame::OnSaveIGES)
-	EVT_MENU(ID_SaveSTEP, CTexGenMainFrame::OnSaveSTEP)
-	EVT_MENU(ID_SaveABAQUS, CTexGenMainFrame::OnSaveABAQUS)
-	EVT_MENU(ID_SaveABAQUSVoxels, CTexGenMainFrame::OnSaveABAQUSVoxels)
-	EVT_MENU(ID_SaveABAQUSSurface, CTexGenMainFrame::OnSaveABAQUSSurface)
-	EVT_MENU(ID_ToggleControls, CTexGenMainFrame::OnWindow)
-	EVT_MENU(ID_ToggleLogWindow, CTexGenMainFrame::OnWindow)
-	EVT_MENU(ID_ToggleOutliner, CTexGenMainFrame::OnWindow)
-	EVT_MENU(ID_SaveTetgenMesh, CTexGenMainFrame::OnSaveTetgenMesh)
+EVT_MENU(ID_Quit, CTexGenMainFrame::OnQuit)
+EVT_MENU(ID_About, CTexGenMainFrame::OnAbout)
+EVT_MENU(ID_UserGuide, CTexGenMainFrame::OnUserGuide)
+EVT_MENU(ID_Open, CTexGenMainFrame::OnOpen)
+EVT_MENU(ID_Save, CTexGenMainFrame::OnSave)
+EVT_MENU(ID_SaveScreenshot, CTexGenMainFrame::OnSaveScreenshot)
+EVT_MENU(ID_OpenWiseTex, CTexGenMainFrame::OnOpenWiseTex)
+EVT_MENU(ID_OpenTexGenv2, CTexGenMainFrame::OnOpenTexGenv2)
+EVT_MENU(ID_OpenWeavePattern, CTexGenMainFrame::OnOpenWeavePattern)
+EVT_MENU(ID_SaveGrid, CTexGenMainFrame::OnSaveGrid)
+EVT_MENU(ID_SaveVoxel, CTexGenMainFrame::OnSaveVoxel)
+EVT_MENU(ID_SaveVolumeMesh, CTexGenMainFrame::OnSaveVolumeMesh)
+EVT_MENU(ID_SaveSurfaceMesh, CTexGenMainFrame::OnSaveSurfaceMesh)
+EVT_MENU(ID_SaveIGES, CTexGenMainFrame::OnSaveIGES)
+EVT_MENU(ID_SaveSTEP, CTexGenMainFrame::OnSaveSTEP)
+EVT_MENU(ID_SaveABAQUS, CTexGenMainFrame::OnSaveABAQUS)
+EVT_MENU(ID_SaveABAQUSVoxels, CTexGenMainFrame::OnSaveABAQUSVoxels)
+EVT_MENU(ID_SaveABAQUSSurface, CTexGenMainFrame::OnSaveABAQUSSurface)
+EVT_MENU(ID_ToggleControls, CTexGenMainFrame::OnWindow)
+EVT_MENU(ID_ToggleLogWindow, CTexGenMainFrame::OnWindow)
+EVT_MENU(ID_ToggleOutliner, CTexGenMainFrame::OnWindow)
+EVT_MENU(ID_SaveTetgenMesh, CTexGenMainFrame::OnSaveTetgenMesh)
 
-	EVT_AUINOTEBOOK_PAGE_CHANGED(ID_LogNoteBook, CTexGenMainFrame::OnLogNotebook)
-	EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ViewerNoteBook, CTexGenMainFrame::OnViewerNotebookPageChanged)
-	EVT_AUINOTEBOOK_PAGE_CLOSE(ID_ViewerNoteBook, CTexGenMainFrame::OnViewerNotebookClose)
+EVT_AUINOTEBOOK_PAGE_CHANGED(ID_LogNoteBook, CTexGenMainFrame::OnLogNotebook)
+EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ViewerNoteBook, CTexGenMainFrame::OnViewerNotebookPageChanged)
+EVT_AUINOTEBOOK_PAGE_CLOSE(ID_ViewerNoteBook, CTexGenMainFrame::OnViewerNotebookClose)
 
-	EVT_CHECKBOX_MENU_RANGE(ID_RenderNodes, ID_TrimtoDomain, CTexGenMainFrame::OnRendering)
-<<<<<<< HEAD
-	EVT_BUTTON_MENU_RANGE(ID_ChangeBackgroundColor, ID_ChangeSurfaceColor, CTexGenMainFrame::OnRendering)
-<<<<<<< HEAD
-	EVT_BUTTON_MENU_RANGE(ID_CreateEmptyTextile, ID_CreateBraid, CTexGenMainFrame::OnTextiles)
-=======
-=======
-	EVT_BUTTON_MENU_RANGE(ID_ChangeBackgroundColor, ID_RefreshView, CTexGenMainFrame::OnRendering)
->>>>>>> upstream/master
-	EVT_BUTTON_MENU_RANGE(ID_CreateEmptyTextile, ID_RotateTextile, CTexGenMainFrame::OnTextiles)
->>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
-	EVT_BUTTON_MENU_RANGE(ID_CreateYarn, ID_YarnFibreVolumeFraction, CTexGenMainFrame::OnModeller)
-	EVT_RADIOBUTTON_MENU_RANGE(ID_SelectTool, ID_ScaleTool, CTexGenMainFrame::OnModeller)
-	EVT_CHECKBOX_MENU_RANGE(ID_FilterNodes, ID_Relative, CTexGenMainFrame::OnModeller)
-	EVT_BUTTON_MENU_RANGE(ID_CreateDomainPlanes, ID_DeleteDomain, CTexGenMainFrame::OnDomains)
-	EVT_BUTTON_MENU_RANGE(ID_RunScript, ID_RecordMacro, CTexGenMainFrame::OnPython)
-	//EVT_CHECKBOX_MENU_RANGE( ID_OutputMessages, ID_OutputMessages, CTexGenMainFrame::OnOptions)
-	EVT_BUTTON_MENU_RANGE(ID_PatternDraft, ID_DomainVolumeFraction, CTexGenMainFrame::OnTools)
-	EVT_BUTTON_MENU_RANGE(ID_OutputMessages, ID_OutputMessages, CTexGenMainFrame::OnOptions)
+EVT_CHECKBOX_MENU_RANGE(ID_RenderNodes, ID_TrimtoDomain, CTexGenMainFrame::OnRendering)
+EVT_BUTTON_MENU_RANGE(ID_ChangeBackgroundColor, ID_RefreshView, CTexGenMainFrame::OnRendering)
+EVT_BUTTON_MENU_RANGE(ID_CreateEmptyTextile, ID_RotateTextile, CTexGenMainFrame::OnTextiles)
+EVT_BUTTON_MENU_RANGE(ID_CreateYarn, ID_YarnFibreVolumeFraction, CTexGenMainFrame::OnModeller)
+EVT_RADIOBUTTON_MENU_RANGE(ID_SelectTool, ID_ScaleTool, CTexGenMainFrame::OnModeller)
+EVT_CHECKBOX_MENU_RANGE(ID_FilterNodes, ID_Relative, CTexGenMainFrame::OnModeller)
+EVT_BUTTON_MENU_RANGE(ID_CreateDomainPlanes, ID_DeleteDomain, CTexGenMainFrame::OnDomains)
+EVT_BUTTON_MENU_RANGE(ID_RunScript, ID_RecordMacro, CTexGenMainFrame::OnPython)
+//EVT_CHECKBOX_MENU_RANGE( ID_OutputMessages, ID_OutputMessages, CTexGenMainFrame::OnOptions)
+EVT_BUTTON_MENU_RANGE(ID_PatternDraft, ID_DomainVolumeFraction, CTexGenMainFrame::OnTools)
+EVT_BUTTON_MENU_RANGE(ID_OutputMessages, ID_OutputMessages, CTexGenMainFrame::OnOptions)
 
-	EVT_TEXT_ENTER(ID_PositionX, CTexGenMainFrame::OnPosition)
-	EVT_TEXT_ENTER(ID_PositionY, CTexGenMainFrame::OnPosition)
-	EVT_TEXT_ENTER(ID_PositionZ, CTexGenMainFrame::OnPosition)
-	EVT_TEXT_ENTER(ID_SnapSize, CTexGenMainFrame::OnSnapSize)
+EVT_TEXT_ENTER(ID_PositionX, CTexGenMainFrame::OnPosition)
+EVT_TEXT_ENTER(ID_PositionY, CTexGenMainFrame::OnPosition)
+EVT_TEXT_ENTER(ID_PositionZ, CTexGenMainFrame::OnPosition)
+EVT_TEXT_ENTER(ID_SnapSize, CTexGenMainFrame::OnSnapSize)
 
-	EVT_TEXT(ID_PositionX, CTexGenMainFrame::OnPosition)
-	EVT_TEXT(ID_PositionY, CTexGenMainFrame::OnPosition)
-	EVT_TEXT(ID_PositionZ, CTexGenMainFrame::OnPosition)
-	EVT_TEXT(ID_SnapSize, CTexGenMainFrame::OnSnapSize)
+EVT_TEXT(ID_PositionX, CTexGenMainFrame::OnPosition)
+EVT_TEXT(ID_PositionY, CTexGenMainFrame::OnPosition)
+EVT_TEXT(ID_PositionZ, CTexGenMainFrame::OnPosition)
+EVT_TEXT(ID_SnapSize, CTexGenMainFrame::OnSnapSize)
 
-	EVT_AUI_PANE_BUTTON(CTexGenMainFrame::OnPaneButton)
+EVT_AUI_PANE_BUTTON(CTexGenMainFrame::OnPaneButton)
 
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(CNoteBookHandler, wxEvtHandler)
-	EVT_SET_FOCUS(CNoteBookHandler::OnSetFocus)
+EVT_SET_FOCUS(CNoteBookHandler::OnSetFocus)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(CAbaqusVoxelInput, wxDialog)
-	EVT_UPDATE_UI( XRCID("Offset"), CAbaqusVoxelInput::OnOffsetUpdate)
+EVT_UPDATE_UI(XRCID("Offset"), CAbaqusVoxelInput::OnOffsetUpdate)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(CVolumeMeshOptions, wxDialog)
-	EVT_UPDATE_UI( XRCID("PeriodicBoundaries"), CVolumeMeshOptions::OnPeriodicBoundariesUpdate)
+EVT_UPDATE_UI(XRCID("PeriodicBoundaries"), CVolumeMeshOptions::OnPeriodicBoundariesUpdate)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(CSurfaceMeshOptions, wxDialog)
-	EVT_UPDATE_UI(XRCID("FillYarnEnds"), CSurfaceMeshOptions::OnFillYarnEndsUpdate)
-	EVT_UPDATE_UI(XRCID("SeedSize"), CSurfaceMeshOptions::OnSeedSizeUpdate)
+EVT_UPDATE_UI(XRCID("FillYarnEnds"), CSurfaceMeshOptions::OnFillYarnEndsUpdate)
+EVT_UPDATE_UI(XRCID("SeedSize"), CSurfaceMeshOptions::OnSeedSizeUpdate)
 END_EVENT_TABLE()
 
 BEGIN_EVENT_TABLE(CSurveyDialog, wxDialog)
-	EVT_BUTTON(XRCID("NextTime"), CSurveyDialog::OnClickNextTime)
-	EVT_BUTTON(XRCID("NotAgain"), CSurveyDialog::OnClickNotAgain)
-	EVT_HYPERLINK(XRCID("TakeSurvey"), CSurveyDialog::OnClickTakeSurvey)
+EVT_BUTTON(XRCID("NextTime"), CSurveyDialog::OnClickNextTime)
+EVT_BUTTON(XRCID("NotAgain"), CSurveyDialog::OnClickNotAgain)
+EVT_HYPERLINK(XRCID("TakeSurvey"), CSurveyDialog::OnClickTakeSurvey)
 END_EVENT_TABLE()
 
 CTexGenMainFrame::CTexGenMainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
-: wxFrame(NULL, wxID_ANY, title, pos, size)
-, m_pViewerNotebook(NULL)
-, m_pLogNotebook(NULL)
-, m_pPythonConsole(NULL)
-, m_pPythonOutput(NULL)
-, m_pTexGenOutput(NULL)
-, m_pControls(NULL)
-, m_pOutliner(NULL)
+	: wxFrame(NULL, wxID_ANY, title, pos, size)
+	, m_pViewerNotebook(NULL)
+	, m_pLogNotebook(NULL)
+	, m_pPythonConsole(NULL)
+	, m_pPythonOutput(NULL)
+	, m_pTexGenOutput(NULL)
+	, m_pControls(NULL)
+	, m_pOutliner(NULL)
 {
 	m_Manager.SetManagedWindow(this);
 
@@ -198,9 +186,9 @@ CTexGenMainFrame::CTexGenMainFrame(const wxString& title, const wxPoint& pos, co
 	// The icon is defined in the resource file
 	SetIcon(wxICON(TexGen));
 
-/*	CreateStatusBar();
-	SetStatusText(wxT("Welcome to TexGen!"));
-	SetStatusBarPane(-1);*/
+	/*	CreateStatusBar();
+		SetStatusText(wxT("Welcome to TexGen!"));
+		SetStatusBarPane(-1);*/
 
 	wxFont ConsoleFont(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
@@ -209,17 +197,17 @@ CTexGenMainFrame::CTexGenMainFrame(const wxString& title, const wxPoint& pos, co
 
 	m_pLogNotebook = new wxAuiNotebook(this, ID_LogNoteBook, wxDefaultPosition, wxDefaultSize, wxAUI_NB_TOP | wxAUI_NB_TAB_SPLIT | wxAUI_NB_TAB_MOVE | wxAUI_NB_SCROLL_BUTTONS);
 	{
-/*		wxSize ImageSize(16, 16);
+		/*		wxSize ImageSize(16, 16);
 
-		wxImageList *pImageList = new wxImageList(ImageSize.GetWidth(), ImageSize.GetHeight());
+				wxImageList *pImageList = new wxImageList(ImageSize.GetWidth(), ImageSize.GetHeight());
 
-		// should be able to add them as icons in which case they will automatically be transparent
-		// doesn't seem to work however!! Does work in the wxnotebook and arttest sample, don't know why...
-		pImageList->Add(wxArtProvider::GetIcon(wxART_INFORMATION, wxART_OTHER, ImageSize));
-		pImageList->Add(wxArtProvider::GetIcon(wxART_WARNING, wxART_OTHER, ImageSize));
-		pImageList->Add(wxArtProvider::GetIcon(wxART_ERROR, wxART_OTHER, ImageSize));
+				// should be able to add them as icons in which case they will automatically be transparent
+				// doesn't seem to work however!! Does work in the wxnotebook and arttest sample, don't know why...
+				pImageList->Add(wxArtProvider::GetIcon(wxART_INFORMATION, wxART_OTHER, ImageSize));
+				pImageList->Add(wxArtProvider::GetIcon(wxART_WARNING, wxART_OTHER, ImageSize));
+				pImageList->Add(wxArtProvider::GetIcon(wxART_ERROR, wxART_OTHER, ImageSize));
 
-		m_pLogNotebook->AssignImageList(pImageList);*/
+				m_pLogNotebook->AssignImageList(pImageList);*/
 
 		m_pPythonConsole = new CPythonConsole(m_PythonWrapper, m_pLogNotebook, wxID_ANY, wxT(">>> "),
 			wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE | wxTE_DONTWRAP);
@@ -244,12 +232,12 @@ CTexGenMainFrame::CTexGenMainFrame(const wxString& title, const wxPoint& pos, co
 	pControlSashWindow->SetAlignment(wxLAYOUT_LEFT);*/
 
 	m_pControls = new CControlsWindow(pMenuBar, this, ID_ControlsWindow);
-//	pControlSashWindow->SetDefaultSize(m_pControls->GetSize());
+	//	pControlSashWindow->SetDefaultSize(m_pControls->GetSize());
 
-/*	wxLayoutAlgorithm layout;
-	layout.LayoutFrame(this, m_pViewerNotebook);
+	/*	wxLayoutAlgorithm layout;
+		layout.LayoutFrame(this, m_pViewerNotebook);
 
-	SetSizeHints(200, 200);*/
+		SetSizeHints(200, 200);*/
 
 	m_pViewerNotebook->PushEventHandler(new CNoteBookHandler(*this));
 	m_Manager.AddPane(m_pViewerNotebook, wxAuiPaneInfo().Name(wxT("Viewer")).CenterPane().PaneBorder(false));
@@ -260,8 +248,8 @@ CTexGenMainFrame::CTexGenMainFrame(const wxString& title, const wxPoint& pos, co
 	if (wxXmlResource::Get()->LoadPanel(m_pOutliner, this, wxT("Outliner")))
 	{
 		m_pOutliner->PushEventHandler(new COutlineHandler(*this));
-//		m_pOutliner->SetSize(200, 350);
-//		UpdateOutlinerItems();
+		//		m_pOutliner->SetSize(200, 350);
+		//		UpdateOutlinerItems();
 	}
 
 	m_Manager.AddPane(m_pOutliner, wxAuiPaneInfo().Name(wxT("Outliner")).Right().Hide().TopDockable(false).BottomDockable(false).Caption(wxT("Outliner")));
@@ -284,7 +272,7 @@ CTexGenMainFrame::CTexGenMainFrame(const wxString& title, const wxPoint& pos, co
 CTexGenMainFrame::~CTexGenMainFrame(void)
 {
 	LaunchSurvey();
-	
+
 	while (m_pViewerNotebook->GetPageCount() != 0)
 	{
 		m_pViewerNotebook->RemovePage(0);
@@ -300,7 +288,7 @@ CTexGenMainFrame::~CTexGenMainFrame(void)
 
 	wxConfigBase::Get()->Write(wxT("Perspective"), m_Manager.SavePerspective());
 
-	m_pOutliner->PopEventHandler( true );
+	m_pOutliner->PopEventHandler(true);
 
 	m_Manager.UnInit();
 }
@@ -340,17 +328,17 @@ void CTexGenMainFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
 
 void CTexGenMainFrame::OnUserGuide(wxCommandEvent& WXUNUSED(event))
 {
-	wxDialog* pDialog = new wxDialog( NULL, wxID_ANY, wxT("User Guide"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE);
+	wxDialog* pDialog = new wxDialog(NULL, wxID_ANY, wxT("User Guide"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE);
 
-	wxBoxSizer *BoxSizer = new wxBoxSizer (wxVERTICAL);
+	wxBoxSizer *BoxSizer = new wxBoxSizer(wxVERTICAL);
 	wxSizerFlags SizerFlags(0);
-	SizerFlags.Border(wxALL,10);
+	SizerFlags.Border(wxALL, 10);
 	SizerFlags.Expand();
 
-	BoxSizer->Add(new wxStaticText( pDialog, wxID_ANY, wxT("The TexGen User Guide can be found here:") ), SizerFlags );
-	BoxSizer->Add( new wxHyperlinkCtrl( pDialog, -1, wxT("User Guide"), wxT("http://texgen.sourceforge.net/index.php/User_Guide")), SizerFlags );
-	pDialog->SetSizer( BoxSizer );
-	BoxSizer->Fit( pDialog );
+	BoxSizer->Add(new wxStaticText(pDialog, wxID_ANY, wxT("The TexGen User Guide can be found here:")), SizerFlags);
+	BoxSizer->Add(new wxHyperlinkCtrl(pDialog, -1, wxT("User Guide"), wxT("http://texgen.sourceforge.net/index.php/User_Guide")), SizerFlags);
+	pDialog->SetSizer(BoxSizer);
+	BoxSizer->Fit(pDialog);
 
 	pDialog->ShowModal();
 	pDialog->Destroy();
@@ -469,12 +457,12 @@ void CTexGenMainFrame::OnSave(wxCommandEvent& event)
 void CTexGenMainFrame::OnSaveScreenshot(wxCommandEvent& event)
 {
 	wxDialog ScreenShot;
-	
+
 	if (wxXmlResource::Get()->LoadDialog(&ScreenShot, this, wxT("ScreenShot")))
 	{
 		int Magnification = 1;
-		XRCCTRL(ScreenShot, "Magnification", wxSpinCtrl)->SetValidator(wxGenericValidator( &Magnification));
-		if ( ScreenShot.ShowModal() == wxID_OK )
+		XRCCTRL(ScreenShot, "Magnification", wxSpinCtrl)->SetValidator(wxGenericValidator(&Magnification));
+		if (ScreenShot.ShowModal() == wxID_OK)
 		{
 			wxFileDialog dialog
 			(
@@ -671,13 +659,13 @@ void CTexGenMainFrame::OnSaveVolumeMesh(wxCommandEvent& event)
 
 	double dSeedSize = 1;
 
-	if ( pTextile )
+	if (pTextile)
 	{
 		const CDomain* pDomain = pTextile->GetDomain();
-		if ( pDomain )
+		if (pDomain)
 		{
-			pair<XYZ,XYZ> DomainSize = pDomain->GetMesh().GetAABB();
-			dSeedSize = GetLength(DomainSize.first, DomainSize.second)/20.0;
+			pair<XYZ, XYZ> DomainSize = pDomain->GetMesh().GetAABB();
+			dSeedSize = GetLength(DomainSize.first, DomainSize.second) / 20.0;
 		}
 	}
 
@@ -687,10 +675,10 @@ void CTexGenMainFrame::OnSaveVolumeMesh(wxCommandEvent& event)
 	int iBoundaryConditions = MATERIAL_CONTINUUM;
 
 	wxString SeedSize = wxString::Format(wxT("%.4f"), dSeedSize);
-	
+
 	wxString MergeTolerance = wxT("0.001");
 	CVolumeMeshOptions MeshOptions(this);
-	
+
 	{
 		XRCCTRL(MeshOptions, "ElementOrder", wxRadioBox)->SetValidator(wxGenericValidator(&iElementOrder));
 		XRCCTRL(MeshOptions, "ProjectMidSideNodes", wxCheckBox)->SetValidator(wxGenericValidator(&bProjectMidSideNodes));
@@ -698,8 +686,8 @@ void CTexGenMainFrame::OnSaveVolumeMesh(wxCommandEvent& event)
 		XRCCTRL(MeshOptions, "SeedSize", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &SeedSize));
 		XRCCTRL(MeshOptions, "MergeTolerance", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &MergeTolerance));
 		XRCCTRL(MeshOptions, "PeriodicBoundaries", wxRadioBox)->SetValidator(wxGenericValidator(&iBoundaryConditions));
-		XRCCTRL(MeshOptions,"PeriodicBoundaries", wxRadioBox)->Enable((unsigned int)STAGGERED_BC, false);
-		XRCCTRL(MeshOptions,"PeriodicBoundaries", wxRadioBox)->Enable((unsigned int)ROTATED_BC, false);
+		XRCCTRL(MeshOptions, "PeriodicBoundaries", wxRadioBox)->Enable((unsigned int)STAGGERED_BC, false);
+		XRCCTRL(MeshOptions, "PeriodicBoundaries", wxRadioBox)->Enable((unsigned int)ROTATED_BC, false);
 
 		if (MeshOptions.ShowModal() == wxID_OK)
 		{
@@ -717,7 +705,7 @@ void CTexGenMainFrame::OnSaveVolumeMesh(wxCommandEvent& event)
 			if (dialog.ShowModal() == wxID_OK)
 			{
 				stringstream Command;
-				if ( bPeriodic )
+				if (bPeriodic)
 					Command << "mesher = CMesher(" << iBoundaryConditions << ")" << endl;
 				else
 					Command << "mesher = CMesher()" << endl;
@@ -769,7 +757,7 @@ void CTexGenMainFrame::OnSaveSurfaceMesh(wxCommandEvent& event)
 
 	bool bExportDomain = false, bTrimSurface = true, bExportYarns = true, bFillYarnEnds = true;
 	CSurfaceMeshOptions MeshOptions(this);
-	
+
 	XRCCTRL(MeshOptions, "TrimSurface", wxCheckBox)->SetValidator(wxGenericValidator(&bTrimSurface));
 	XRCCTRL(MeshOptions, "ExportDomain", wxCheckBox)->SetValidator(wxGenericValidator(&bExportDomain));
 	XRCCTRL(MeshOptions, "ExportYarns", wxCheckBox)->SetValidator(wxGenericValidator(&bExportYarns));
@@ -794,14 +782,14 @@ void CTexGenMainFrame::OnSaveSurfaceMesh(wxCommandEvent& event)
 		if (dialog.ShowModal() == wxID_OK)
 		{
 			stringstream Command;
-			if ( !SeedSize.IsEmpty())
+			if (!SeedSize.IsEmpty())
 				Command << "surface = CSurfaceMesh( " << ConvertString(SeedSize) << ", bool(" << stringify(bFillYarnEnds) << "))" << endl;
 			else
 				Command << "surface = CSurfaceMesh( " << stringify(dSeedSize) << ", bool(" << stringify(bFillYarnEnds) << "))" << endl;
-				
+
 			Command << "textile = GetTextile(r'" << TextileName << "')" << endl;
 			Command << "surface.SaveSurfaceMesh( textile, bool(" << stringify(bExportYarns) << "), bool(" << stringify(bExportDomain) << "), bool(" << stringify(bTrimSurface) << "))" << endl;
-				
+
 			switch (dialog.GetFilterIndex())
 			{
 			case 0:
@@ -925,14 +913,14 @@ void CTexGenMainFrame::OnSaveABAQUS(wxCommandEvent& event)
 	wxString XScale = wxT("1.0");
 	wxString YScale = wxT("1.0");
 	wxString ZScale = wxT("1.0");
-	
+
 	wxString IntersectionTolerance = wxT("0.0000001");
 	bool bAdjustIntersections = false;
 	bool bIncludePlates = false;
 	bool bRegenerateMesh = false;
 	int iElementType = 0;
 	int iContactSurfaces = 0;
-	
+
 	wxFileDialog dialog
 	(
 		this,
@@ -974,9 +962,9 @@ void CTexGenMainFrame::OnSaveABAQUS(wxCommandEvent& event)
 				Command << "textile = GetTextile('" + TextileName + "')" << endl;
 
 				double Tolerance;
-				IntersectionTolerance.ToDouble( &Tolerance );
-				Command << "deformer.CreateAbaqusInputFile(textile, r\'" << ConvertString(dialog.GetPath()) << "', bool(" << bRegenerateMesh << ")," << iElementType << ", bool(" 
-															<< bAdjustIntersections << ")," << Tolerance << ")" << endl;
+				IntersectionTolerance.ToDouble(&Tolerance);
+				Command << "deformer.CreateAbaqusInputFile(textile, r\'" << ConvertString(dialog.GetPath()) << "', bool(" << bRegenerateMesh << ")," << iElementType << ", bool("
+					<< bAdjustIntersections << ")," << Tolerance << ")" << endl;
 
 				SendPythonCode(Command.str());
 			}
@@ -993,7 +981,7 @@ void CTexGenMainFrame::OnSaveABAQUSVoxels(wxCommandEvent& event)
 	wxString YVoxels = wxT("50");
 	wxString ZVoxels = wxT("50");
 	wxString XOffset = wxT("0.0");
-	
+
 	bool bOutputMatrix = true;
 	bool bOutputYarns = true;
 	int  iBoundaryConditions = 0;
@@ -1009,7 +997,7 @@ void CTexGenMainFrame::OnSaveABAQUSVoxels(wxCommandEvent& event)
 		wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR
 	);
 	dialog.CentreOnParent();
-	
+
 	CAbaqusVoxelInput AbaqusVoxelInput(this);
 
 	{
@@ -1026,33 +1014,33 @@ void CTexGenMainFrame::OnSaveABAQUSVoxels(wxCommandEvent& event)
 		{
 			if (dialog.ShowModal() == wxID_OK)
 			{
-				if ( !bOutputMatrix && !bOutputYarns )
+				if (!bOutputMatrix && !bOutputYarns)
 				{
 					TGERROR("No output selected");
 					return;
 				}
 
-				if ( iBoundaryConditions == SHEARED_BC )
+				if (iBoundaryConditions == SHEARED_BC)
 				{
 					Command << "Vox = CShearedVoxelMesh('CShearedPeriodicBoundaries')" << endl;
 				}
-				else if ( iBoundaryConditions == STAGGERED_BC )
+				else if (iBoundaryConditions == STAGGERED_BC)
 				{
 					Command << "Vox = CStaggeredVoxelMesh('CStaggeredPeriodicBoundaries')" << endl;
 					Command << "Vox.SetOffset(" << ConvertString(XOffset) << ")" << endl;
 				}
-				else if ( iBoundaryConditions == ROTATED_BC	)
+				else if (iBoundaryConditions == ROTATED_BC)
 				{
 					Command << "Vox = CRotatedVoxelMesh('CRotatedPeriodicBoundaries')" << endl;
 				}
 				else
 					Command << "Vox = CRectangularVoxelMesh('CPeriodicBoundaries')" << endl;
-				Command << "Vox.SaveVoxelMesh(GetTextile('" + TextileName + "'), r\'" << ConvertString(dialog.GetPath()) << "', " << ConvertString(XVoxels) << "," << ConvertString(YVoxels) << "," << ConvertString(ZVoxels) 
-					<< ", bool(" << bOutputMatrix << "), bool(" << bOutputYarns << "),"<< iBoundaryConditions << "," << iElementType << ")" << endl;
+				Command << "Vox.SaveVoxelMesh(GetTextile('" + TextileName + "'), r\'" << ConvertString(dialog.GetPath()) << "', " << ConvertString(XVoxels) << "," << ConvertString(YVoxels) << "," << ConvertString(ZVoxels)
+					<< ", bool(" << bOutputMatrix << "), bool(" << bOutputYarns << ")," << iBoundaryConditions << "," << iElementType << ")" << endl;
 
 				SendPythonCode(Command.str());
 			}
-			
+
 		}
 	}
 }
@@ -1092,18 +1080,18 @@ void CTexGenMainFrame::OnSaveABAQUSSurface(wxCommandEvent& event)
 
 				SendPythonCode(Command.str());
 			}
-			
+
 		}
 	}
 }
-					
+
 
 void CTexGenMainFrame::OnPeriodicBoundaries(wxCommandEvent& event)
 {
 	int selection = event.GetSelection();
 }
 
-void CTexGenMainFrame::OnSaveTetgenMesh( wxCommandEvent& event )
+void CTexGenMainFrame::OnSaveTetgenMesh(wxCommandEvent& event)
 {
 	string TextileName = GetTextileSelection();
 	stringstream Command;
@@ -1134,7 +1122,7 @@ void CTexGenMainFrame::OnSaveTetgenMesh( wxCommandEvent& event )
 			if (dialog.ShowModal() == wxID_OK)
 			{
 				Command << "TetMesh = CTetgenMesh(" + ConvertString(seed) + ")" << endl;
-				Command << "TetMesh.SaveTetgenMesh(GetTextile('" + TextileName + "'), r\'" << ConvertString(dialog.GetPath())<< "', '" + ConvertString(params) + "', bool(" << bPeriodic << + "))" << endl;
+				Command << "TetMesh.SaveTetgenMesh(GetTextile('" + TextileName + "'), r\'" << ConvertString(dialog.GetPath()) << "', '" + ConvertString(params) + "', bool(" << bPeriodic << +"))" << endl;
 
 				SendPythonCode(Command.str());
 			}
@@ -1159,25 +1147,25 @@ void CTexGenMainFrame::OnWindow(wxCommandEvent& event)
 	switch (event.GetId())
 	{
 	case ID_ToggleControls:
-		{
-			wxAuiPaneInfo& Pane = m_Manager.GetPane(m_pControls);
-			Pane.Show(!Pane.IsShown());
-		}
-		break;
-	case ID_ToggleLogWindow:
-		{
-			wxAuiPaneInfo& Pane = m_Manager.GetPane(m_pLogNotebook);
-			Pane.Show(!Pane.IsShown());
-		}
-		break;
-	case ID_ToggleOutliner:
-		{
-			wxAuiPaneInfo& Pane = m_Manager.GetPane(m_pOutliner);
-			Pane.Show(!Pane.IsShown());
-		}
-		break;
+	{
+		wxAuiPaneInfo& Pane = m_Manager.GetPane(m_pControls);
+		Pane.Show(!Pane.IsShown());
 	}
-    m_Manager.Update();
+	break;
+	case ID_ToggleLogWindow:
+	{
+		wxAuiPaneInfo& Pane = m_Manager.GetPane(m_pLogNotebook);
+		Pane.Show(!Pane.IsShown());
+	}
+	break;
+	case ID_ToggleOutliner:
+	{
+		wxAuiPaneInfo& Pane = m_Manager.GetPane(m_pOutliner);
+		Pane.Show(!Pane.IsShown());
+	}
+	break;
+	}
+	m_Manager.Update();
 	UpdateWindowChecks();
 }
 
@@ -1245,7 +1233,7 @@ bool CTexGenMainFrame::DeleteRenderWindow(string WindowName)
 	if (itRenderWindow == m_RenderWindows.end())
 		return false;
 	size_t i;
-	for (i=0; i<m_pViewerNotebook->GetPageCount(); ++i)
+	for (i = 0; i < m_pViewerNotebook->GetPageCount(); ++i)
 	{
 		if (m_pViewerNotebook->GetPage(i) == itRenderWindow->second)
 		{
@@ -1291,7 +1279,6 @@ void CTexGenMainFrame::OnTextiles(wxCommandEvent& event)
 	switch (event.GetId())
 	{
 	case ID_DeleteTextile:
-<<<<<<< HEAD
 	{
 		string TextileName = GetTextileSelection();
 		if (!TextileName.empty())
@@ -1424,7 +1411,7 @@ void CTexGenMainFrame::OnTextiles(wxCommandEvent& event)
 		SendPythonCode(StringStream.str());
 		/*else if (!TEXGEN.AddTextile(ConvertString(TextileName), CTextile()))
 		{
-			wxMessageBox(wxT("Textile with name \"") + TextileName + wxT("\" already exists!"), wxT("Error"), wxOK | wxICON_EXCLAMATION);
+		wxMessageBox(wxT("Textile with name \"") + TextileName + wxT("\" already exists!"), wxT("Error"), wxOK | wxICON_EXCLAMATION);
 		}*/
 	}
 	break;
@@ -1441,26 +1428,14 @@ void CTexGenMainFrame::OnTextiles(wxCommandEvent& event)
 		}
 	}
 	break;
-	case ID_CreateBraid:
-	{
-		CBraidWizard Wizard(this, wxID_ANY);
-		if (Wizard.RunIt())
-		{
-			string Command = Wizard.getCreateTextileCommand();
-			if (!Command.empty())
-			{
-				SendPythonCode(Command);
-			}
-		}
-	}
-	break;
+
 	case ID_GeometrySolve:
 	{
 		OnGeometrySolve(event);
 	}
 	break;
 
-	case ID_Create3DTextile:
+	case ID_Create3DWeave:
 	{
 		CWeaveWizard3D Wizard(this, wxID_ANY);
 		if (Wizard.RunIt())
@@ -1572,283 +1547,28 @@ void CTexGenMainFrame::OnTextiles(wxCommandEvent& event)
 		}
 	}
 	break;
-=======
+	case ID_CreateBraid:
+	{
+		CBraidWizard Wizard(this, wxID_ANY);
+		if (Wizard.RunIt())
 		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
+			string Command = Wizard.GetCreateTextileCommand();
+			if (!Command.empty())
 			{
-				if ( wxMessageBox( wxT("Do you wish to delete the textile?"), wxT("Delete textile"), wxNO_DEFAULT|wxYES_NO|wxICON_INFORMATION, this ) == wxYES )
-				{
-					string Command = "DeleteTextile('" + TextileName + "')";
-					SendPythonCode(Command);	
-				}
+				SendPythonCode(Command);
 			}
 		}
-		break;
-	case ID_EditTextile:
-		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
-			{
-				CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
-				string Type = pTextile->GetType();
-				if (pTextile && (Type == "CTextileWeave2D" || Type == "CShearedTextileWeave2D" ||
-					Type == "CTextileOrthogonal" || Type == "CTextileAngleInterlock" || Type == "CTextileOffsetAngleInterlock" || Type == "CTextileLayerToLayer"))
-				{
-					string Command;
-					if (Type == "CTextileWeave2D" || Type == "CShearedTextileWeave2D")
-					{
-						CWeaveWizard Wizard(this, wxID_ANY);
-						if (Type == "CTextileWeave2D")
-							Wizard.LoadSettings(*((CTextileWeave2D*)pTextile));
-						else
-							Wizard.LoadSettings(*((CShearedTextileWeave2D*)pTextile));
-
-						if ( Wizard.RunIt() )
-						{
-							Command = Wizard.GetCreateTextileCommand(TextileName);
-						}
-					}
-					else // if (pTextile->GetType() == "CTextileWeave3D")
-					{
-						CWeaveWizard3D Wizard(this, wxID_ANY);
-						Wizard.LoadSettings(*((CTextile3DWeave*)pTextile));
-						if ( Wizard.RunIt() )
-						{
-							Command = Wizard.GetCreateTextileCommand(TextileName);
-						}
-					}
-					
-					if (!Command.empty())
-					{
-						SendPythonCode(Command);
-						RefreshTextile(TextileName);
-					}
-				}
-			}
-		}
-		break;
-	case ID_RotateTextile:
-		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
-			{
-				wxDialog RotateInput;
-				if (wxXmlResource::Get()->LoadDialog(&RotateInput, this, wxT("RotateTextile")))
-				{
-					int iAxisChoice;
-					bool bRotateDomain;
-					wxString Angle;
-
-					XRCCTRL(RotateInput, "AxisChoice", wxChoice)->SetValidator(wxGenericValidator(&iAxisChoice));
-					XRCCTRL(RotateInput, "Angle", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &Angle));
-					XRCCTRL(RotateInput, "RotateDomain", wxCheckBox)->SetValidator(wxGenericValidator(&bRotateDomain));
-
-					if (RotateInput.ShowModal() == wxID_OK)
-					{
-						CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
-						if ( !pTextile )
-						{
-							TGERROR("Cannot rotate textile - no textile loaded");
-							break;
-						}
-						
-						stringstream Command;
-			
-						Command << "Weave= GetTextile('" << TextileName << "' )" << endl;
-
-						string Axis;
-						switch (iAxisChoice)
-						{
-						case 0:
-							Axis = "1,0,0";
-							break;
-						case 1:
-							Axis = "0,1,0";
-							break;
-						case 2:
-							Axis = "0,0,1";
-							break;
-						}
-
-						Command << "Weave.Rotate(WXYZ(XYZ(" << Axis << "),math.radians(" << ConvertString(Angle) << ")),XYZ(0,0,0))" << endl;
-						if ( bRotateDomain && pTextile->GetDomain() )
-						{
-							Command << "Domain = Weave.GetDomain()" << endl;
-							Command << "Domain.Rotate(WXYZ(XYZ(" << Axis << "),math.radians(" << ConvertString(Angle) << ")))" << endl;
-						}
-						if ( pTextile->GetType() == "CTextileWeave2D" && iAxisChoice < 2 )
-						{
-							Command << "weave2D = Weave.GetWeave2D()" << endl;
-							Command << "weave2D.SetInPlaneTangents( False )" << endl;
-						}
-							
-						SendPythonCode(Command.str());
-						RefreshTextile( TextileName );
-					}
-				}
-			}
-		}
-		break;
-	case ID_CreateEmptyTextile:
-		{
-			wxTextEntryDialog dlg(this, wxT("Please enter the name of the textile to create (or leave blank for default):"), wxT("Textile name"));
-			if (dlg.ShowModal() != wxID_OK)
-				return;
-			wxString TextileName = dlg.GetValue();
-
-			stringstream StringStream; 
-			if (TextileName.IsEmpty())
-				StringStream << "AddTextile(CTextile())" << endl;
-			else
-				StringStream << "AddTextile('" << ConvertString(TextileName) << "', CTextile())" << endl;
-			SendPythonCode(StringStream.str());
-			/*else if (!TEXGEN.AddTextile(ConvertString(TextileName), CTextile()))
-			{
-				wxMessageBox(wxT("Textile with name \"") + TextileName + wxT("\" already exists!"), wxT("Error"), wxOK | wxICON_EXCLAMATION);
-			}*/
-		}
-		break;
-	case ID_Create2DWeave:
-		{
-			CWeaveWizard Wizard(this, wxID_ANY); 
-			if (Wizard.RunIt())
-			{
-				string Command = Wizard.GetCreateTextileCommand();
-				if (!Command.empty())
-				{
-					SendPythonCode(Command);
-				}
-			}
-		}
-		break;
-	case ID_GeometrySolve:
-		{
-			OnGeometrySolve(event);
-		}
-		break;
-
-	case ID_Create3DTextile:
-		{
-			CWeaveWizard3D Wizard(this, wxID_ANY);
-			if ( Wizard.RunIt() )
-			{
-				string Command = Wizard.GetCreateTextileCommand();
-				if ( !Command.empty() )
-				{
-					SendPythonCode(Command);
-				}
-			}
-		}
-		break;
-	case ID_CreateLayeredTextile:
-		{
-			CTextileLayersDialog Dialog;
-			if ( Dialog.ShowModal() == wxID_OK )
-			{
-				vector<string> LayerNames;
-				Dialog.GetLayerNames( LayerNames );
-				if ( !LayerNames.empty() ) 
-				{
-					// Create python code with list of names
-					string Command = ConvertMultiWeaveLayered( LayerNames );
-					SendPythonCode( Command );
-				}
-			}
-		}
-		break;
-	case ID_SetLayerOffsets:
-		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
-			{
-				CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
-				string Type = pTextile->GetType();
-				if ( Type != "CTextileLayered" )
-				{
-					TGERROR("Cannot set layers: not a layered textile");
-					break;
-				}
-				
-				CLayersOffsetDialog Dialog;
-				XYZ Min,Max;
-				CDomain* Domain = pTextile->GetDomain();
-				((CDomainPlanes*)Domain)->GetBoxLimits(Min, Max);
-				XY DomainSize( Max.x-Min.x, Max.y-Min.y );
-				Dialog.LoadSettings( dynamic_cast<CTextileLayered*>(pTextile)->GetOffsets(), DomainSize );
-				
-				if (Dialog.ShowModal() == wxID_OK)
-				{
-					vector<XY> LayerOffsets;
-					int iOption = Dialog.GetOption();
-					stringstream StringStream;
-
-					switch ( iOption )
-					{
-						case CONSTANT:
-							{
-							XY Offset;
-							Dialog.GetConstantOffset( Offset );
-							StringStream << "textile = GetTextile('" << TextileName << "')" << endl;
-							StringStream << "LayeredTextile = textile.GetLayeredTextile()" << endl;
-							StringStream << "Offset = XY(" << Offset << ")" << endl;
-							StringStream << "LayeredTextile.SetOffsets( Offset )" << endl;
-							break;
-							}
-						case RANDOM:
-						case EDIT:
-							Dialog.GetEditOffsets( LayerOffsets );
-							StringStream << "textile = GetTextile('" << TextileName << "')" << endl;
-							StringStream << "LayeredTextile = textile.GetLayeredTextile()" << endl;
-							StringStream << "Offsets = XYVector()" << endl;
-							for (int i=0; i<(int)LayerOffsets.size(); ++i)
-							{
-								StringStream << "Offsets.append(XY(" << LayerOffsets[i] << "))" << endl;
-							}
-							StringStream << "LayeredTextile.SetOffsets( Offsets )" << endl;
-							break;
-					}
-					SendPythonCode( StringStream.str() );
-					RefreshTextile( TextileName );
-				}
-			}
-		}
-		break;
-	case ID_NestLayers:
-	case ID_MaxNestLayers:
-		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
-			{
-				CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
-				string Type = pTextile->GetType();
-				if ( Type != "CTextileLayered" )
-				{
-					TGERROR("Cannot nest layers: not a layered textile");
-					break;
-				}
-
-				stringstream StringStream;
-				StringStream << "textile = GetTextile('" << TextileName << "')" << endl;
-				StringStream << "LayeredTextile = textile.GetLayeredTextile()" << endl;
-				if ( event.GetId() == ID_NestLayers )
-					StringStream << "LayeredTextile.NestLayers()" << endl;
-				else
-					StringStream << "LayeredTextile.MaxNestLayers()" << endl;
-				SendPythonCode( StringStream.str() );
-				RefreshTextile( TextileName );
-			}
-		}
-		break;
->>>>>>> d6c0c9a7665128b44294f73cac5a6b6400917f06
+	}
+	break;
 	}
 }
+
 
 void CTexGenMainFrame::OnGeometrySolve(wxCommandEvent& event)
 {
 	string TextileName = GetTextileSelection();
 
-//	int iMeshType = 0;
+	//	int iMeshType = 0;
 	CGeometrySolver Solver;	// Create a geometry solver object just to get the default values
 
 	wxString SeedSize; SeedSize << Solver.GetSeed();
@@ -1893,47 +1613,47 @@ void CTexGenMainFrame::OnGeometrySolve(wxCommandEvent& event)
 			SendPythonCode(Command.str());
 			RefreshTextile(TextileName);
 		}
-/*
-		if (MeshOptions.ShowModal() == wxID_OK)
-		{
-			wxFileDialog dialog
-			(
-				this,
-				wxT("Save Mesh file"),
-				wxGetCwd(),
-				wxEmptyString,
-				wxT("VTK unstructured grid file (*.vtu)|*.vtu|"
-					"ABAQUS input file (*.inp)|*.inp"),
-				wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR
-			);
-			dialog.CentreOnParent();
-			if (dialog.ShowModal() == wxID_OK)
-			{
-				stringstream Command;
-				Command << "mesher = CMesher()" << endl;
-				if (iMeshType == 1)
-					Command << "mesher.SetHybrid(True)" << endl;
-				if (iElementOrder == 1)
-					Command << "mesher.SetQuadratic(True)" << endl;
-				if (bPeriodic)
-					Command << "mesher.SetPeriodic(True)" << endl;
-				if (!SeedSize.IsEmpty())
-					Command << "mesher.SetSeed(" << ConvertString(SeedSize) << ")" << endl;
-				if (!MergeTolerance.IsEmpty())
-					Command << "mesher.SetMergeTolerance(" << ConvertString(MergeTolerance) << ")" << endl;
-				Command << "mesher.CreateMesh(r'" << TextileName << "')" << endl;
-				switch (dialog.GetFilterIndex())
+		/*
+				if (MeshOptions.ShowModal() == wxID_OK)
 				{
-				case 0:
-					Command << "mesher.SaveVolumeMeshToVTK(r'" << ConvertString(dialog.GetPath()) << "')" << endl;
-					break;
-				case 1:
-					Command << "mesher.SaveVolumeMeshToABAQUS(r'" << ConvertString(dialog.GetPath()) << "')" << endl;
-					break;
-				}
-				SendPythonCode(Command.str());
-			}
-		}*/
+					wxFileDialog dialog
+					(
+						this,
+						wxT("Save Mesh file"),
+						wxGetCwd(),
+						wxEmptyString,
+						wxT("VTK unstructured grid file (*.vtu)|*.vtu|"
+							"ABAQUS input file (*.inp)|*.inp"),
+						wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR
+					);
+					dialog.CentreOnParent();
+					if (dialog.ShowModal() == wxID_OK)
+					{
+						stringstream Command;
+						Command << "mesher = CMesher()" << endl;
+						if (iMeshType == 1)
+							Command << "mesher.SetHybrid(True)" << endl;
+						if (iElementOrder == 1)
+							Command << "mesher.SetQuadratic(True)" << endl;
+						if (bPeriodic)
+							Command << "mesher.SetPeriodic(True)" << endl;
+						if (!SeedSize.IsEmpty())
+							Command << "mesher.SetSeed(" << ConvertString(SeedSize) << ")" << endl;
+						if (!MergeTolerance.IsEmpty())
+							Command << "mesher.SetMergeTolerance(" << ConvertString(MergeTolerance) << ")" << endl;
+						Command << "mesher.CreateMesh(r'" << TextileName << "')" << endl;
+						switch (dialog.GetFilterIndex())
+						{
+						case 0:
+							Command << "mesher.SaveVolumeMeshToVTK(r'" << ConvertString(dialog.GetPath()) << "')" << endl;
+							break;
+						case 1:
+							Command << "mesher.SaveVolumeMeshToABAQUS(r'" << ConvertString(dialog.GetPath()) << "')" << endl;
+							break;
+						}
+						SendPythonCode(Command.str());
+					}
+				}*/
 	}
 }
 
@@ -1945,7 +1665,7 @@ void CTexGenMainFrame::OnModeller(wxCommandEvent& event)
 	{
 		pModeller = pRenderWindow->GetModeller();
 	}
-	if ( !pModeller )
+	if (!pModeller)
 	{
 		wxMessageBox(wxT("Please create textile before using Modeller options"), wxT("Modeller Error"), wxOK | wxICON_ERROR, this);
 		return;
@@ -1973,69 +1693,69 @@ void CTexGenMainFrame::OnModeller(wxCommandEvent& event)
 	case ID_YarnFibreVolumeFraction:
 		pModeller->DisplayVolumeFractionForSelectedObjects();
 		break;
-/*	case ID_ShowOutliner:
-		pModeller->ShowOutliner(true);
-		break;*/
+		/*	case ID_ShowOutliner:
+				pModeller->ShowOutliner(true);
+				break;*/
 	case ID_SelectTool:
-		{
-			pModeller->SetActiveTool(TOOL_SELECT);
-			m_pControls->UpdateModellingPage(pModeller);
-		}
-		break;
+	{
+		pModeller->SetActiveTool(TOOL_SELECT);
+		m_pControls->UpdateModellingPage(pModeller);
+	}
+	break;
 	case ID_MoveTool:
-		{
-			pModeller->SetActiveTool(TOOL_MOVE);
-			m_pControls->UpdateModellingPage(pModeller);
-		}
-		break;
+	{
+		pModeller->SetActiveTool(TOOL_MOVE);
+		m_pControls->UpdateModellingPage(pModeller);
+	}
+	break;
 	case ID_RotateTool:
-		{
-			pModeller->SetActiveTool(TOOL_ROTATE);
-			m_pControls->UpdateModellingPage(pModeller);
-		}
-		break;
+	{
+		pModeller->SetActiveTool(TOOL_ROTATE);
+		m_pControls->UpdateModellingPage(pModeller);
+	}
+	break;
 	case ID_ScaleTool:
-		{
-			pModeller->SetActiveTool(TOOL_SCALE);
-			m_pControls->UpdateModellingPage(pModeller);
-		}
-		break;
+	{
+		pModeller->SetActiveTool(TOOL_SCALE);
+		m_pControls->UpdateModellingPage(pModeller);
+	}
+	break;
 	case ID_FilterNodes:
-		{
-			pModeller->SetSelectNodes(event.IsChecked());
-			m_pControls->UpdateModellingPage(pModeller);
-		}
-		break;
+	{
+		pModeller->SetSelectNodes(event.IsChecked());
+		m_pControls->UpdateModellingPage(pModeller);
+	}
+	break;
 	case ID_FilterPath:
-		{
-			pModeller->SetSelectPaths(event.IsChecked());
-			m_pControls->UpdateModellingPage(pModeller);
-		}
-		break;
+	{
+		pModeller->SetSelectPaths(event.IsChecked());
+		m_pControls->UpdateModellingPage(pModeller);
+	}
+	break;
 	case ID_FilterSurface:
-		{
-			pModeller->SetSelectSurfaces(event.IsChecked());
-			m_pControls->UpdateModellingPage(pModeller);
-		}
-		break;
+	{
+		pModeller->SetSelectSurfaces(event.IsChecked());
+		m_pControls->UpdateModellingPage(pModeller);
+	}
+	break;
 	case ID_Snap:
-		{
-			pModeller->GetWidget()->SetSnap(event.IsChecked());
-			m_pControls->UpdateModellingPage(pModeller);
-		}
-		break;
+	{
+		pModeller->GetWidget()->SetSnap(event.IsChecked());
+		m_pControls->UpdateModellingPage(pModeller);
+	}
+	break;
 	case ID_Relative:
-		{
-			pModeller->GetWidget()->SetRelativeSnap(event.IsChecked());
-			m_pControls->UpdateModellingPage(pModeller);
-		}
-		break;
-/*	case ID_SnapSize:
-		{
-			pModeller->GetWidget()->SetSnapSize();
-			m_pControls->UpdateModellingPage(pModeller);
-		}
-		break;*/
+	{
+		pModeller->GetWidget()->SetRelativeSnap(event.IsChecked());
+		m_pControls->UpdateModellingPage(pModeller);
+	}
+	break;
+	/*	case ID_SnapSize:
+			{
+				pModeller->GetWidget()->SetSnapSize();
+				m_pControls->UpdateModellingPage(pModeller);
+			}
+			break;*/
 	}
 }
 
@@ -2111,83 +1831,83 @@ void CTexGenMainFrame::OnDomains(wxCommandEvent& event)
 	switch (event.GetId())
 	{
 	case ID_DeleteDomain:
+	{
+		string TextileName = GetTextileSelection();
+		if (!TextileName.empty())
 		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
-			{
-				string Command = "textile = GetTextile('" + TextileName + "')\n";
-				Command += "textile.RemoveDomain()";
-				SendPythonCode(Command);
-				RefreshTextile(TextileName);
-			}
+			string Command = "textile = GetTextile('" + TextileName + "')\n";
+			Command += "textile.RemoveDomain()";
+			SendPythonCode(Command);
+			RefreshTextile(TextileName);
 		}
-		break;
+	}
+	break;
 	case ID_EditDomain:
+	{
+		string TextileName = GetTextileSelection();
+		if (!TextileName.empty())
 		{
-			string TextileName = GetTextileSelection();
-			if (!TextileName.empty())
+			CTextile* pTextile = TEXGEN.GetTextile(TextileName);
+			if (pTextile)
 			{
-				CTextile* pTextile = TEXGEN.GetTextile(TextileName);
-				if (pTextile)
+				const CDomain* pDomain = pTextile->GetDomain();
+				if (pDomain && pDomain->GetType() == "CDomainPlanes")
 				{
-					const CDomain* pDomain = pTextile->GetDomain();
-					if (pDomain && pDomain->GetType() == "CDomainPlanes")
+					CDomainPlanesDialog Dialog(this, wxID_ANY);
+					Dialog.LoadSettings(*((CDomainPlanes*)pDomain));
+					if (Dialog.ShowModal() == wxID_OK)
 					{
-						CDomainPlanesDialog Dialog(this, wxID_ANY);
-						Dialog.LoadSettings(*((CDomainPlanes*)pDomain));
-						if (Dialog.ShowModal() == wxID_OK)
+						string Command = Dialog.GetCreateDomainCommand();
+						if (!Command.empty())
 						{
-							string Command = Dialog.GetCreateDomainCommand();
-							if (!Command.empty())
-							{
-								Command += "GetTextile('" + TextileName + "').AssignDomain(domain)";
-								SendPythonCode(Command);
-								RefreshTextile(TextileName);
-							}
+							Command += "GetTextile('" + TextileName + "').AssignDomain(domain)";
+							SendPythonCode(Command);
+							RefreshTextile(TextileName);
 						}
 					}
 				}
 			}
 		}
-		break;
+	}
+	break;
 	case ID_CreateDomainPlanes:
+	{
+		CDomainPlanesDialog Dialog(this, wxID_ANY);
+		if (Dialog.ShowModal() == wxID_OK)
 		{
-			CDomainPlanesDialog Dialog(this, wxID_ANY);
-			if (Dialog.ShowModal() == wxID_OK)
+			string TextileName = GetTextileSelection();
+			if (!TextileName.empty())
 			{
-				string TextileName = GetTextileSelection();
-				if (!TextileName.empty())
+				string Command = Dialog.GetCreateDomainCommand();
+				if (!Command.empty())
 				{
-					string Command = Dialog.GetCreateDomainCommand();
-					if (!Command.empty())
-					{
-						Command += "GetTextile('" + TextileName + "').AssignDomain(domain)";
-						SendPythonCode(Command);
-						RefreshTextile(TextileName);
-					}
+					Command += "GetTextile('" + TextileName + "').AssignDomain(domain)";
+					SendPythonCode(Command);
+					RefreshTextile(TextileName);
 				}
 			}
 		}
-		break;
+	}
+	break;
 	case ID_CreateDomainBox:
+	{
+		CDomainPlanesDialog Dialog(this, wxID_ANY);
+		if (Dialog.CreateBox())
 		{
-			CDomainPlanesDialog Dialog(this, wxID_ANY);
-			if (Dialog.CreateBox())
+			string TextileName = GetTextileSelection();
+			if (!TextileName.empty())
 			{
-				string TextileName = GetTextileSelection();
-				if (!TextileName.empty())
+				string Command = Dialog.GetCreateDomainCommand();
+				if (!Command.empty())
 				{
-					string Command = Dialog.GetCreateDomainCommand();
-					if (!Command.empty())
-					{
-						Command += "GetTextile('" + TextileName + "').AssignDomain(domain)";
-						SendPythonCode(Command);
-						RefreshTextile(TextileName);
-					}
+					Command += "GetTextile('" + TextileName + "').AssignDomain(domain)";
+					SendPythonCode(Command);
+					RefreshTextile(TextileName);
 				}
 			}
 		}
-		break;
+	}
+	break;
 	}
 }
 
@@ -2288,21 +2008,21 @@ void CTexGenMainFrame::OnRendering(wxCommandEvent& event)
 			Command = "GetRenderWindow('" + TextileName + "').SetParallelProjection(True)\n";
 		else
 			Command = "GetRenderWindow('" + TextileName + "').SetParallelProjection(False)\n";
-/*		{
-			CTexGenRenderWindow* pRenderWindow = GetRenderWindow(TextileName);
-			if (pRenderWindow)
-			{
-				CTexGenRenderer* pRenderer = pRenderWindow->GetRenderer();
-				if (pRenderer)
-				{
-					if (pRenderer->GetNumProps(CTexGenRenderer::PROP_SURFACE))
+		/*		{
+					CTexGenRenderWindow* pRenderWindow = GetRenderWindow(TextileName);
+					if (pRenderWindow)
 					{
-						Command += "GetRenderWindow('" + TextileName + "').RemoveTextiles()\n";
-						Command += "GetRenderWindow('" + TextileName + "').RenderTextile('" + TextileName + "')";
+						CTexGenRenderer* pRenderer = pRenderWindow->GetRenderer();
+						if (pRenderer)
+						{
+							if (pRenderer->GetNumProps(CTexGenRenderer::PROP_SURFACE))
+							{
+								Command += "GetRenderWindow('" + TextileName + "').RemoveTextiles()\n";
+								Command += "GetRenderWindow('" + TextileName + "').RenderTextile('" + TextileName + "')";
+							}
+						}
 					}
-				}
-			}
-		}*/
+				}*/
 		break;
 	case ID_TrimtoDomain:
 		if (event.IsChecked())
@@ -2321,17 +2041,17 @@ void CTexGenMainFrame::OnRendering(wxCommandEvent& event)
 						Command += "GetRenderWindow('" + TextileName + "').RemoveTextiles()\n";
 						Command += "GetRenderWindow('" + TextileName + "').RenderTextile('" + TextileName + "')\n";
 					}
-					if ( pRenderer->GetNumProps(CTexGenRenderer::PROP_INTERFERENCE) )
+					if (pRenderer->GetNumProps(CTexGenRenderer::PROP_INTERFERENCE))
 					{
 						Command += "GetRenderWindow('" + TextileName + "').RemoveInterference()\n";
 						Command += "GetRenderWindow('" + TextileName + "').RenderInterference('" + TextileName + "')\n";
 					}
-					if ( pRenderer->GetNumProps(CTexGenRenderer::PROP_INTERFERENCE_DEPTH) )
+					if (pRenderer->GetNumProps(CTexGenRenderer::PROP_INTERFERENCE_DEPTH))
 					{
 						Command += "GetRenderWindow('" + TextileName + "').RemoveInterferenceDepth()\n";
 						Command += "GetRenderWindow('" + TextileName + "').RenderInterference('" + TextileName + "', True)\n";
 					}
-					if ( pRenderer->GetNumProps(CTexGenRenderer::PROP_ORIENTATION) )
+					if (pRenderer->GetNumProps(CTexGenRenderer::PROP_ORIENTATION))
 					{
 						Command += "GetRenderWindow('" + TextileName + "').RemoveOrientations()\n";
 						Command += "GetRenderWindow('" + TextileName + "').RenderGrid('" + TextileName + "')\n";
@@ -2341,25 +2061,25 @@ void CTexGenMainFrame::OnRendering(wxCommandEvent& event)
 		}
 		break;
 	case ID_ChangeBackgroundColor:
-		{
-			string Color = GetUserSelectedColor();
-			if (!Color.empty())
-				Command = "GetRenderWindow('" + TextileName + "').SetBackgroundColor(" + Color + ")";
-		}
-		break;
+	{
+		string Color = GetUserSelectedColor();
+		if (!Color.empty())
+			Command = "GetRenderWindow('" + TextileName + "').SetBackgroundColor(" + Color + ")";
+	}
+	break;
 	case ID_ChangeSurfaceColor:
-		{
-			string Color = GetUserSelectedColor();
-			if (!Color.empty())
-				Command = "GetRenderWindow('" + TextileName + "').SetPropsColor(CTexGenRenderer.PROP_SURFACE, " + Color + ")";
-		}
-		break;
+	{
+		string Color = GetUserSelectedColor();
+		if (!Color.empty())
+			Command = "GetRenderWindow('" + TextileName + "').SetPropsColor(CTexGenRenderer.PROP_SURFACE, " + Color + ")";
+	}
+	break;
 	case ID_RefreshView:
-		{
-			RefreshTextile( TextileName );
-			Command = "GetRenderWindow('" + TextileName + "').RefreshView()\n";
-		}
-		break;
+	{
+		RefreshTextile(TextileName);
+		Command = "GetRenderWindow('" + TextileName + "').RefreshView()\n";
+	}
+	break;
 	}
 	if (!Command.empty())
 	{
@@ -2373,66 +2093,66 @@ void CTexGenMainFrame::OnPython(wxCommandEvent& event)
 	switch (event.GetId())
 	{
 	case ID_RunScript:
+	{
+		wxFileDialog dialog
+		(
+			this,
+			wxT("Run python script"),
+			wxGetCwd(),
+			wxEmptyString,
+			wxT("Python script (*.py)|*.py"),
+			wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR
+		);
+
+		dialog.CentreOnParent();
+
+		if (dialog.ShowModal() == wxID_OK)
+		{
+			string Command;
+			Command = "execfile(r\"";
+			Command += ConvertString(dialog.GetPath());
+			Command += "\")";
+			SendPythonCode(Command);
+		}
+	}
+	break;
+	case ID_RecordMacro:
+	{
+		if (m_ScriptRecordFile.is_open())
+		{
+			m_ScriptRecordFile.close();
+		}
+		else
 		{
 			wxFileDialog dialog
 			(
 				this,
-				wxT("Run python script"),
+				wxT("Record python script"),
 				wxGetCwd(),
 				wxEmptyString,
 				wxT("Python script (*.py)|*.py"),
-				wxFD_OPEN | wxFD_FILE_MUST_EXIST | wxFD_CHANGE_DIR
+				wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR
 			);
 
 			dialog.CentreOnParent();
 
 			if (dialog.ShowModal() == wxID_OK)
 			{
-				string Command;
-				Command = "execfile(r\"";
-				Command += ConvertString(dialog.GetPath());
-				Command += "\")";
-				SendPythonCode(Command);
-			}
-		}
-		break;
-	case ID_RecordMacro:
-		{
-			if (m_ScriptRecordFile.is_open())
-			{
-				m_ScriptRecordFile.close();
-			}
-			else
-			{
-				wxFileDialog dialog
-				(
-					this,
-					wxT("Record python script"),
-					wxGetCwd(),
-					wxEmptyString,
-					wxT("Python script (*.py)|*.py"),
-					wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR
-				);
-
-				dialog.CentreOnParent();
-
-				if (dialog.ShowModal() == wxID_OK)
+				m_ScriptRecordFile.open(dialog.GetPath().mb_str());
+				if (!m_ScriptRecordFile.is_open())
 				{
-					m_ScriptRecordFile.open(dialog.GetPath().mb_str());
-					if (!m_ScriptRecordFile.is_open())
-					{
-						wxMessageBox(wxT("Unable to open file for recording:\n") + dialog.GetPath(), wxT("Error saving file"), wxOK | wxICON_ERROR, this);
-					}
-					else
-					{
-						m_ScriptRecordFile << "# Script recorded by TexGen v" << TEXGEN.GetVersion() << endl;
-					}
+					wxMessageBox(wxT("Unable to open file for recording:\n") + dialog.GetPath(), wxT("Error saving file"), wxOK | wxICON_ERROR, this);
+				}
+				else
+				{
+					m_ScriptRecordFile << "# Script recorded by TexGen v" << TEXGEN.GetVersion() << endl;
 				}
 			}
-			if (m_pControls)
-				m_pControls->UpdatePythonPage(m_ScriptRecordFile.is_open());
 		}
-		break;
+		if (m_pControls)
+			m_pControls->UpdatePythonPage(m_ScriptRecordFile.is_open());
+	}
+	break;
 	}
 }
 
@@ -2521,7 +2241,7 @@ void CTexGenMainFrame::OnViewerNotebookClose(wxAuiNotebookEvent& event)
 	event.Veto();
 	// Delete the textile...
 	string TextileName = ConvertString(m_pViewerNotebook->GetPageText(event.GetSelection()));
-//	string TextileName = GetTextileSelection();
+	//	string TextileName = GetTextileSelection();
 	if (!TextileName.empty())
 	{
 		string Command = "DeleteTextile('" + TextileName + "')";
@@ -2553,12 +2273,12 @@ bool CTexGenMainFrame::RefreshTextile(string TextileName)
 	CTexGenRenderWindow* pRenderWindow = GetRenderWindow(TextileName);
 	if (pTextile && pRenderWindow)
 	{
-/*		string DomainName = pTextile->GetAssignedDomain();
-		if (!CTexGen::GetInstance().GetDomain(DomainName))
-		{
-			DomainName = "";
-			pTextile->AssignDomain(DomainName);
-		}*/
+		/*		string DomainName = pTextile->GetAssignedDomain();
+				if (!CTexGen::GetInstance().GetDomain(DomainName))
+				{
+					DomainName = "";
+					pTextile->AssignDomain(DomainName);
+				}*/
 		CTexGenRenderer* pRenderer = pRenderWindow->GetRenderer();
 		if (pRenderer)
 		{
@@ -2587,10 +2307,10 @@ bool CTexGenMainFrame::RefreshTextile(string TextileName)
 				pRenderer->RemoveInterference();
 				pRenderer->RenderInterference(TextileName);
 			}
-			if ( pRenderer->GetNumProps(CTexGenRenderer::PROP_INTERFERENCE_DEPTH))
+			if (pRenderer->GetNumProps(CTexGenRenderer::PROP_INTERFERENCE_DEPTH))
 			{
 				pRenderer->RemoveInterferenceDepth();
-				pRenderer->RenderInterference( TextileName, true );
+				pRenderer->RenderInterference(TextileName, true);
 			}
 			if (pRenderer->GetNumProps(CTexGenRenderer::PROP_ORIENTATION))
 			{
@@ -2617,20 +2337,20 @@ string CTexGenMainFrame::GetUserSelectedColor()
 {
 	wxColourDialog ColorDialog(this);
 	int i;
-	for (i=0; i<16; ++i)
+	for (i = 0; i < 16; ++i)
 	{
 		COLOR IndexedColor = GetIndexedColor(i);
 		wxColour Color;
-		Color.Set((unsigned char)(IndexedColor.r*255), (unsigned char)(IndexedColor.g*255), (unsigned char)(IndexedColor.b*255));
+		Color.Set((unsigned char)(IndexedColor.r * 255), (unsigned char)(IndexedColor.g * 255), (unsigned char)(IndexedColor.b * 255));
 		ColorDialog.GetColourData().SetCustomColour(i, Color);
 	}
 	if (ColorDialog.ShowModal() == wxID_OK)
 	{
 		wxColour Color = ColorDialog.GetColourData().GetColour();
 		double r, g, b;
-		r = Color.Red()/255.0;
-		g = Color.Green()/255.0;
-		b = Color.Blue()/255.0;
+		r = Color.Red() / 255.0;
+		g = Color.Green() / 255.0;
+		b = Color.Blue() / 255.0;
 		string ReturnVal = "COLOR(";
 		ReturnVal += stringify(r) + ", ";
 		ReturnVal += stringify(g) + ", ";
@@ -2652,28 +2372,28 @@ string CTexGenMainFrame::GetTextileSelection()
 		}
 	}
 	return "";
-/*	const map<string, CTextile*> &Textiles = CTexGen::GetInstance().GetTextiles();
+	/*	const map<string, CTextile*> &Textiles = CTexGen::GetInstance().GetTextiles();
 
-	if (Textiles.empty())
-	{
-		wxMessageBox("The textile list is empty!", "No textiles", wxOK | wxICON_ERROR, this);
-		return "";
-	}
+		if (Textiles.empty())
+		{
+			wxMessageBox("The textile list is empty!", "No textiles", wxOK | wxICON_ERROR, this);
+			return "";
+		}
 
-	wxArrayString TextileNames;
-	map<string, CTextile*>::const_iterator itTextile;
-	for (itTextile = Textiles.begin(); itTextile != Textiles.end(); ++itTextile)
-	{
-		TextileNames.Add(itTextile->first.c_str());
-	}
+		wxArrayString TextileNames;
+		map<string, CTextile*>::const_iterator itTextile;
+		for (itTextile = Textiles.begin(); itTextile != Textiles.end(); ++itTextile)
+		{
+			TextileNames.Add(itTextile->first.c_str());
+		}
 
-	return wxGetSingleChoice("Select a textile from the list below", "Select textile", TextileNames, this).c_str();*/
+		return wxGetSingleChoice("Select a textile from the list below", "Select textile", TextileNames, this).c_str();*/
 }
 
 void CTexGenMainFrame::ProcessFiles(const wxArrayString& filenames)
 {
 	int i;
-	for (i=0; i<(int)filenames.GetCount(); ++i)
+	for (i = 0; i < (int)filenames.GetCount(); ++i)
 	{
 		const wxString &Filename = filenames[i];
 		if (Filename.AfterLast('.') == wxT("tg3"))
@@ -2701,7 +2421,7 @@ void CTexGenMainFrame::TextileCallback(string TextileName, bool bAdded)
 	DeleteRenderWindow(TextileName);  //Need to delete window both if deleting textile or overwriting
 	if (bAdded)
 	{
-		CTexGenRenderWindow* pRenderWindow = CreateRenderWindow(TextileName);  
+		CTexGenRenderWindow* pRenderWindow = CreateRenderWindow(TextileName);
 		CTexGenRenderer* pRenderer;
 		CTextile* pTextile = CTexGen::GetInstance().GetTextile(TextileName);
 		if (pRenderWindow && (pRenderer = pRenderWindow->GetRenderer()) && pTextile)
@@ -2724,10 +2444,10 @@ void CNoteBookHandler::OnSetFocus(wxFocusEvent &event)
 	CTexGenRenderWindow* pRenderWindow = m_MainFrame.GetRenderWindow();
 	if (pRenderWindow)
 		pRenderWindow->SetFocus();
-/*	if (pRenderWindow)
-		pRenderWindow->OnKeyDown(event);
-	else
-		event.Skip();*/
+	/*	if (pRenderWindow)
+			pRenderWindow->OnKeyDown(event);
+		else
+			event.Skip();*/
 }
 
 void CTexGenMainFrame::OnPaneButton(wxAuiManagerEvent& event)
@@ -2800,110 +2520,110 @@ void CTexGenMainFrame::OnTools(wxCommandEvent& event)
 	switch (event.GetId())
 	{
 	case ID_PatternDraft:
+	{
+		string TextileName = GetTextileSelection();
+		CTextile* pTextile = TEXGEN.GetTextile(TextileName);
+		if (!pTextile)
 		{
-			string TextileName = GetTextileSelection();
-			CTextile* pTextile = TEXGEN.GetTextile( TextileName );
-			if ( !pTextile )
-			{
-				wxMessageBox(wxT("Cannot create pattern draft - no textile loaded"), wxT("Pattern Draft Error"), wxOK | wxICON_ERROR, this);
-				return;
-			}
-			string Type = pTextile->GetType();
-			stringstream Command;
-			
-			// Get appropriate weave type
-			if ( Type == "CTextileWeave2D" )
-				Command << "Weave = GetTextile( '" << TextileName << "' ).GetWeave()" << endl;
-			else if ( Type == "CTextile3DWeave" )
-				Command << "Weave = GetTextile( '" << TextileName << "' ).Get3DWeave()" << endl;
-			else if ( Type == "CTextileOrthogonal" )
-				Command << "Weave = GetTextile( '" << TextileName << "' ).GetOrthogonalWeave()" << endl;
-			else if ( Type == "CTextileLayerToLayer" )
-				Command << "Weave = GetTextile( '" << TextileName << "' ).GetLayerToLayerWeave()" << endl;
-			else
-			{
-				wxMessageBox(wxT("Cannot create pattern draft - incorrect weave type"), wxT("Pattern Draft Error"), wxOK | wxICON_ERROR, this);
-				return;
-			}
+			wxMessageBox(wxT("Cannot create pattern draft - no textile loaded"), wxT("Pattern Draft Error"), wxOK | wxICON_ERROR, this);
+			return;
+		}
+		string Type = pTextile->GetType();
+		stringstream Command;
 
-			int iWeftOrder = 0;
-			if ( Type == "CTextileOrthogonal" || Type == "CTextileLayerToLayer" )
-			{
-				wxDialog WeftStackOrder;
-				if (wxXmlResource::Get()->LoadDialog(&WeftStackOrder, this, wxT("WeftStackOrder")))		
-					XRCCTRL(WeftStackOrder, "StackOrder", wxRadioBox)->SetValidator(wxGenericValidator(&iWeftOrder));
-	
-				if (WeftStackOrder.ShowModal() == wxID_OK)
-				{
-				}
-			}
-			if ( Type == "CTextileWeave2D" )
-				Command << "Weave.ConvertToPatternDraft()" << endl;
-			else
-				Command << "Weave.ConvertToPatternDraft(" << iWeftOrder << ")" << endl;
-			Command << "PatternDraft = Weave.GetPatternDraft()" << endl;
-			Command << "PatternDraft.CreatePatternDraft()" << endl;
-			
-			SendPythonCode( Command.str() );
+		// Get appropriate weave type
+		if (Type == "CTextileWeave2D")
+			Command << "Weave = GetTextile( '" << TextileName << "' ).GetWeave()" << endl;
+		else if (Type == "CTextile3DWeave")
+			Command << "Weave = GetTextile( '" << TextileName << "' ).Get3DWeave()" << endl;
+		else if (Type == "CTextileOrthogonal")
+			Command << "Weave = GetTextile( '" << TextileName << "' ).GetOrthogonalWeave()" << endl;
+		else if (Type == "CTextileLayerToLayer")
+			Command << "Weave = GetTextile( '" << TextileName << "' ).GetLayerToLayerWeave()" << endl;
+		else
+		{
+			wxMessageBox(wxT("Cannot create pattern draft - incorrect weave type"), wxT("Pattern Draft Error"), wxOK | wxICON_ERROR, this);
+			return;
+		}
 
-			CPatternDraftDialog Dialog;
-			if ( Type == "CTextileWeave2D" )
-				Dialog.SetPatternDraft( ((CTextileWeave2D*)pTextile)->GetPatternDraft());
-			else if ( Type == "CTextile3DWeave" )
-				Dialog.SetPatternDraft( ((CTextile3DWeave*)pTextile)->GetPatternDraft());
-			else if ( Type == "CTextileOrthogonal" )
-				Dialog.SetPatternDraft( ((CTextileOrthogonal*)pTextile)->GetPatternDraft());
-			else 
-				Dialog.SetPatternDraft( ((CTextileLayerToLayer*)pTextile)->GetPatternDraft());
-			
-			if (Dialog.ShowModal() == wxID_OK)
+		int iWeftOrder = 0;
+		if (Type == "CTextileOrthogonal" || Type == "CTextileLayerToLayer")
+		{
+			wxDialog WeftStackOrder;
+			if (wxXmlResource::Get()->LoadDialog(&WeftStackOrder, this, wxT("WeftStackOrder")))
+				XRCCTRL(WeftStackOrder, "StackOrder", wxRadioBox)->SetValidator(wxGenericValidator(&iWeftOrder));
+
+			if (WeftStackOrder.ShowModal() == wxID_OK)
 			{
-				
 			}
 		}
-		break;
+		if (Type == "CTextileWeave2D")
+			Command << "Weave.ConvertToPatternDraft()" << endl;
+		else
+			Command << "Weave.ConvertToPatternDraft(" << iWeftOrder << ")" << endl;
+		Command << "PatternDraft = Weave.GetPatternDraft()" << endl;
+		Command << "PatternDraft.CreatePatternDraft()" << endl;
+
+		SendPythonCode(Command.str());
+
+		CPatternDraftDialog Dialog;
+		if (Type == "CTextileWeave2D")
+			Dialog.SetPatternDraft(((CTextileWeave2D*)pTextile)->GetPatternDraft());
+		else if (Type == "CTextile3DWeave")
+			Dialog.SetPatternDraft(((CTextile3DWeave*)pTextile)->GetPatternDraft());
+		else if (Type == "CTextileOrthogonal")
+			Dialog.SetPatternDraft(((CTextileOrthogonal*)pTextile)->GetPatternDraft());
+		else
+			Dialog.SetPatternDraft(((CTextileLayerToLayer*)pTextile)->GetPatternDraft());
+
+		if (Dialog.ShowModal() == wxID_OK)
+		{
+
+		}
+	}
+	break;
 	case ID_DomainVolumeFraction:
+	{
+		string TextileName = GetTextileSelection();
+		CTextile* pTextile = TEXGEN.GetTextile(TextileName);
+		if (!pTextile)
 		{
-			string TextileName = GetTextileSelection();
-			CTextile* pTextile = TEXGEN.GetTextile( TextileName );
-			if ( !pTextile )
-			{
-				wxMessageBox(wxT("Cannot calculate volume fraction - no textile loaded"), wxT("Volume Fraction Error"), wxOK | wxICON_ERROR, this);
-				return;
-			}
-
-			if ( !pTextile->GetDomain() )
-			{
-				wxMessageBox(wxT("Cannot calculate volume fraction - no domain specified"), wxT("Volume Fraction Error"), wxOK | wxICON_ERROR, this);
-				return;
-			}
-			
-			double VolumeFraction = pTextile->GetDomainVolumeFraction();
-			wxString VfMessage = wxString::Format(wxT("Domain fibre volume fraction = %.6f"), VolumeFraction );
-			wxMessageBox( VfMessage, wxT("Volume Fraction"), wxOK|wxCENTRE, this );
+			wxMessageBox(wxT("Cannot calculate volume fraction - no textile loaded"), wxT("Volume Fraction Error"), wxOK | wxICON_ERROR, this);
+			return;
 		}
-		break;
+
+		if (!pTextile->GetDomain())
+		{
+			wxMessageBox(wxT("Cannot calculate volume fraction - no domain specified"), wxT("Volume Fraction Error"), wxOK | wxICON_ERROR, this);
+			return;
+		}
+
+		double VolumeFraction = pTextile->GetDomainVolumeFraction();
+		wxString VfMessage = wxString::Format(wxT("Domain fibre volume fraction = %.6f"), VolumeFraction);
+		wxMessageBox(VfMessage, wxT("Volume Fraction"), wxOK | wxCENTRE, this);
+	}
+	break;
 	case ID_QuickDomainVolumeFraction:
+	{
+		string TextileName = GetTextileSelection();
+		CTextile* pTextile = TEXGEN.GetTextile(TextileName);
+		if (!pTextile)
 		{
-			string TextileName = GetTextileSelection();
-			CTextile* pTextile = TEXGEN.GetTextile( TextileName );
-			if ( !pTextile )
-			{
-				wxMessageBox(wxT("Cannot calculate volume fraction - no textile loaded"), wxT("Volume Fraction Error"), wxOK | wxICON_ERROR, this);
-				return;
-			}
-
-			if ( !pTextile->GetDomain() )
-			{
-				wxMessageBox(wxT("Cannot calculate volume fraction - no domain specified"), wxT("Volume Fraction Error"), wxOK | wxICON_ERROR, this);
-				return;
-			}
-			
-			double VolumeFraction = pTextile->GetQuickDomainVolumeFraction();
-			wxString VfMessage = wxString::Format(wxT("Domain fibre volume fraction = %.6f\nCalculated using fibre volume fraction for whole yarns\nUse Calculate Domain Volume Fraction to use localised Vf where yarn cross-section varies"), VolumeFraction );
-			wxMessageBox( VfMessage, wxT("Volume Fraction"), wxOK|wxCENTRE, this );
+			wxMessageBox(wxT("Cannot calculate volume fraction - no textile loaded"), wxT("Volume Fraction Error"), wxOK | wxICON_ERROR, this);
+			return;
 		}
-		break;
+
+		if (!pTextile->GetDomain())
+		{
+			wxMessageBox(wxT("Cannot calculate volume fraction - no domain specified"), wxT("Volume Fraction Error"), wxOK | wxICON_ERROR, this);
+			return;
+		}
+
+		double VolumeFraction = pTextile->GetQuickDomainVolumeFraction();
+		wxString VfMessage = wxString::Format(wxT("Domain fibre volume fraction = %.6f\nCalculated using fibre volume fraction for whole yarns\nUse Calculate Domain Volume Fraction to use localised Vf where yarn cross-section varies"), VolumeFraction);
+		wxMessageBox(VfMessage, wxT("Volume Fraction"), wxOK | wxCENTRE, this);
+	}
+	break;
 	default:
 		break;
 	}
@@ -2916,11 +2636,11 @@ void CTexGenMainFrame::OnOptions(wxCommandEvent& event)
 	{
 	case ID_OutputMessages:
 		if (event.IsChecked())
-			CTexGen::GetInstance().SetMessages( true, CLoggerGUI() );
+			CTexGen::GetInstance().SetMessages(true, CLoggerGUI());
 		else
-			CTexGen::GetInstance().SetMessages( false, CLoggerNull() );
+			CTexGen::GetInstance().SetMessages(false, CLoggerNull());
 		break;
-	
+
 	default:
 		break;
 	}
@@ -2931,18 +2651,18 @@ void CTexGenMainFrame::LaunchSurvey()
 	wxString path = wxStandardPaths::Get().GetUserConfigDir();
 	wxString Filename = path + wxT("/.count.txt");
 
-	if ( !wxFileExists( Filename ) )
+	if (!wxFileExists(Filename))
 	{
-		if ( !wxDirExists( path ) )
+		if (!wxDirExists(path))
 		{
-			if ( !wxMkdir( path ) )
+			if (!wxMkdir(path))
 				return;  // Don't try to launch survey if can't create path for file
 		}
 	}
-	
+
 	int count;
 	ifstream countFile(ConvertString(Filename).c_str());
-	if ( countFile )
+	if (countFile)
 	{
 		countFile >> count;
 		countFile.close();
@@ -2950,22 +2670,22 @@ void CTexGenMainFrame::LaunchSurvey()
 	else
 	{
 		ofstream File(ConvertString(Filename).c_str());
-		if ( !File )
+		if (!File)
 			return;   // Don't try to launch survey if can't create file
 		File << 0 << endl;
 		File.close();
 		count = 0;
 	}
 
-	if ( !count || !(count % SURVEY_COUNTER) )
+	if (!count || !(count % SURVEY_COUNTER))
 	{
 		CSurveyDialog SurveyDialog(this);
 		SurveyDialog.SetFilename(ConvertString(Filename).c_str());
 
 		SurveyDialog.ShowModal();
 	}
-	else if ( count != -1 )  // Count is set to -1 if 'Don't ask again' option was selected
-	{ 
+	else if (count != -1)  // Count is set to -1 if 'Don't ask again' option was selected
+	{
 		count++;
 		ofstream outFile(ConvertString(Filename).c_str());
 		outFile << count;
@@ -2981,7 +2701,7 @@ CAbaqusVoxelInput::CAbaqusVoxelInput(wxWindow* parent)
 void CAbaqusVoxelInput::OnOffsetUpdate(wxUpdateUIEvent& event)
 {
 	wxRadioBox* PeriodicBoundariesCtrl = (wxRadioBox*)FindWindow(XRCID("PeriodicBoundaries"));
-	if ( PeriodicBoundariesCtrl->GetSelection() == STAGGERED_BC )
+	if (PeriodicBoundariesCtrl->GetSelection() == STAGGERED_BC)
 	{
 		event.Enable(true);
 	}
@@ -2999,7 +2719,7 @@ CVolumeMeshOptions::CVolumeMeshOptions(wxWindow* parent)
 void CVolumeMeshOptions::OnPeriodicBoundariesUpdate(wxUpdateUIEvent& event)
 {
 	wxCheckBox* PeriodicCtrl = (wxCheckBox*)FindWindow(XRCID("Periodic"));
-	if ( PeriodicCtrl->GetValue() )
+	if (PeriodicCtrl->GetValue())
 	{
 		event.Enable(true);
 		wxRadioBox* PeriodicBoundariesCtrl = (wxRadioBox*)FindWindow(XRCID("PeriodicBoundaries"));
@@ -3048,12 +2768,12 @@ CSurveyDialog::CSurveyDialog(wxWindow* parent)
 	wxXmlResource::Get()->LoadDialog(this, parent, wxT("Survey"));
 }
 
-void CSurveyDialog::OnClickNextTime( wxCommandEvent& event )
+void CSurveyDialog::OnClickNextTime(wxCommandEvent& event)
 {
 	this->EndModal(wxID_CANCEL);
 }
 
-void CSurveyDialog::OnClickNotAgain( wxCommandEvent& event )
+void CSurveyDialog::OnClickNotAgain(wxCommandEvent& event)
 {
 	int count = -1;
 	ofstream countFile(m_Filename.c_str());
@@ -3063,16 +2783,16 @@ void CSurveyDialog::OnClickNotAgain( wxCommandEvent& event )
 	this->EndModal(wxID_CANCEL);
 }
 
-void CSurveyDialog::OnClickTakeSurvey( wxHyperlinkEvent& event )
+void CSurveyDialog::OnClickTakeSurvey(wxHyperlinkEvent& event)
 {
 	int count = 1;
 	ofstream countFile(m_Filename.c_str());
 	countFile << count;
 	countFile.close();
 	wxString url = event.GetURL();
-    
-    if (!wxLaunchDefaultBrowser(url))
-        wxLogWarning(wxT("Could not launch the default browser with url '%s' !"), url.c_str());
+
+	if (!wxLaunchDefaultBrowser(url))
+		wxLogWarning(wxT("Could not launch the default browser with url '%s' !"), url.c_str());
 
 	this->EndModal(wxID_CANCEL);
 }
