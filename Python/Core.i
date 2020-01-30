@@ -142,6 +142,7 @@ namespace std
 %include "../Core/ShearedTextileWeave2D.h"
 %include "../Core/TextileLayered.h"
 %include "../Core/TextileBraid.h"
+%include "../Core/TextileBraidCurved.h"
 
 %include "../Core/TextileDeformer.h"
 %include "../Core/TextileDeformerVolumeMesh.h"

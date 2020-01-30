@@ -3,6 +3,7 @@
 #include "mymath.h"
 
 
+
 #pragma once
 namespace TexGen
 {
@@ -22,8 +23,8 @@ namespace TexGen
 	public:
 		CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth, 
 			double dHeight, double dThickness, 
-			double dPerimeter,double dHornGearVelocity, int iNumHornGear,
-			double dVelocity, bool bCurved, bool bRefine);
+			double dRadius,double dHornGearVelocity, int iNumHornGear,
+			double dVelocity,  bool bRefine);
 		virtual ~CTextileBraid();
 		virtual CTextile* Copy() const { return new CTextileBraid(*this); }
 		string GetType() const { return "CTextileBraid"; }

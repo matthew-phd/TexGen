@@ -32,10 +32,11 @@ CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 	, m_pHornGearSpin(NULL)
 	, m_Velocity(wxT("3"))
 	, m_bCreateDomain(true)
-	, m_bRefine(true)
+	, m_bRefine(false)
 	, m_bWidthChanged(false)
 	, m_bSpacingChanged(false)
 	, m_bThicknessChanged(false)
+	, m_bCurved(true)
 	//, m_bAddedDomainHeight(true)
 {
 	BuildPages();
@@ -175,26 +176,12 @@ wxDialog* CBraidWizard::BuildBraidPatternDialog()
 	return pDailog;
 }
 
-/*wxWizardPageSimple* CBraidWizard::BuildPatternPage()
-{
-	wxWizardPageSimple *pPage = new wxWizardPageSimple(this);
-
-	wxBoxSizer *pMainSizer = new wxBoxSizer(wxVERTICAL);
-	wxSizerFlags SizerFlags(0);
-	SizerFlags.Border();
-	SizerFlags.Expand();
-
-	wxSizer *pSubSizer;
-	pMainSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("Decide the Pattern of the braided fabic: ")), SizerFlags);
-
-}
-*/
 string CBraidWizard::GetCreateTextileCommand(string ExistingTextile)
 {
 	stringstream StringStream;
 	double dFabricThickness, dWidth, dHeight, dRadius, dHornGearVelocity, dVelocity;
 	int iNumWeftYarns, iNumWarpYarns, iNumHornGear;
-	//bool bRefine, bCurved;
+	bool bRefine, bCurved;
 	string braidPattern;
 	//m_YarnSpacing.ToDouble(&dYarnSpacing);
 	m_YarnWidth.ToDouble(&dWidth);
@@ -207,14 +194,18 @@ string CBraidWizard::GetCreateTextileCommand(string ExistingTextile)
 	iNumWeftYarns = m_pWeftYarnsSpin->GetValue();
 	iNumWarpYarns = m_pWarpYarnsSpin->GetValue();
 	iNumHornGear = m_pHornGearSpin->GetValue();
-	//bRefine = false;
-	//bCurved = false;
-	
 	braidPattern = pBraidPattern->GetString(pBraidPattern->GetSelection());
 
-	StringStream << "braid = CTextileBraid(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dFabricThickness << ", "
-		<< dRadius/1000 <<", "<< dHornGearVelocity *((2*PI)/60) <<", "<< iNumHornGear << ", "<< dVelocity/1000 << ", bool(" << m_bCurved <<")" << ", bool(" << m_bRefine << "))" << endl;
-	
+	if (m_bCurved)
+	{
+		StringStream<< "braid = CTextileBraidCurved(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dFabricThickness << ", "
+			<< dRadius / 1000 << ", " << dHornGearVelocity * ((2 * PI) / 60) << ", " << iNumHornGear << ", " << dVelocity / 1000 << ", bool(" << m_bCurved << ")" << ", bool(" << m_bRefine << "))" << endl;
+	}
+	else
+	{
+		StringStream << "braid = CTextileBraid(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dFabricThickness << ", "
+			<< dRadius / 1000 << ", " << dHornGearVelocity * ((2 * PI) / 60) << ", " << iNumHornGear << ", " << dVelocity / 1000 << ", bool(" << m_bRefine << "))" << endl;
+	} 
 	int i, j;
 	for (i = 0; i<iNumWarpYarns; ++i)
 	{

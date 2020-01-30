@@ -67,6 +67,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "Materials.h"
 #include "TextileBraid.h"
 #include "ShellElementExport.h"
+#include "TextileBraidCurved.h"
 
 
 /// Helper macro to get the texgen instance

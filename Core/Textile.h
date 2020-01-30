@@ -31,6 +31,8 @@ namespace TexGen
 	class CTextileAngleInterlock;
 	class CTextileWeave2D;
 	class CTextileBraid;
+	//class CTextileBraidCurved;
+
 
 
 	using namespace std;
