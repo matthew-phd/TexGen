@@ -77,6 +77,7 @@ protected:
 	void OnSaveABAQUSVoxels(wxCommandEvent& event);
 	void OnSaveABAQUSSurface(wxCommandEvent& event);
 	void OnSaveTetgenMesh(wxCommandEvent& event);
+	void OnSaveVTUVoxels(wxCommandEvent& event);
 
 	void OnWindow(wxCommandEvent& event);
 	void OnChar(wxKeyEvent& event);
@@ -200,6 +201,17 @@ private:
 	void OnClickTakeSurvey( wxHyperlinkEvent& event);
 
 	string m_Filename;
+
+	DECLARE_EVENT_TABLE()
+};
+
+class CTetgenOptions : public wxDialog
+{
+public:
+	CTetgenOptions(wxWindow* parent);
+
+private:
+	void OnResolutionUpdate(wxUpdateUIEvent& event);
 
 	DECLARE_EVENT_TABLE()
 };

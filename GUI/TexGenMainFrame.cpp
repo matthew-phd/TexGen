@@ -42,56 +42,59 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 
 BEGIN_EVENT_TABLE(CTexGenMainFrame, wxFrame)
-EVT_MENU(ID_Quit, CTexGenMainFrame::OnQuit)
-EVT_MENU(ID_About, CTexGenMainFrame::OnAbout)
-EVT_MENU(ID_UserGuide, CTexGenMainFrame::OnUserGuide)
-EVT_MENU(ID_Open, CTexGenMainFrame::OnOpen)
-EVT_MENU(ID_Save, CTexGenMainFrame::OnSave)
-EVT_MENU(ID_SaveScreenshot, CTexGenMainFrame::OnSaveScreenshot)
-EVT_MENU(ID_OpenWiseTex, CTexGenMainFrame::OnOpenWiseTex)
-EVT_MENU(ID_OpenTexGenv2, CTexGenMainFrame::OnOpenTexGenv2)
-EVT_MENU(ID_OpenWeavePattern, CTexGenMainFrame::OnOpenWeavePattern)
-EVT_MENU(ID_SaveGrid, CTexGenMainFrame::OnSaveGrid)
-EVT_MENU(ID_SaveVoxel, CTexGenMainFrame::OnSaveVoxel)
-EVT_MENU(ID_SaveVolumeMesh, CTexGenMainFrame::OnSaveVolumeMesh)
-EVT_MENU(ID_SaveSurfaceMesh, CTexGenMainFrame::OnSaveSurfaceMesh)
-EVT_MENU(ID_SaveIGES, CTexGenMainFrame::OnSaveIGES)
-EVT_MENU(ID_SaveSTEP, CTexGenMainFrame::OnSaveSTEP)
-EVT_MENU(ID_SaveABAQUS, CTexGenMainFrame::OnSaveABAQUS)
-EVT_MENU(ID_SaveABAQUSVoxels, CTexGenMainFrame::OnSaveABAQUSVoxels)
-EVT_MENU(ID_SaveABAQUSSurface, CTexGenMainFrame::OnSaveABAQUSSurface)
-EVT_MENU(ID_ToggleControls, CTexGenMainFrame::OnWindow)
-EVT_MENU(ID_ToggleLogWindow, CTexGenMainFrame::OnWindow)
-EVT_MENU(ID_ToggleOutliner, CTexGenMainFrame::OnWindow)
-EVT_MENU(ID_SaveTetgenMesh, CTexGenMainFrame::OnSaveTetgenMesh)
 
-EVT_AUINOTEBOOK_PAGE_CHANGED(ID_LogNoteBook, CTexGenMainFrame::OnLogNotebook)
-EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ViewerNoteBook, CTexGenMainFrame::OnViewerNotebookPageChanged)
-EVT_AUINOTEBOOK_PAGE_CLOSE(ID_ViewerNoteBook, CTexGenMainFrame::OnViewerNotebookClose)
+	EVT_MENU(ID_Quit, CTexGenMainFrame::OnQuit)
+	EVT_MENU(ID_About, CTexGenMainFrame::OnAbout)
+	EVT_MENU(ID_UserGuide, CTexGenMainFrame::OnUserGuide)
+	EVT_MENU(ID_Open, CTexGenMainFrame::OnOpen)
+	EVT_MENU(ID_Save, CTexGenMainFrame::OnSave)
+	EVT_MENU(ID_SaveScreenshot, CTexGenMainFrame::OnSaveScreenshot)
+	EVT_MENU(ID_OpenWiseTex, CTexGenMainFrame::OnOpenWiseTex)
+	EVT_MENU(ID_OpenTexGenv2, CTexGenMainFrame::OnOpenTexGenv2)
+	EVT_MENU(ID_OpenWeavePattern, CTexGenMainFrame::OnOpenWeavePattern)
+	EVT_MENU(ID_SaveGrid, CTexGenMainFrame::OnSaveGrid)
+	EVT_MENU(ID_SaveVoxel, CTexGenMainFrame::OnSaveVoxel)
+	EVT_MENU(ID_SaveVolumeMesh, CTexGenMainFrame::OnSaveVolumeMesh)
+	EVT_MENU(ID_SaveSurfaceMesh, CTexGenMainFrame::OnSaveSurfaceMesh)
+	EVT_MENU(ID_SaveIGES, CTexGenMainFrame::OnSaveIGES)
+	EVT_MENU(ID_SaveSTEP, CTexGenMainFrame::OnSaveSTEP)
+	EVT_MENU(ID_SaveABAQUS, CTexGenMainFrame::OnSaveABAQUS)
+	EVT_MENU(ID_SaveABAQUSVoxels, CTexGenMainFrame::OnSaveABAQUSVoxels)
+	EVT_MENU(ID_SaveABAQUSSurface, CTexGenMainFrame::OnSaveABAQUSSurface)
+	EVT_MENU(ID_ToggleControls, CTexGenMainFrame::OnWindow)
+	EVT_MENU(ID_ToggleLogWindow, CTexGenMainFrame::OnWindow)
+	EVT_MENU(ID_ToggleOutliner, CTexGenMainFrame::OnWindow)
+	EVT_MENU(ID_SaveTetgenMesh, CTexGenMainFrame::OnSaveTetgenMesh)
+	EVT_MENU(ID_SaveVTUVoxels, CTexGenMainFrame::OnSaveVTUVoxels)
 
-EVT_CHECKBOX_MENU_RANGE(ID_RenderNodes, ID_TrimtoDomain, CTexGenMainFrame::OnRendering)
-EVT_BUTTON_MENU_RANGE(ID_ChangeBackgroundColor, ID_RefreshView, CTexGenMainFrame::OnRendering)
-EVT_BUTTON_MENU_RANGE(ID_CreateEmptyTextile, ID_RotateTextile, CTexGenMainFrame::OnTextiles)
-EVT_BUTTON_MENU_RANGE(ID_CreateYarn, ID_YarnFibreVolumeFraction, CTexGenMainFrame::OnModeller)
-EVT_RADIOBUTTON_MENU_RANGE(ID_SelectTool, ID_ScaleTool, CTexGenMainFrame::OnModeller)
-EVT_CHECKBOX_MENU_RANGE(ID_FilterNodes, ID_Relative, CTexGenMainFrame::OnModeller)
-EVT_BUTTON_MENU_RANGE(ID_CreateDomainPlanes, ID_DeleteDomain, CTexGenMainFrame::OnDomains)
-EVT_BUTTON_MENU_RANGE(ID_RunScript, ID_RecordMacro, CTexGenMainFrame::OnPython)
-//EVT_CHECKBOX_MENU_RANGE( ID_OutputMessages, ID_OutputMessages, CTexGenMainFrame::OnOptions)
-EVT_BUTTON_MENU_RANGE(ID_PatternDraft, ID_DomainVolumeFraction, CTexGenMainFrame::OnTools)
-EVT_BUTTON_MENU_RANGE(ID_OutputMessages, ID_OutputMessages, CTexGenMainFrame::OnOptions)
+	EVT_AUINOTEBOOK_PAGE_CHANGED(ID_LogNoteBook, CTexGenMainFrame::OnLogNotebook)
+	EVT_AUINOTEBOOK_PAGE_CHANGED(ID_ViewerNoteBook, CTexGenMainFrame::OnViewerNotebookPageChanged)
+	EVT_AUINOTEBOOK_PAGE_CLOSE(ID_ViewerNoteBook, CTexGenMainFrame::OnViewerNotebookClose)
 
-EVT_TEXT_ENTER(ID_PositionX, CTexGenMainFrame::OnPosition)
-EVT_TEXT_ENTER(ID_PositionY, CTexGenMainFrame::OnPosition)
-EVT_TEXT_ENTER(ID_PositionZ, CTexGenMainFrame::OnPosition)
-EVT_TEXT_ENTER(ID_SnapSize, CTexGenMainFrame::OnSnapSize)
+	EVT_CHECKBOX_MENU_RANGE(ID_RenderNodes, ID_TrimtoDomain, CTexGenMainFrame::OnRendering)
+	EVT_BUTTON_MENU_RANGE(ID_ChangeBackgroundColor, ID_RefreshView, CTexGenMainFrame::OnRendering)
+	EVT_BUTTON_MENU_RANGE(ID_CreateEmptyTextile, ID_RotateTextile, CTexGenMainFrame::OnTextiles)
+	EVT_BUTTON_MENU_RANGE(ID_CreateYarn, ID_YarnFibreVolumeFraction, CTexGenMainFrame::OnModeller)
+	EVT_RADIOBUTTON_MENU_RANGE(ID_SelectTool, ID_ScaleTool, CTexGenMainFrame::OnModeller)
+	EVT_CHECKBOX_MENU_RANGE(ID_FilterNodes, ID_Relative, CTexGenMainFrame::OnModeller)
+	EVT_BUTTON_MENU_RANGE(ID_CreateDomainPlanes, ID_DeleteDomain, CTexGenMainFrame::OnDomains)
+	EVT_BUTTON_MENU_RANGE(ID_RunScript, ID_RecordMacro, CTexGenMainFrame::OnPython)
+	//EVT_CHECKBOX_MENU_RANGE( ID_OutputMessages, ID_OutputMessages, CTexGenMainFrame::OnOptions)
+	EVT_BUTTON_MENU_RANGE(ID_PatternDraft, ID_DomainVolumeFraction, CTexGenMainFrame::OnTools)
+	EVT_BUTTON_MENU_RANGE(ID_OutputMessages, ID_OutputMessages, CTexGenMainFrame::OnOptions)
 
-EVT_TEXT(ID_PositionX, CTexGenMainFrame::OnPosition)
-EVT_TEXT(ID_PositionY, CTexGenMainFrame::OnPosition)
-EVT_TEXT(ID_PositionZ, CTexGenMainFrame::OnPosition)
-EVT_TEXT(ID_SnapSize, CTexGenMainFrame::OnSnapSize)
+	EVT_TEXT_ENTER(ID_PositionX, CTexGenMainFrame::OnPosition)
+	EVT_TEXT_ENTER(ID_PositionY, CTexGenMainFrame::OnPosition)
+	EVT_TEXT_ENTER(ID_PositionZ, CTexGenMainFrame::OnPosition)
+	EVT_TEXT_ENTER(ID_SnapSize, CTexGenMainFrame::OnSnapSize)
 
-EVT_AUI_PANE_BUTTON(CTexGenMainFrame::OnPaneButton)
+	EVT_TEXT(ID_PositionX, CTexGenMainFrame::OnPosition)
+	EVT_TEXT(ID_PositionY, CTexGenMainFrame::OnPosition)
+	EVT_TEXT(ID_PositionZ, CTexGenMainFrame::OnPosition)
+	EVT_TEXT(ID_SnapSize, CTexGenMainFrame::OnSnapSize)
+
+	EVT_AUI_PANE_BUTTON(CTexGenMainFrame::OnPaneButton)
+
 
 END_EVENT_TABLE()
 
@@ -116,6 +119,10 @@ BEGIN_EVENT_TABLE(CSurveyDialog, wxDialog)
 EVT_BUTTON(XRCID("NextTime"), CSurveyDialog::OnClickNextTime)
 EVT_BUTTON(XRCID("NotAgain"), CSurveyDialog::OnClickNotAgain)
 EVT_HYPERLINK(XRCID("TakeSurvey"), CSurveyDialog::OnClickTakeSurvey)
+END_EVENT_TABLE()
+
+BEGIN_EVENT_TABLE(CTetgenOptions, wxDialog)
+	EVT_UPDATE_UI(XRCID("Resolution"), CTetgenOptions::OnResolutionUpdate)
 END_EVENT_TABLE()
 
 CTexGenMainFrame::CTexGenMainFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
@@ -146,23 +153,29 @@ CTexGenMainFrame::CTexGenMainFrame(const wxString& title, const wxPoint& pos, co
 	}
 	{
 		wxMenu *pExportSubMenu = new wxMenu;
+		
+		{
+			wxMenu *pSurfaceSubMenu = new wxMenu;
+			pSurfaceSubMenu->Append(ID_SaveSurfaceMesh, wxT("&VTU, STL File..."));
+			pSurfaceSubMenu->Append(ID_SaveABAQUSSurface, wxT("ABAQUS File..."));
+			pExportSubMenu->Append(wxID_ANY, wxT("Sur&face Mesh..."), pSurfaceSubMenu);
+		}
+		pExportSubMenu->Append(ID_SaveVolumeMesh, wxT("&Volume Mesh..."));
+		pExportSubMenu->Append(ID_SaveTetgenMesh, wxT("&TetgenMesh..."));
+		{
+			wxMenu *pVoxelSubMenu = new wxMenu;
+			pVoxelSubMenu->Append(ID_SaveABAQUSVoxels, wxT("&ABAQUS Voxel File..."));
+			pVoxelSubMenu->Append(ID_SaveVTUVoxels, wxT("&VTU Voxel File..."));
+			pExportSubMenu->Append(wxID_ANY, wxT("Vo&xel Mesh..."), pVoxelSubMenu);
+		}
+		pExportSubMenu->Append(ID_SaveABAQUS, wxT("&ABAQUS Dry Fibre File..."));
+		pExportSubMenu->Append(ID_SaveIGES, wxT("&IGES File..."));
+		pExportSubMenu->Append(ID_SaveSTEP, wxT("&STEP File..."));
 		{
 			wxMenu *pInHouseSubMenu = new wxMenu;
 			pInHouseSubMenu->Append(ID_SaveGrid, wxT("&Grid File..."));
 			pInHouseSubMenu->Append(ID_SaveVoxel, wxT("&Voxel File..."));
 			pExportSubMenu->Append(wxID_ANY, wxT("&In-House"), pInHouseSubMenu);
-		}
-		pExportSubMenu->Append(ID_SaveIGES, wxT("&IGES File..."));
-		pExportSubMenu->Append(ID_SaveSTEP, wxT("&STEP File..."));
-		pExportSubMenu->Append(ID_SaveSurfaceMesh, wxT("Sur&face Mesh..."));
-		pExportSubMenu->Append(ID_SaveVolumeMesh, wxT("&Volume Mesh..."));
-		pExportSubMenu->Append(ID_SaveTetgenMesh, wxT("&TetgenMesh..."));
-		{
-			wxMenu *pAbaqusSubMenu = new wxMenu;
-			pAbaqusSubMenu->Append(ID_SaveABAQUS, wxT("&ABAQUS Dry Fibre File..."));
-			pAbaqusSubMenu->Append(ID_SaveABAQUSVoxels, wxT("ABAQUS &Voxel File..."));
-			pAbaqusSubMenu->Append(ID_SaveABAQUSSurface, wxT("ABAQUS &Surface Mesh File..."));
-			pExportSubMenu->Append(wxID_ANY, wxT("&ABAQUS File"), pAbaqusSubMenu);
 		}
 		pMenuFile->Append(wxID_ANY, wxT("&Export"), pExportSubMenu);
 	}
@@ -993,7 +1006,7 @@ void CTexGenMainFrame::OnSaveABAQUSVoxels(wxCommandEvent& event)
 		wxT("Save Abaqus file"),
 		wxGetCwd(),
 		wxEmptyString,
-		wxT("Abaqus input file (*.inp)|*.inp"),
+		wxT("ABAQUS input file (*.inp)|*.inp|"),
 		wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR
 	);
 	dialog.CentreOnParent();
@@ -1037,6 +1050,68 @@ void CTexGenMainFrame::OnSaveABAQUSVoxels(wxCommandEvent& event)
 					Command << "Vox = CRectangularVoxelMesh('CPeriodicBoundaries')" << endl;
 				Command << "Vox.SaveVoxelMesh(GetTextile('" + TextileName + "'), r\'" << ConvertString(dialog.GetPath()) << "', " << ConvertString(XVoxels) << "," << ConvertString(YVoxels) << "," << ConvertString(ZVoxels)
 					<< ", bool(" << bOutputMatrix << "), bool(" << bOutputYarns << ")," << iBoundaryConditions << "," << iElementType << ")" << endl;
+
+				SendPythonCode(Command.str());
+			}
+
+		}
+	}
+}
+
+void CTexGenMainFrame::OnSaveVTUVoxels(wxCommandEvent& event)
+{
+	string TextileName = GetTextileSelection();
+	stringstream Command;
+
+	wxString XVoxels = wxT("50");
+	wxString YVoxels = wxT("50");
+	wxString ZVoxels = wxT("50");
+
+	int  iDomainType = 0;
+	int	 iBoundaryConditions = 0;
+
+	wxFileDialog dialog
+	(
+		this,
+		wxT("Save Abaqus file"),
+		wxGetCwd(),
+		wxEmptyString,
+		wxT("VTK unstructured grid file (*.vtu)|*.vtu"),
+		wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR
+	);
+	dialog.CentreOnParent();
+
+	wxDialog VTUVoxelOptions;
+
+	if (wxXmlResource::Get()->LoadDialog(&VTUVoxelOptions, this, wxT("VTUVoxelOptions")))
+	{
+		XRCCTRL(VTUVoxelOptions, "XVoxelCount", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &XVoxels));
+		XRCCTRL(VTUVoxelOptions, "YVoxelCount", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &YVoxels));
+		XRCCTRL(VTUVoxelOptions, "ZVoxelCount", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &ZVoxels));
+		XRCCTRL(VTUVoxelOptions, "DomainType", wxRadioBox)->SetValidator(wxGenericValidator(&iDomainType));
+
+		if (VTUVoxelOptions.ShowModal() == wxID_OK)
+		{
+			if (dialog.ShowModal() == wxID_OK)
+			{
+				if (iDomainType == SHEARED_DOMAIN)
+				{
+					Command << "Vox = CShearedVoxelMesh('CShearedPeriodicBoundaries')" << endl;
+					iBoundaryConditions = SHEARED_BC;
+				}
+				else if (iDomainType == ROTATED_DOMAIN)
+				{
+					Command << "Vox = CRotatedVoxelMesh('CRotatedPeriodicBoundaries')" << endl;
+					iBoundaryConditions = ROTATED_BC;
+				}
+				else  // BOX_DOMAIN
+				{
+					Command << "Vox = CRectangularVoxelMesh('CPeriodicBoundaries')" << endl;
+					iBoundaryConditions = MATERIAL_CONTINUUM;
+				}
+
+				Command << "Vox.SaveVoxelMesh(GetTextile('" + TextileName + "'), r\'" << ConvertString(dialog.GetPath()) << "', " << ConvertString(XVoxels) << "," << ConvertString(YVoxels) << "," << ConvertString(ZVoxels)
+					<< ", True, True," << iBoundaryConditions << ", 0, VTU_EXPORT )" << endl;
 
 				SendPythonCode(Command.str());
 			}
@@ -1098,7 +1173,9 @@ void CTexGenMainFrame::OnSaveTetgenMesh(wxCommandEvent& event)
 
 	wxString params = wxT("pqAY");
 	wxString seed = wxT("0.1");
+	wxString resolution = wxT("40");
 	bool bPeriodic = true;
+	bool bSetRes = false;
 
 	wxFileDialog dialog
 	(
@@ -1106,23 +1183,33 @@ void CTexGenMainFrame::OnSaveTetgenMesh(wxCommandEvent& event)
 		wxT("Save Tetgen Mesh file"),
 		wxGetCwd(),
 		wxEmptyString,
-		wxT("Abaqus input file (*.inp)|*.inp"),
+		wxT("ABAQUS input file (*.inp)|*.inp|")
+		wxT("VTK unstructured grid file (*.vtu)|*.vtu"),
 		wxFD_SAVE | wxFD_OVERWRITE_PROMPT | wxFD_CHANGE_DIR
 	);
 	dialog.CentreOnParent();
 
-	wxDialog TetgenInput;
-	if (wxXmlResource::Get()->LoadDialog(&TetgenInput, this, wxT("TetgenOptions")))
+	CTetgenOptions TetgenInput(this);
+	//wxDialog TetgenInput;
+	//if (wxXmlResource::Get()->LoadDialog(&TetgenInput, this, wxT("TetgenOptions")))
 	{
 		XRCCTRL(TetgenInput, "Param", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NONE, &params));
 		XRCCTRL(TetgenInput, "SeedSize", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &seed));
 		XRCCTRL(TetgenInput, "Periodic", wxCheckBox)->SetValidator(wxGenericValidator(&bPeriodic));
+		XRCCTRL(TetgenInput, "SetResolution", wxCheckBox)->SetValidator(wxGenericValidator(&bSetRes));
+		XRCCTRL(TetgenInput, "Resolution", wxTextCtrl)->SetValidator(wxTextValidator(wxFILTER_NUMERIC, &resolution));
 		if (TetgenInput.ShowModal() == wxID_OK)
 		{
 			if (dialog.ShowModal() == wxID_OK)
 			{
+				if (bSetRes)
+				{
+					Command << "textile = GetTextile(r'" << TextileName << "')" << endl;
+					Command << "textile.SetResolution(" + ConvertString(resolution) + ")" << endl;
+				}
 				Command << "TetMesh = CTetgenMesh(" + ConvertString(seed) + ")" << endl;
-				Command << "TetMesh.SaveTetgenMesh(GetTextile('" + TextileName + "'), r\'" << ConvertString(dialog.GetPath()) << "', '" + ConvertString(params) + "', bool(" << bPeriodic << +"))" << endl;
+
+				Command << "TetMesh.SaveTetgenMesh(GetTextile('" + TextileName + "'), r\'" << ConvertString(dialog.GetPath())<< "', '" + ConvertString(params) + "', bool(" << bPeriodic << "), " << dialog.GetFilterIndex() << + ")" << endl;
 
 				SendPythonCode(Command.str());
 			}
@@ -2796,3 +2883,26 @@ void CSurveyDialog::OnClickTakeSurvey(wxHyperlinkEvent& event)
 
 	this->EndModal(wxID_CANCEL);
 }
+
+CTetgenOptions::CTetgenOptions(wxWindow* parent)
+{
+	wxXmlResource::Get()->LoadDialog(this, parent, wxT("TetgenOptions"));
+}
+
+void CTetgenOptions::OnResolutionUpdate(wxUpdateUIEvent& event)
+{
+	wxCheckBox* SetResolutionCtrl = (wxCheckBox*)FindWindow(XRCID("SetResolution"));
+	if (SetResolutionCtrl->GetValue())
+	{
+		event.Enable(true);
+		//wxTextCtrl* ResolutionCtrl = (wxTextCtrl*)FindWindow(XRCID("Resolution"));
+		//ResolutionCtrl->Enable(true);
+	}
+	else
+	{
+		event.Enable(false);
+		//wxTextCtrl* ResolutionCtrl = (wxTextCtrl*)FindWindow(XRCID("Resolution"));
+		//ResolutionCtrl->Enable(false);
+	}
+}
+
