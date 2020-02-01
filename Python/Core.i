@@ -182,6 +182,7 @@ namespace std
 
 %include "../Core/Domain.h"
 %include "../Core/DomainPlanes.h"
+%include "../Core/DomainPrism.h"
 
 %include "../Core/FibreDistribution.h"
 %include "../Core/FibreDistributionConst.h"
