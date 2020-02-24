@@ -256,6 +256,9 @@ namespace TexGen
 		/// Add a repeat vector
 		void AddRepeat(XYZ Repeat);
 
+		// Add a repeat vector for rotation 
+		void AddRotationalRepeat(XYZ Repeat, double angle);
+
 		/// Remove all repeat vectors
 		void ClearRepeats();
 
@@ -446,6 +449,7 @@ namespace TexGen
 		// Accessor methods
 		const vector<CNode> &GetMasterNodes() const { return m_MasterNodes; }
 		const vector<XYZ> &GetRepeats() const { return m_Repeats; }
+		//const vector<WXYZ> &GetRotationalRepeats() const { return m_RotatinalRepeats; }
 		const CYarnSection* GetYarnSection() const { return m_pYarnSection; }
 		const CInterpolation* GetInterpolation() const { return m_pInterpolation; }
 		const CFibreDistribution* GetFibreDistribution() const { return m_pFibreDistribution;}
@@ -497,6 +501,7 @@ namespace TexGen
 		CObjectContainer<CFibreDistribution> m_pFibreDistribution;	///< Fibre distribution given to the yarn, used for getting Fibre Volume Fraction
 
 		vector<XYZ> m_Repeats;	///< List of infinite repeat vectors, yarns will be repeated to infinite displaced by the specified vector multiplied integer values
+		//vector<WXYZ> m_RotatinalRepeats; // List of infinate repeat vectors with rotation. 
 		int m_iNumSlaveNodes;	///< Number of slave nodes to create
 		int m_iNumSectionPoints;	///< Number of section points to create
 		bool m_bEquiSpacedSectionMesh;	///< Whether or not volume meshes of the yarn should be equispaced

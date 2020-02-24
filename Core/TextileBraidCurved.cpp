@@ -3,6 +3,7 @@
 #include "SectionEllipse.h"
 #include "SectionRotated.h"
 #include "SectionPolygon.h"
+#include "DomainPrism.h"
 
 using namespace TexGen;
 
@@ -82,6 +83,7 @@ bool CTextileBraidCurved::BuildTextile() const
 					z = r * cos(theta);
 					x = r * sin(theta);
 					m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(sin(m_dbraidAngle), cos(m_dbraidAngle), (-x)/sqrt((r*r)-(x*x)))));
+					
 					iYarn++;
 				}
 				r += m_dFabricThickness / Cell.size();
@@ -92,6 +94,7 @@ bool CTextileBraidCurved::BuildTextile() const
 				theta += (m_WarpYarnData[j].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI);
 			}
 		}
+		CheckUpVectors(i);
 		starty += m_WeftYarnData[i].dSpacing*cos(m_dbraidAngle);
 		startTheta += -1 * (m_WeftYarnData[i].dSpacing*sin(m_dbraidAngle) / (PI*m_dMandrel_Rad * 2))*(2 * PI);
 	}
@@ -137,6 +140,7 @@ bool CTextileBraidCurved::BuildTextile() const
 					z = r * cos(theta);
 					x = -1 * r * sin(theta);
 					m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(-1 * sin(m_dbraidAngle), cos(m_dbraidAngle),-((-x) / sqrt((r*r) - (x*x))))));
+					
 					iYarn++;
 				}
 				r += m_dFabricThickness / Cell.size();
@@ -147,6 +151,7 @@ bool CTextileBraidCurved::BuildTextile() const
 				theta += (m_WeftYarnData[j].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI);
 			}
 		}
+		CheckUpVectors(i+m_iNumWeftYarns);
 		starty += m_WarpYarnData[i].dSpacing*cos(m_dbraidAngle);
 		startTheta += -1 * (m_WarpYarnData[i].dSpacing*sin(m_dbraidAngle) / (PI*m_dMandrel_Rad * 2))*(2 * PI);
 	}
@@ -163,7 +168,7 @@ bool CTextileBraidCurved::BuildTextile() const
 	dHeightWeft = GetHeightWeft();
 	dWidthWarp = GetWidthWarp();
 	dHeightWarp = GetHeightWarp();
-
+	
 	vector<int>::iterator itpYarn;
 	double dWidth, dHeight, position;
 	for (i = 0; i < m_iNumWeftYarns; ++i)
@@ -175,7 +180,9 @@ bool CTextileBraidCurved::BuildTextile() const
 		for (int j = 0; j <= m_iNumWarpYarns; j++)
 		{
 			position = ((double)j / m_iNumWarpYarns);
-			AngledYarnSection.AddSection(position, CSectionRotated(Section, -WeftPolarCoor[i][j].theta));
+			double rotation = GetNodeRotation(i, j);
+			AngledYarnSection.AddSection(position, CSectionRotated(Section, -rotation));
+		
 		}
 		if (m_pSectionMesh)
 			Section.AssignSectionMesh(*m_pSectionMesh);
@@ -195,7 +202,8 @@ bool CTextileBraidCurved::BuildTextile() const
 		for (int j = 0; j < m_iNumWeftYarns + 1; j++)
 		{
 			position = (double)j / m_iNumWeftYarns;
-			AngledYarnSection.AddSection(position, CSectionRotated(Section, WarpPolarCoor[i][j].theta));
+			double rotation = GetNodeRotation(i + m_iNumWeftYarns, j);
+			AngledYarnSection.AddSection(position, CSectionRotated(Section, -rotation));
 		}
 		if (m_pSectionMesh)
 			Section.AssignSectionMesh(*m_pSectionMesh);
@@ -210,35 +218,189 @@ bool CTextileBraidCurved::BuildTextile() const
 	{
 		itYarn->AssignInterpolation(CInterpolationBezier());
 		itYarn->SetResolution(m_iResolution);
-		//itYarn->AddRepeat(XYZ(dWidthWeft, -dHeightWeft, 0));
-		//itYarn->AddRepeat(XYZ(dWidthWarp, dHeightWarp, 0));
+		//itYarn->AddRepeat(XYZ(dWidthWarp, dHeightWarp, ));
+		//itYarn->AddRotationalRepeat(XYZ(dWidthWarp, dHeightWarp,0),0.45);
 	}
 
 
 	return true;
 }
 
-CDomainPlanes CTextileBraidCurved::GetDefaultDomain(bool bSheared, bool bAddedHeight)
+double CTextileBraidCurved::Angle()
 {
-	XYZ Min, Max;
+	RThetaZ Min, Max;
+	Min.theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*m_iNumWeftYarns;
+	Max.theta = (m_WarpYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*m_iNumWarpYarns;
+
+	double angle = Max.theta - Min.theta;
+
+	return angle; 
+
+}
+
+CDomainPrism CTextileBraidCurved::GetDefaultCurvedDomain( bool bAddedHeight)
+{
+	vector<XY> points;
 	double dGap = 0.0;
 	if (bAddedHeight)
-		dGap = 0.05*m_dFabricThickness;
-	RThetaZ PolarMin, PolarMax;
-	//PolarMin.r = WeftPolarCoor[0][m_iNumWarpYarns].r;
-	PolarMin.theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*m_iNumWeftYarns;
-	//PolarMin.z =  WeftPolarCoor[0][0].z;
-	//PolarMax.r = WarpPolarCoor[0][m_iNumWeftYarns].r;
-	PolarMax.theta = (m_WarpYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*m_iNumWarpYarns;
-	//PolarMax.z = (WarpPolarCoor[1][1].z- WeftPolarCoor[0][0].z)*m_iNumWarpYarns;
-	Min.y = 0;
-	Max.y = m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) * 2* m_iNumWeftYarns;
-	Min.x = m_dRadius*1000*sin(PolarMin.theta);
-	Max.x = m_dRadius*1000*sin(PolarMax.theta);
+		dGap = 0.2*m_dFabricThickness;
+	double angle = Angle()/21;
+	double theta;
 	
-	Min.z = m_dRadius*1000*cos(PolarMin.theta);
-	Max.z = m_dRadius*1000+m_dFabricThickness +dGap;
+	theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*m_iNumWeftYarns;
+	double radius =1000* m_dRadius-dGap;
+	for (int i = 0; i < 21; i++)
+	{
+		points.push_back(XY((sin(theta)*radius), (cos(theta)*radius)));
+		theta = theta + angle;
 
+	}
+	radius = (1000*m_dRadius) + m_dFabricThickness + dGap;
+	theta = theta - angle;
+	for (int i = 0; i < 21; i++)
+	{
+		points.push_back(XY((sin(theta)*radius), (cos(theta)*radius)));
+		theta = theta - angle;
+
+	}
+
+	double MaxY = m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) * 2 * m_iNumWeftYarns;
+	return CDomainPrism(points,XYZ(0, 0, 0), XYZ(0, MaxY, 0));
+	/*vector<XY> points;
+	points.push_back(XY(-10, -10));
+	points.push_back(XY(20, -10));
+	points.push_back(XY(20, 20));
+	points.push_back(XY(-10, 20));
+	//points.push_back(XY(1, -1))
+	return CDomainPrism(points, XYZ(0, 0, 0), XYZ(0, 30, 0));*/
+}
+
+void CTextileBraidCurved::AssignDefaultDomain(bool bAddedHeight)
+{
+	CDomainPrism Domain = GetDefaultCurvedDomain(bAddedHeight);
+	Domain.GeneratePlanes();
+	AssignDomain(Domain);
+}
+
+XYZ CTextileBraidCurved::GetUpVector(XYZ CheckNodes[], bool bYarn) const
+{
+	double dHorz, dz;
+	dz = CheckNodes[2].z - CheckNodes[0].z;
+
+	if (bYarn == PATTERN_WEFTYARN)
+		dHorz = CheckNodes[2].x - CheckNodes[0].x;
+	else
+		dHorz = CheckNodes[2].y - CheckNodes[0].y;
+	XYZ UpVector;
+
+	if (fabs(dz) > fabs(dHorz))
+	{
+		if (dz >= 0.0)
+		{
+			if (bYarn == PATTERN_WEFTYARN)
+				UpVector.x = -1;
+			else
+				UpVector.y = -1;
+		}
+		else
+		{
+			if (bYarn == PATTERN_WEFTYARN)
+				UpVector.x = 1;
+			else
+				UpVector.y = 1;
+
+		}
+	}
+	else
+	{
+		if (dHorz >= 0.0)
+		{
+			UpVector.z = 1;
+		}
+		else
+		{
+			UpVector.z = -1;
+		}
+	}
+	return UpVector;
 	
-	return CDomainPlanes(Min, Max);
+}
+
+void CTextileBraidCurved::CheckUpVectors(int Index, bool bYarn) const
+{
+	BuildTextileIfNeeded();
+	int YarnIndex = 0;
+	if (bYarn == PATTERN_WEFTYARN)
+	{
+		if (Index > m_iNumWeftYarns - 1)
+			return;
+		YarnIndex = m_WeftYarns[Index][0];
+	}
+	else
+	{
+		if (Index > m_iNumWarpYarns - 1)
+			return;
+		YarnIndex = m_WarpYarns[Index][0];
+	}
+
+	vector<CNode> Nodes = m_Yarns[YarnIndex].GetMasterNodes();
+	vector<CNode>::iterator itNodes;
+
+	XYZ CheckNodes[3];
+	XYZ UpVector, StartUp;
+
+	int size = Nodes.size();
+	for (int i = 0; i < size - 1; ++i)
+	{
+		CheckNodes[1] = Nodes[i].GetPosition();
+		if (i == 0)
+		{
+			CheckNodes[0] = CheckNodes[1];
+			CheckNodes[2] = Nodes[i + 1].GetPosition();
+		}
+		else
+		{
+			CheckNodes[2] = Nodes[i + 1].GetPosition();
+		}
+		UpVector = GetUpVector(CheckNodes, bYarn);
+		Nodes[i].SetUp(UpVector);
+		if (i == 0)
+			Nodes[size - 1].SetUp(UpVector);
+		CheckNodes[0] = CheckNodes[1];
+	}
+	m_Yarns[YarnIndex].SetNodes(Nodes);
+}
+
+double CTextileBraidCurved::GetNodeRotation(int YarnIndex, int NodeIndex) const
+{
+	vector<CNode> Nodes = m_Yarns[YarnIndex].GetMasterNodes();
+	CNode Node = Nodes[NodeIndex];
+	XYZ NodePos = Node.GetPosition();
+
+	double X,Y,Z;
+	X = NodePos.x;
+	Y = NodePos.y;
+	Z = NodePos.z;
+
+	double R, b, a;
+	R = sqrt((X*X) + (Z*Z));
+	b = R;
+	
+	
+	XYZ centre;
+	centre.x = 0;
+	centre.y = NodeIndex * m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) * 2;
+	double r, theta;
+	r = sqrt(((X - centre.x)*(X - centre.x)) + ((Y - centre.y)*(Y - centre.y)) + ((Z - centre.z)*(Z - centre.z)));
+	theta = ( acos(sqrt((1 - ((b / r)*(b / r))) / ((exp(1))*(exp(1))))));
+	a = R * (1 / cos((PI/2)-m_dbraidAngle));
+	if (X == 0 && Y == 0)
+	{
+		return 0.0;
+	}
+	double slope = (((b*b)*X) / ((a*a)*Z));
+	double rotation = atan2(slope,1);
+
+	return rotation;
+
 }

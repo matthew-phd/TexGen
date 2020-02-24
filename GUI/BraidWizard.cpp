@@ -220,7 +220,12 @@ string CBraidWizard::GetCreateTextileCommand(string ExistingTextile)
 
 	if (m_bCreateDomain)
 	{
-		StringStream << "braid.AssignDefaultDomain(False, True)" << endl;
+		if (m_bCurved)
+		{
+			StringStream << "braid.AssignDefaultDomain(True)" << endl;
+		}
+		else
+			StringStream << "braid.AssignDefaultDomain(False, True)" << endl;
 	}
 	StringStream << "AddTextile(braid)" << endl;
 	return StringStream.str();

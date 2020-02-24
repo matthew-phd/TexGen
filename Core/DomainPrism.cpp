@@ -29,9 +29,14 @@ CDomainPrism::CDomainPrism(const vector<XY> &Points, XYZ &start, XYZ &end)
 	m_Yarn.AddNode(Node);
 	Node = CNode(end);
 	m_Yarn.AddNode(Node);
-	m_Yarn.AssignSection(CYarnSectionConstant(CSectionPolygon(Points)));
-	m_Yarn.SetResolution(2, 8);  // Need better definition of resolution
+	m_Yarn.AssignSection(CYarnSectionConstant(CSectionPolygon(Points,false, true)));
+	m_Yarn.SetResolution(2, Points.size());  // Need better definition of resolution
 	BuildMesh();
+}
+
+CDomainPrism::CDomainPrism()
+{
+
 }
 
 CDomainPrism::~CDomainPrism(void)

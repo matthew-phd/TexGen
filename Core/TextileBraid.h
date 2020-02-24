@@ -38,7 +38,7 @@ namespace TexGen
 		//void GetWarpSpacings() const;
 		//void GetWeftSpacings() const;
 		void SwapPosition(int x, int y);
-		virtual CDomainPlanes GetDefaultDomain(bool bSheared = false, bool bAddedHeight = true);
+		virtual CDomainPlanes GetDefaultDomain( bool bAddedHeight = true);
 		void AssignDefaultDomain(bool bSheared, bool bAddedHeight);
 		int GetNumWeftYarns() const { return m_iNumWeftYarns; }
 		int GetNumWarpYarns() const { return m_iNumWarpYarns; }
@@ -87,6 +87,7 @@ namespace TexGen
 		bool AdjustSectionsForRotation(bool bPeriodic) const; 
 		void Refine(bool bCorrectWidths = true, bool bPeriodic = true) const;
 		bool NeedsMidSection(int iYarn, int iSection) const;
+		//void AdjustSpacing() const;
 		
 		struct YARNDATA
 		{

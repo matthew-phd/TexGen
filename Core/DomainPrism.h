@@ -34,6 +34,7 @@ namespace TexGen
 	class CLASS_DECLSPEC CDomainPrism : public CDomain
 	{
 	public:
+		CDomainPrism();
 		CDomainPrism(const vector<XY> &Points, XYZ &start, XYZ &end);
 		CDomainPrism(TiXmlElement &Element);
 		~CDomainPrism(void);

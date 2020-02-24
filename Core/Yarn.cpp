@@ -1255,9 +1255,21 @@ void CYarn::AddRepeat(XYZ Repeat)
 	m_Repeats.push_back(Repeat);
 }
 
+void CYarn::AddRotationalRepeat(XYZ Repeat, double angle)
+{
+	m_Repeats.push_back(Repeat);
+	//vector<XYZ>::iterator itRepeat;
+	//for (itRepeat = m_Repeats.begin(); itRepeat != m_Repeats.end(); ++itRepeat)
+	//{
+	//	*itRepeat->Rotate(Rotation, Origin);;
+	//}
+
+}
+
 void CYarn::ClearRepeats()
 {
 	m_Repeats.clear();
+	//m_RotatinalRepeats.clear();
 }
 
 void CYarn::SetRepeats(const vector<XYZ> &Repeats)
