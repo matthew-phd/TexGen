@@ -24,7 +24,7 @@ namespace TexGen
 		CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth, 
 			double dHeight, double dThickness, 
 			double dRadius,double dHornGearVelocity, int iNumHornGear,
-			double dVelocity,  bool bRefine);
+			double dVelocity,  bool bRefine, bool bAdjustSpacing);
 		virtual ~CTextileBraid();
 		virtual CTextile* Copy() const { return new CTextileBraid(*this); }
 		string GetType() const { return "CTextileBraid"; }
@@ -87,7 +87,7 @@ namespace TexGen
 		bool AdjustSectionsForRotation(bool bPeriodic) const; 
 		void Refine(bool bCorrectWidths = true, bool bPeriodic = true) const;
 		bool NeedsMidSection(int iYarn, int iSection) const;
-		//void AdjustSpacing() const;
+		void AdjustSpacing() const;
 		
 		struct YARNDATA
 		{
@@ -104,6 +104,7 @@ namespace TexGen
 		int m_iResolution;
 		bool m_bRefine; 
 		bool m_bCurved;
+		bool m_bAdjustSpacing;
 		CObjectContainer<CSectionMesh> m_pSectionMesh;
 
 		mutable vector<YARNDATA> m_WeftYarnData;

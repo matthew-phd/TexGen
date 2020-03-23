@@ -11,7 +11,7 @@ using namespace TexGen;
 
 CTextileBraid::CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth, 
 	double dHeight, double dThickness, double dRadius,
-	double dHornGearVelocity, int iNumHornGear, double dVelocity, bool bRefine)
+	double dHornGearVelocity, int iNumHornGear, double dVelocity, bool bRefine, bool bAdjustSpacing)
 	: m_iNumWeftYarns(iNumWeftYarns)
 	, m_iNumWarpYarns(iNumWarpYarns)
 	, m_dGapSize(0)
@@ -23,6 +23,7 @@ CTextileBraid::CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth
 	, m_dVelocity(dVelocity)
 	, m_bRefine(bRefine)
 	, m_dMandrel_Rad(dRadius*1000+(dThickness/4)) // radius of the mandrel braided onto + 1
+	, m_bAdjustSpacing(bAdjustSpacing)
 {
 	// calculate the braid angle based on machine inputs
 	m_dbraidAngle = atan((2 * m_dHornGearVelocity * m_dRadius) / (m_iNumHornGear*m_dVelocity));
@@ -243,14 +244,18 @@ bool CTextileBraid::BuildTextile() const
 			itYarn->AddRepeat(XYZ(dWidthWarp, dHeightWarp, 0));
 		}
 
-		if (!m_bRefine)
+		if (!m_bRefine&& !m_bAdjustSpacing)
 		{
-			//AdjustSpacing();
 			return true;
 		}
-
-	Refine(true); 
-
+		if (m_bAdjustSpacing)
+		{
+			AdjustSpacing();
+		}
+		if (m_bRefine)
+		{
+			Refine(true);
+		}
 	return true;
 	
 }
@@ -1136,32 +1141,112 @@ void CTextileBraid::Refine(bool bCorrectWidths, bool bPeriodic) const
 {
 	if (bCorrectWidths)
 	{
+		
 		CorrectBraidYarnWidths();
 		CorrectInterference();
 		AdjustSectionsForRotation(bPeriodic);
 		CorrectInterference();
+		
 	}
 }
 
-/*void CTextileBraid::AdjustSpacing() const
+void CTextileBraid::AdjustSpacing() const
 {
 	// from study to show equation for average yarn spacing-std y=0.1877x+0.1928
 	double std = (0.1877*m_WeftYarnData[0].dSpacing) + 0.1928;
 	default_random_engine generator;
-	normal_distribution<double> distribution(m_WeftYarnData[0].dSpacing, std);
-	CYarn *pYarn;
-	pYarn = &m_Yarns[m_WeftYarns[0][0]];
-	CNode* Nodes = (CNode*)pYarn->GetNode(0);
+	double space = (m_WeftYarnData[0].dSpacing - m_WeftYarnData[0].dWidth);
+	normal_distribution<double> distribution(space, std);
+	//distribution.max = 1.5*space;
+	//distribution.min = 0.0; 
+	CYarn *pYarn1, *pYarn2;
+	XYZ Pos1, Pos2;
+	XYZ Tan1, Tan2;
 	vector<double> spacing;
-	spacing.resize(10);
+	spacing.resize(240);
+	double MaxSpacing = 1.5*space;
+	double MinSpacing = 0.5 * space;
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 240; i++)
 	{
 		double number = distribution(generator);
-		if (number > m_WeftYarnData[0].dWidth)
+		if (number > MinSpacing && number < MaxSpacing)
+		{
 			spacing[i] = number;
+		}
+		else
+			i--;
 
 	}
+	double total=0;
+	for (int i = 0; i < 240; i++)
+	{
+		total += spacing[i];
+	}
+	double average = total / double(240);
+	// weft yarns
+	for (int j = 0; j < 3; j++)
+	{
+		pYarn1 = &m_Yarns[j];
+		pYarn2 = &m_Yarns[j+1];
+		for (int i = 0; i < 4; i++)
+		{
+			CNode* Nodes1 = (CNode*)pYarn1->GetNode(i);
+			CNode* Nodes2 = (CNode*)pYarn2->GetNode(i);
+			Pos1 = Nodes1->GetPosition();
+			Pos2 = Nodes2->GetPosition();
+			Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j+i] + m_WeftYarnData[0].dWidth));
+			Pos2.y = Pos1.y - (cos(m_dbraidAngle)*(spacing[j+i] + m_WeftYarnData[0].dWidth));
+			Tan2 = Nodes2->GetTangent();
+			CNode NewNode(Pos2, Tan2);
+			pYarn2->ReplaceNode(i, NewNode);
+			if (i == 0)
+			{
+				CNode* Nodes1 = (CNode*)pYarn1->GetNode(i+4);
+				CNode* Nodes2 = (CNode*)pYarn2->GetNode(i+4);
+				Pos1 = Nodes1->GetPosition();
+				Pos2 = Nodes2->GetPosition();
+				Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+				Pos2.y = Pos1.y - (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+				Tan2 = Nodes2->GetTangent();
+				CNode NewNode(Pos2, Tan2);
+				pYarn2->ReplaceNode(i+4, NewNode);
+			}
+		}
+	}
 
-}*/
+	// warp yarns
+	for (int j = 4; j < 7; j++)
+	{
+		pYarn1 = &m_Yarns[j];
+		pYarn2 = &m_Yarns[j + 1];
+		for (int i = 0; i < 4; i++)
+		{
+			CNode* Nodes1 = (CNode*)pYarn1->GetNode(i);
+			CNode* Nodes2 = (CNode*)pYarn2->GetNode(i);
+			Pos1 = Nodes1->GetPosition();
+			Pos2 = Nodes2->GetPosition();
+			Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+			Pos2.y = Pos1.y + (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+			Tan2 = Nodes2->GetTangent();
+			CNode NewNode(Pos2, Tan2);
+			pYarn2->ReplaceNode(i, NewNode);
+			if (i == 0)
+			{
+				CNode* Nodes1 = (CNode*)pYarn1->GetNode(i + 4);
+				CNode* Nodes2 = (CNode*)pYarn2->GetNode(i + 4);
+				Pos1 = Nodes1->GetPosition();
+				Pos2 = Nodes2->GetPosition();
+				Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+				Pos2.y = Pos1.y + (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+				Tan2 = Nodes2->GetTangent();
+				CNode NewNode(Pos2, Tan2);
+				pYarn2->ReplaceNode(i + 4, NewNode);
+			}
+		}
+	}
+	
+
+
+}
 

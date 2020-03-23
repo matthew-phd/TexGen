@@ -25,7 +25,7 @@ CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 	, m_pWarpYarnsSpin(NULL)
 	, m_YarnSpacing(wxT("3.5"))
 	, m_YarnWidth(wxT("3.5"))
-	, m_FabricThickness(wxT("1.0"))
+	, m_FabricThickness(wxT("0.7"))
 	, m_BraidAngle(wxT("55"))
 	, m_Radius(wxT("16"))
 	, m_HornGearVelocity(wxT("20"))
@@ -36,7 +36,8 @@ CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 	, m_bWidthChanged(false)
 	, m_bSpacingChanged(false)
 	, m_bThicknessChanged(false)
-	, m_bCurved(true)
+	, m_bCurved(false)
+	, m_bAdjustSpacing(true)
 	//, m_bAddedDomainHeight(true)
 {
 	BuildPages();
@@ -126,9 +127,13 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 		wxCheckBox* pDomainBox;
 		wxCheckBox* pRefineBox;
 		wxCheckBox* pCurvedBox;
+		wxCheckBox* pAdjustSpacingBox;
 		pSubSizer->Add(pDomainBox = new wxCheckBox(pPage, ID_DefaultDomain, wxT("Create Default Domain"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bCreateDomain)), SizerFlags);
 		pSubSizer->Add(pRefineBox = new wxCheckBox(pPage, ID_Refine, wxT("Refine model"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bRefine)), SizerFlags);
 		pSubSizer->Add(pCurvedBox = new wxCheckBox(pPage, ID_Curved, wxT("Curved Unit Cell"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bCurved)), SizerFlags);
+		pSubSizer->Add(pAdjustSpacingBox = new wxCheckBox(pPage, ID_AdjustSpacing, wxT("Adjust Yarn Spacing"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bAdjustSpacing)), SizerFlags);
+		if (m_bCurved)
+			pAdjustSpacingBox->Disable();
 	}
 	pMainSizer->Add(pSubSizer, SizerFlags);
 	SizerFlags.Align(0);
@@ -181,7 +186,7 @@ string CBraidWizard::GetCreateTextileCommand(string ExistingTextile)
 	stringstream StringStream;
 	double dFabricThickness, dWidth, dHeight, dRadius, dHornGearVelocity, dVelocity;
 	int iNumWeftYarns, iNumWarpYarns, iNumHornGear;
-	bool bRefine, bCurved;
+	bool bRefine, bCurved, bAdjustSpacing;
 	string braidPattern;
 	//m_YarnSpacing.ToDouble(&dYarnSpacing);
 	m_YarnWidth.ToDouble(&dWidth);
@@ -199,12 +204,12 @@ string CBraidWizard::GetCreateTextileCommand(string ExistingTextile)
 	if (m_bCurved)
 	{
 		StringStream<< "braid = CTextileBraidCurved(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dFabricThickness << ", "
-			<< dRadius / 1000 << ", " << dHornGearVelocity * ((2 * PI) / 60) << ", " << iNumHornGear << ", " << dVelocity / 1000 << ", bool(" << m_bCurved << ")" << ", bool(" << m_bRefine << "))" << endl;
+			<< dRadius / 1000 << ", " << dHornGearVelocity * ((2 * PI) / 60) << ", " << iNumHornGear << ", " << dVelocity / 1000 << ", bool(" << m_bCurved << ")" << ", bool(" << m_bRefine << "))"  << endl;
 	}
 	else
 	{
 		StringStream << "braid = CTextileBraid(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dFabricThickness << ", "
-			<< dRadius / 1000 << ", " << dHornGearVelocity * ((2 * PI) / 60) << ", " << iNumHornGear << ", " << dVelocity / 1000 << ", bool(" << m_bRefine << "))" << endl;
+			<< dRadius / 1000 << ", " << dHornGearVelocity * ((2 * PI) / 60) << ", " << iNumHornGear << ", " << dVelocity / 1000 << ", bool(" << m_bRefine << ")" << ", bool(" << m_bAdjustSpacing << "))" << endl;
 	} 
 	int i, j;
 	for (i = 0; i<iNumWarpYarns; ++i)

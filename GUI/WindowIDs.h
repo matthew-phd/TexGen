@@ -127,6 +127,7 @@ enum
 	ID_ShearTextile,
 	ID_ShearAngle,
 	ID_Curved,
+	ID_AdjustSpacing,
 
 	ID_BraidAngle,
 

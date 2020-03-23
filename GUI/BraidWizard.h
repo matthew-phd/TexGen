@@ -40,6 +40,7 @@ protected:
 	bool m_bCreateDomain;
 	bool m_bRefine;
 	bool m_bCurved;
+	bool m_bAdjustSpacing;
 	
 	
 	bool m_bWidthChanged;

@@ -18,18 +18,23 @@ namespace TexGen
 		string GetType() const { return "CTextileBraidCurved"; }
 		double GetBraidAngle() const { return m_dbraidAngle; }
 		virtual CDomainPrism GetDefaultCurvedDomain(bool bAddedHeight = true);
-		double Angle();
+		double DomainAngle();
 		void AssignDefaultDomain(bool bAddedHeight);
 		void CheckUpVectors(int WarpIndex, bool Yarn = PATTERN_WEFTYARN) const;
 		double GetNodeRotation(int YarnIndex, int NodeIndex) const;
+		void AddAdditionalNodes() const; 
+		mutable vector<vector<RThetaZ> >PolarCoor;
 
-	
 	protected:
 		bool BuildTextile() const;
 		bool m_bCurved;
-
+		void Refine(bool bCorrectWidths = true, bool bPeriodic = true) const;
+		void CorrectBraidYarnWidths() const;
+		bool AdjustSectionsForRotation(bool bPeriodic) const;
+		void CorrectInterference() const;
 		XYZ GetUpVector(XYZ CheckNodes[], bool bYarn) const;
-
+		
+		
 		
 	};
 }
