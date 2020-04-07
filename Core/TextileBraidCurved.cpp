@@ -16,7 +16,12 @@ CTextileBraidCurved::CTextileBraidCurved(int iNumWeftYarns, int iNumWarpYarns, d
 		iNumHornGear, dVelocity, bRefine, false)
 	,m_bCurved(true)
 {
-	
+	m_YarnAngles.resize(m_iNumWarpYarns + m_iNumWeftYarns);
+	for (int i=0; i <m_YarnAngles.size(); i++)
+	{
+		m_YarnAngles[i].resize(m_iNumWeftYarns+1);
+	}
+
 }
 
 CTextileBraidCurved::~CTextileBraidCurved(void)
@@ -48,7 +53,8 @@ bool CTextileBraidCurved::BuildTextile() const
 	double startr = m_dMandrel_Rad;
 	double startTheta = 0;
 	double starty = 0;
-	
+	double a;
+
 	PolarCoor.resize(m_iNumWeftYarns+m_iNumWarpYarns);
 	for (i = 0; i < m_iNumWeftYarns; i++)
 	{
@@ -81,8 +87,12 @@ bool CTextileBraidCurved::BuildTextile() const
 					PolarCoor[i].push_back(RThetaZ(r, theta, y));
 					z = r * cos(theta);
 					x = r * sin(theta);
-					m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(sin(m_dbraidAngle), cos(m_dbraidAngle), (-x) / sqrt((r*r) - (x*x)))));
-					
+					a = (r*2.0) / (2.0*cos((PI / 2) - ((PI / 2) - m_dbraidAngle)));
+					//if (x==0 || r==0)
+						//m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(sin(m_dbraidAngle), cos(m_dbraidAngle), 0)));
+					//m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(sin(m_dbraidAngle), cos(m_dbraidAngle), (-x) / sqrt((r*r) - (x*x)))));
+					//m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(sin(m_dbraidAngle), cos(m_dbraidAngle),-1.0*((r*r)*x)/((a*a)*z))));
+					m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), GetNodeTangents(i,j)));
 					iYarn++;
 				}
 				r += m_dFabricThickness / Cell.size();
@@ -102,11 +112,7 @@ bool CTextileBraidCurved::BuildTextile() const
 
 	// Add the Warp Yarns
 
-	//WarpPolarCoor.resize(m_iNumWarpYarns);
-	/*for (int i = 0; i < m_iNumWarpYarns; i++)
-	{
-		WarpPolarCoor[i].resize(m_iNumWeftYarns + 1);
-	}*/
+	
 	startr = m_dMandrel_Rad;
 	startTheta = 0;
 	starty = 0;
@@ -139,7 +145,10 @@ bool CTextileBraidCurved::BuildTextile() const
 					PolarCoor[i+m_iNumWeftYarns].push_back(RThetaZ(r, theta, y));
 					z = r * cos(theta);
 					x = -1 * r * sin(theta);
-					m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(-1 * sin(m_dbraidAngle), cos(m_dbraidAngle),-((-x) / sqrt((r*r) - (x*x))))));
+					//if(x==0 || r==0)
+						//m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(-sin(m_dbraidAngle), cos(m_dbraidAngle), 0)));
+					//m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(-sin(m_dbraidAngle), cos(m_dbraidAngle),((r*r)*x)/((a*a)*z))));
+					m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), GetNodeTangents(i+m_iNumWeftYarns,j)));
 					
 					iYarn++;
 				}
@@ -156,7 +165,6 @@ bool CTextileBraidCurved::BuildTextile() const
 		startTheta += -1 * (m_WarpYarnData[i].dSpacing*sin(m_dbraidAngle) / (PI*m_dMandrel_Rad * 2))*(2 * PI);
 	}
 
-	//AddAdditionalNodes();
 	// Assign sections and interpolation to the yarns
 
 
@@ -181,6 +189,7 @@ bool CTextileBraidCurved::BuildTextile() const
 		{
 			position = ((double)j /m_iNumWeftYarns);
 			double rotation = GetNodeRotation(i, j);
+			m_YarnAngles[i][j] = rotation;
 			AngledYarnSection.AddSection(position, CSectionRotated(Section, rotation));
 		
 		}
@@ -203,6 +212,7 @@ bool CTextileBraidCurved::BuildTextile() const
 		{
 			position = (double)j / m_iNumWarpYarns;
 			double rotation = GetNodeRotation(i + m_iNumWeftYarns, j);
+			m_YarnAngles[i + m_iNumWeftYarns][j] = rotation;
 			AngledYarnSection.AddSection(position, CSectionRotated(Section, rotation));
 		}
 		if (m_pSectionMesh)
@@ -232,12 +242,19 @@ bool CTextileBraidCurved::BuildTextile() const
 double CTextileBraidCurved::DomainAngle()
 {
 	RThetaZ Min, Max;
-	Min.theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*(m_iNumWeftYarns/2);
-	Max.theta = (m_WarpYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*(m_iNumWarpYarns/2);
+	Min.theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*((m_iNumWeftYarns-1)/2);
+	Max.theta = (m_WarpYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*((m_iNumWarpYarns-1)/2);
 
 	double angle = Max.theta - Min.theta;
+	if (fmod((2*PI/angle), 1.0) == 0) return angle;
+	else 
+	{ 
+		double roundAngle = (2 * PI) / round((2*PI)/angle);
+		return roundAngle;
+	}
+		
+	//return angle; 
 
-	return angle; 
 
 }
 
@@ -250,7 +267,8 @@ CDomainPrism CTextileBraidCurved::GetDefaultCurvedDomain( bool bAddedHeight)
 	double angle =DomainAngle()/20;
 	double theta;
 	
-	theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*(m_iNumWeftYarns / 2);
+	theta = -(angle * 10);
+	//theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*(m_iNumWeftYarns / 2);
 	double radius =1000* m_dRadius-dGap;
 	for (int i = 0; i < 21; i++)
 	{
@@ -267,7 +285,7 @@ CDomainPrism CTextileBraidCurved::GetDefaultCurvedDomain( bool bAddedHeight)
 
 	}
 	double MinY = m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) * 2 *  (m_iNumWeftYarns/4);
-	double MaxY = MinY+ m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) * 2 * (m_iNumWeftYarns / 2);
+	double MaxY = MinY+ m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) *  (m_iNumWeftYarns / 2);
 	return CDomainPrism(points,XYZ(0, MinY, 0), XYZ(0, MaxY, 0));
 	/*vector<XY> points;
 	points.push_back(XY(-10, -10));
@@ -280,6 +298,9 @@ CDomainPrism CTextileBraidCurved::GetDefaultCurvedDomain( bool bAddedHeight)
 
 void CTextileBraidCurved::AssignDefaultDomain(bool bAddedHeight)
 {
+
+	//CDomainPlanes Domain = CDomainPlanes(XYZ(-20, -5, 0), XYZ(20, 40, 17));
+	//AssignDomain(Domain);
 	CDomainPrism Domain = GetDefaultCurvedDomain(bAddedHeight);
 	Domain.GeneratePlanes();
 	AssignDomain(Domain);
@@ -378,38 +399,12 @@ double CTextileBraidCurved::GetNodeRotation(int YarnIndex, int NodeIndex) const
 {
 	vector<CNode> Nodes = m_Yarns[YarnIndex].GetMasterNodes();
 	
-	//CNode Node = Nodes[NodeIndex];
 	XYZ NodePos = Nodes[NodeIndex].GetPosition();
 
 	double X,Y,Z;
 	X = NodePos.x;
 	Y = NodePos.y;
 	Z = NodePos.z;
-
-	/*double R, b, a;
-	R = sqrt((X*X) + (Z*Z));
-	b = R;
-	
-	
-	XYZ centre;
-	centre.x = 0;
-	centre.y = NodeIndex * m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) * 2;
-	centre.z = 0;
-	double r, theta;
-	r = sqrt(((X - centre.x)*(X - centre.x)) + ((Y - centre.y)*(Y - centre.y)) + ((Z - centre.z)*(Z - centre.z)));
-	theta = ( acos(sqrt((1 - ((b / r)*(b / r))) / ((exp(1))*(exp(1))))));
-	a = R * (1 / cos((PI/2)-m_dbraidAngle));
-	if (X == 0 && Y == 0)
-	{
-		return 0.0;
-	}
-	double slope = (((b*b)*X) / ((a*a)*Z));
-	double rotation = atan2(slope,1);
-	
-
-
-	return rotation;*/
-	
 
 	Nodes[NodeIndex].ProjectUp();
 	XYZ upVector = Nodes[NodeIndex].GetUp();
@@ -423,19 +418,9 @@ double CTextileBraidCurved::GetNodeRotation(int YarnIndex, int NodeIndex) const
 	double TanGradient = -((b*b)*X) / ((a*a)*Z);
 
 	double rotation = atan(TanGradient);
-
-	//Nodes[NodeIndex].SetAngle(PI-m_dbraidAngle);
 	m_Yarns[YarnIndex].SetNodes(Nodes);
 
-	/*if (X == 0 && Y == 0)
-	{
-		return 0.0;
-	}*/
-
 	return rotation;
-
-
-
 }
 
 void CTextileBraidCurved::AddAdditionalNodes() const
@@ -531,10 +516,18 @@ void CTextileBraidCurved::AddAdditionalNodes() const
 
 void CTextileBraidCurved::Refine(bool bCorrectWidths, bool bPeriodic) const
 {
+	//string FileName = "Cross_Section_4_4";
+	//SaveCrossSection(FileName, 4, 4);
 	//CorrectBraidYarnWidths();
-	CorrectInterference();
-	AdjustSectionsForRotation(bPeriodic);
 	//CorrectInterference();
+	//FileName = "Cross_Section_4_4_Correct_Interference";
+	//SaveCrossSection(FileName, 4, 4);
+	AdjustSectionsForRotation(bPeriodic);
+	//FileName = "Cross_Section_4_4_Rotation";
+	//SaveCrossSection(FileName, 4, 4);
+	CorrectInterference();
+	//FileName = "Cross_Section_4_4_refine";
+	//(FileName, 4, 4);
 }
 
 void CTextileBraidCurved::CorrectBraidYarnWidths() const
@@ -751,6 +744,7 @@ bool CTextileBraidCurved::AdjustSectionsForRotation(bool bPeriodic) const
 
 	double dAngle;
 	double dRotation;
+	double k;
 	int iNumYarns, iYarnLength;
 	int iDirection;
 	int x, y;
@@ -847,65 +841,99 @@ bool CTextileBraidCurved::AdjustSectionsForRotation(bool bPeriodic) const
 				else
 					iRot = 1;	// Rotate to the left
 
-				CSectionLenticular* EllipseSection = NULL;
+				CSectionLenticular* LenticularSection = NULL;
 				string YarnSection = pYarnSection->GetNodeSection(j).GetType();
 				if (pYarnSection->GetNodeSection(j).GetType() == "CSectionLenticular")
-					EllipseSection = (CSectionLenticular*)pYarnSection->GetNodeSection(j).Copy();
+					LenticularSection = (CSectionLenticular*)pYarnSection->GetNodeSection(j).Copy();
 				else
-					EllipseSection = (CSectionLenticular*)DefaultEllipseSection.Copy();
+					LenticularSection = (CSectionLenticular*)DefaultEllipseSection.Copy();
 				if (iDirection == 0)
+				{
 					dRotation = GetNodeRotation(i + iNumYarns, j);
+					k = i + iNumYarns;
+				}
 				else
+				{
 					dRotation = GetNodeRotation(i, j);
+					k = i;
+				}
 				double dRot;
 				// Assign section based on the rotation it should have
 				switch (iRot)
 				{
-					 // Full rotation angle 
 				case 0:
-					//					pYarnSection->ReplaceSection(j, EllipseSection);
+					pYarnSection->ReplaceSection(j, CSectionRotated(*LenticularSection, dRotation));
+					m_YarnAngles[k][j] = dRotation;
 					break;
 				case -1:
-					dRot = dRotation + dAngle;
-					pYarnSection->ReplaceSection(j, CSectionRotated(*EllipseSection, dRotation));
+					dRot = dRotation - dAngle;
+					pYarnSection->ReplaceSection(j, CSectionRotated(*LenticularSection, dRot));
+					m_YarnAngles[k][j] = dRot;
 					break;
 				case 1:
-					dRot = dRotation - dAngle;
-					pYarnSection->ReplaceSection(j, CSectionRotated(*EllipseSection, dRotation));
+					dRot = dRotation + dAngle;
+					pYarnSection->ReplaceSection(j, CSectionRotated(*LenticularSection, dRot));
+					m_YarnAngles[k][j] = dRot;
 					break;
 				}
-				delete EllipseSection;
+				delete LenticularSection;
 			}
 
 			// Assign the same section to the end as at the start (periodic yarns)
 			if (bPeriodic)
-				pYarnSection->ReplaceSection(j, pYarnSection->GetNodeSection(0));
-
-			/*			// Now additional sections will be added between cross overs
-			for (j=0; j<iYarnLength; ++j)
-			{
+				j = 0;
+				if (iDirection == 0)
+				{
+					y = iPrevYarny = iNextYarny = j;
+				}
+				else
+				{
+					x = iPrevYarnx = iNextYarnx = j;
+				}
+			// If the yarns on either side are the same then no rotation should occur
+			if (GetCell(iPrevYarnx, iPrevYarny) == GetCell(iNextYarnx, iNextYarny))
+				iRot = 0;
+			else if (GetCell(iPrevYarnx, iPrevYarny)[0] == PATTERN_WARPYARN)
+				iRot = -1;	// Rotate to the right
+			else
+				iRot = 1;	// Rotate to the left
+			CSectionLenticular* EllipseSection = NULL;
+			string YarnSection = pYarnSection->GetNodeSection(j).GetType();
+			if (pYarnSection->GetNodeSection(iYarnLength).GetType() == "CSectionLenticular")
+				EllipseSection = (CSectionLenticular*)pYarnSection->GetNodeSection(j).Copy();
+			else
+				EllipseSection = (CSectionLenticular*)DefaultEllipseSection.Copy();
 			if (iDirection == 0)
 			{
-			// Set the parameters which will be used by GetCell for traversing an X yarn
-			y = iPrevYarny = iNextYarny = j;
-			iNextCrossx = x;
-			iNextCrossy = (y+1)%iYarnLength;
+				dRotation = GetNodeRotation(i + iNumYarns, iYarnLength);
+				k = i + iNumYarns;
 			}
 			else
 			{
-			// Set the parameters which will be used by GetCell for traversing a Y yarn
-			x = iPrevYarnx = iNextYarnx = j;
-			iNextCrossx = (x+1)%iYarnLength;
-			iNextCrossy = y;
+				dRotation = GetNodeRotation(i, iYarnLength);
+				k = i;
 			}
-			// If the yarn is going from the top to the bottom or vice versa, an additional section
-			// is placed half way between the two
-			if (GetCell(x, y) != GetCell(iNextCrossx, iNextCrossy))
+			double dRot;
+				// Assign section based on the rotation it should have
+			switch (iRot)
 			{
-			YarnSection.InsertSection(j, 0.5, EllipseSection);
+					 
+			case 0:
+				pYarnSection->ReplaceSection(iYarnLength, CSectionRotated(*EllipseSection, dRotation));
+				m_YarnAngles[k][j] = dRotation;
+				break;
+			case -1:
+				dRot = dRotation - dAngle;
+				pYarnSection->ReplaceSection(iYarnLength, CSectionRotated(*EllipseSection, dRot));
+				m_YarnAngles[k][j] = dRot;
+				break;
+			case 1:
+				dRot = dRotation + dAngle;
+				pYarnSection->ReplaceSection(iYarnLength, CSectionRotated(*EllipseSection, dRot));
+				m_YarnAngles[k][j] = dRot;
+				break;
 			}
-			}*/
-
+		
 			pYarn->AssignSection(*pYarnSection);
 			delete pYarnSection;
 		}
@@ -1020,16 +1048,55 @@ void CTextileBraidCurved::CorrectInterference() const
 		{
 			YarnPosInfo.iSection = j;
 			Points = pYarnSection->GetSection(YarnPosInfo, YarnSectionModifiers[i][j].size());
+			/*if (i == 4 && j == 4)
+			{
+				ofstream fileX;
+				fileX.open("yarn_cross_section_x.txt");
+				for (int q = 0; q < Points.size(); q++)
+				{
+					fileX << Points[q][0];
+					fileX << endl;
+				}
+				fileX.close();
+				ofstream fileY;
+				fileY.open("yarn_cross_section_y.txt");
+				for (int q = 0; q < Points.size(); q++)
+				{
+					fileY << Points[q][1];
+					fileY << endl;
+				}
+				fileY.close();
+			}*/
 			for (k = 0; k < (int)Points.size(); k++)
 			{
 				Points[k] *= YarnSectionModifiers[i][j][k];
 			}
+			/*if (i == 4 && j == 4)
+			{
+				ofstream file1X;
+				file1X.open("yarn_cross_section_refine_x.txt");
+				for (int q = 0; q < Points.size(); q++)
+				{
+					file1X << Points[q][0];
+					file1X << endl;
+				}
+				file1X.close();
+				ofstream file1Y;
+				file1Y.open("yarn_cross_section_refine_y.txt");
+				for (int q = 0; q < Points.size(); q++)
+				{
+					file1Y << Points[q][1];
+					file1Y << endl;
+				}
+				file1Y.close();
+			}*/
 			CSectionPolygon Section(Points);
 			if (m_pSectionMesh)
 				Section.AssignSectionMesh(*m_pSectionMesh);
 			NewYarnSection.AddSection(Section);
 		}
-		NewYarnSection.AddSection(NewYarnSection.GetNodeSection(0));
+		double RotationAngle = -m_YarnAngles[i][0]+m_YarnAngles[i][m_YarnAngles[i].size()-1];
+		NewYarnSection.AddSection(CSectionRotated (NewYarnSection.GetNodeSection(0),RotationAngle));
 
 		// Add Sections between the nodes (Not necessary for sections that dont cross)
 		YarnPosInfo.dSectionPosition = 0.5;
@@ -1055,4 +1122,99 @@ void CTextileBraidCurved::CorrectInterference() const
 	}
 
 
+}
+
+XYZ CTextileBraidCurved::GetNodeTangents(int YarnIndex, int NodeIndex) const
+{
+	double r0, theta0, y0;
+	double r1, theta1, y1;
+	double x0, z0;
+	double x1, z1;
+	if (YarnIndex < m_iNumWeftYarns)
+	{
+		
+		r0 = PolarCoor[YarnIndex][NodeIndex].r;
+		theta0 = PolarCoor[YarnIndex][NodeIndex].theta;
+		y0 = PolarCoor[YarnIndex][NodeIndex].z;
+		
+		r1 = r0;
+		theta1 = theta0 + ((m_WarpYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI));
+		y1 = y0 + m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle);
+
+		x0 = r0 * sin(theta0);
+		z0 = r0 * cos(theta0);
+
+		x1 = r1 * sin(theta1);
+		z1 = r1 * cos(theta1);
+
+		XYZ dirVector = XYZ(x1 - x0, y1 - y0, z1 - z0);
+		double Magnitude = sqrt((dirVector.x*dirVector.x) + (dirVector.y*dirVector.y) + (dirVector.z*dirVector.z));
+
+		XYZ Tangent = XYZ((dirVector.x / Magnitude), (dirVector.y / Magnitude), (dirVector.z / Magnitude));
+
+		return Tangent;
+			   
+	}
+
+	if (YarnIndex >= m_iNumWeftYarns)
+	{
+		r0 = PolarCoor[YarnIndex][NodeIndex].r;
+		theta0 = PolarCoor[YarnIndex][NodeIndex].theta;
+		y0 = PolarCoor[YarnIndex][NodeIndex].z;
+
+		r1 = r0;
+		theta1 = theta0 + ((m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI));
+		y1 = y0 + m_WarpYarnData[0].dSpacing*cos(m_dbraidAngle);
+
+		x0 = -1.0*r0 * sin(theta0);
+		z0 = r0 * cos(theta0);
+
+		x1 = -1.0* r1 * sin(theta1); 
+		z1 = r1 * cos(theta1);
+
+		XYZ dirVector = XYZ(x1 - x0, y1 - y0, z1 - z0);
+		double Magnitude = sqrt((dirVector.x*dirVector.x) + (dirVector.y*dirVector.y) + (dirVector.z*dirVector.z));
+
+		XYZ Tangent = XYZ((dirVector.x / Magnitude), (dirVector.y / Magnitude), (dirVector.z / Magnitude));
+
+		return Tangent;
+	}
+
+
+
+
+}
+
+void CTextileBraidCurved::SaveCrossSection(string& FileName, int YarnIndex, int NodeIndex) const
+{
+	const CYarnSection* pYarnSection;
+	YARN_POSITION_INFORMATION YarnPosInfo;
+	CYarnSectionInterpNode NewYarnSection(false, true);
+	vector<XY> Points;
+
+
+	pYarnSection = m_Yarns[YarnIndex].GetYarnSection();
+	YarnPosInfo.SectionLengths = m_Yarns[YarnIndex].GetYarnSectionLengths();
+	Points = pYarnSection->GetSection(YarnPosInfo, 40);
+	ofstream file1X;
+	file1X.open(FileName+"_x.txt");
+	for (int q = 0; q < Points.size(); q++)
+	{
+		file1X << Points[q][0];
+		file1X << endl;
+	}
+	file1X.close();
+	ofstream file1Y;
+	file1Y.open(FileName+"_y.txt");
+	for (int q = 0; q < Points.size(); q++)
+	{
+		file1Y << Points[q][1];
+		file1Y << endl;
+	}
+	file1Y.close();
+}
+
+double CTextileBraidCurved::ReturnNodeRotation(int YarnIndex, int NodeIndex) const
+{
+	return m_YarnAngles[YarnIndex][NodeIndex];
 }

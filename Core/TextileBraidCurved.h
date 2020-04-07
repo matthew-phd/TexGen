@@ -32,8 +32,11 @@ namespace TexGen
 		void CorrectBraidYarnWidths() const;
 		bool AdjustSectionsForRotation(bool bPeriodic) const;
 		void CorrectInterference() const;
-		XYZ GetUpVector(XYZ CheckNodes[], bool bYarn) const;
-		
+		XYZ GetNodeTangents(int YarnIndex, int NodeIndex) const;
+		XYZ GetUpVector(XYZ CheckNodes[], bool bYarn) const; 
+		void SaveCrossSection(string& FileName, int YarnIndex, int NodeIndex) const;
+		double ReturnNodeRotation(int YarnIndex, int NodeIndex) const;
+		mutable vector<vector<double>> m_YarnAngles;
 		
 		
 	};

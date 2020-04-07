@@ -5,6 +5,7 @@
 #include "Wizard.xpm"
 #include "RangeValidator.h"
 #include "BraidPatternCtrl.h"
+#include "BraiderImage.xpm"
 
 
 BEGIN_EVENT_TABLE(CBraidWizard, wxWizard)
@@ -66,7 +67,7 @@ void CBraidWizard::BuildPages()
 
 wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 {
-	wxWizardPageSimple *pPage = new wxWizardPageSimple(this);
+	wxWizardPageSimple *pPage = new wxWizardPageSimple(this, NULL, NULL, wxBitmap(BraiderImage_xpm));
 
 	wxBoxSizer *pMainSizer = new wxBoxSizer(wxVERTICAL);
 	wxSizerFlags SizerFlags(0);
@@ -76,6 +77,8 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 	wxSizer *pSubSizer;
 
 	pMainSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("This wizard will create a biaxial braid model for you.")), SizerFlags);
+
+	//pMainSizer->Add(new wxStaticBitmap(pPage, wxID_STATIC, wxBitmap(BraiderImage_xpm) ), SizerFlags );
 
 	SizerFlags.Align(wxALIGN_CENTER_VERTICAL);
 	pSubSizer = new wxFlexGridSizer(2);
