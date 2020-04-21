@@ -51,6 +51,8 @@ CTextileBraid::CTextileBraid(int iNumWeftYarns, int iNumWarpYarns, double dWidth
 	m_WeftYarnData.resize(iNumWeftYarns, YarnData);
 	m_WarpYarnData.resize(iNumWarpYarns, YarnData);
 	 
+	TGLOGINDENT("Braid angle: " << m_dbraidAngle << endl << "Cover Factor: " << m_dCoverFactor);
+	
 
 	vector<bool> Cell;
 	Cell.push_back(PATTERN_WARPYARN);

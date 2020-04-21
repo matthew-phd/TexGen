@@ -39,9 +39,9 @@ import dataHandlingInPlane
 # DO NOT ADD THE '.ODB' EXTENSION.
 # This is added automatically by the script when needed.
 
-modelName = 'VoxelContinuumTest'
+modelName = 'Braid_1_EPIKOTE'
 # Set the thermo-mechanical switch to 1 (CTE evaluation) or 0 (no CTE evaluation)
-TM=1
+TM=0
 # Set SingleLayerRVE switch to True for single layer voxel export and staggered boundary conditions
 # False for all others (single layer will only calculate in-plane properties)
 SingleLayerRVE = False
