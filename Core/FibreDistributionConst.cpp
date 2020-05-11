@@ -46,7 +46,7 @@ double CFibreDistributionConst::GetVolumeFraction(const vector<XY> &Section, dou
 {
 	double dArea = IntegrateDistribution(Section);
 	double dVf = dFibreArea/dArea;
-	if (dVf>0.86||dVf<0)
+	/*if (dVf>0.86||dVf<0)
 	{
 		if ( YarnIndex == -1)
 		{
@@ -56,7 +56,7 @@ double CFibreDistributionConst::GetVolumeFraction(const vector<XY> &Section, dou
 		{
 			TGERROR("Warning: Volume fraction is not realistic: " << dVf << ", Yarn: " << YarnIndex);
 		}
-	}
+	}*/
 	return dVf;
 }
 

@@ -76,6 +76,8 @@ namespace TexGen
 		void SetThickness(double dThickness);
 		void SetResolution(int iResolution);
 		void SetGapSize(double dGapSize);
+
+	
 		
 
 
@@ -119,6 +121,7 @@ namespace TexGen
 		double m_dVelocity;
 		double m_dCoverFactor;
 		double m_dMandrel_Rad;
+		int m_iNumYarns;
 		
 		
 	};

@@ -11,10 +11,11 @@ using namespace TexGen;
 CTextileBraidCurved::CTextileBraidCurved(int iNumWeftYarns, int iNumWarpYarns, double dWidth,
 	double dHeight, double dThickness,
 	double dRadius, double dHornGearVelocity, int iNumHornGear,
-	double dVelocity, bool bCurved, bool bRefine)
+	double dVelocity, bool bCurved, bool bRefine, int iNumLayers)
 	:CTextileBraid(iNumWeftYarns, iNumWarpYarns, dWidth, dHeight,dThickness, dRadius, dHornGearVelocity,
 		iNumHornGear, dVelocity, bRefine, false)
 	,m_bCurved(true)
+	
 {
 	m_YarnAngles.resize(m_iNumWarpYarns + m_iNumWeftYarns);
 	for (int i=0; i <m_YarnAngles.size(); i++)
@@ -55,7 +56,7 @@ bool CTextileBraidCurved::BuildTextile() const
 	double starty = 0;
 	double a;
 
-	PolarCoor.resize(m_iNumWeftYarns+m_iNumWarpYarns);
+	PolarCoor.resize(m_iNumYarns);
 	for (i = 0; i < m_iNumWeftYarns; i++)
 	{
 
@@ -167,7 +168,7 @@ bool CTextileBraidCurved::BuildTextile() const
 
 	// Assign sections and interpolation to the yarns
 
-
+	
 	double dWidthWeft;
 	double dHeightWeft;
 	double dWidthWarp;
@@ -231,12 +232,16 @@ bool CTextileBraidCurved::BuildTextile() const
 		//itYarn->AddRepeat(XYZ(dWidthWarp, dHeightWarp, ));
 		//itYarn->AddRotationalRepeat(XYZ(dWidthWarp, dHeightWarp,0),0.45);
 	}
+	/*if (iNumLayers > 1)
+		AddLayers(iNumLayers);*/
 
 	if (!m_bRefine)
 		return true;
 
 	Refine();
 	return true;
+
+
 }
 
 double CTextileBraidCurved::DomainAngle()
@@ -276,7 +281,7 @@ CDomainPrism CTextileBraidCurved::GetDefaultCurvedDomain( bool bAddedHeight)
 		theta = theta + angle;
 
 	}
-	radius = (1000*m_dRadius) + m_dFabricThickness + dGap;
+	radius = 1000*m_dRadius + m_dFabricThickness + dGap;
 	theta = theta - angle;
 	for (int i = 0; i < 21; i++)
 	{
@@ -1218,3 +1223,207 @@ double CTextileBraidCurved::ReturnNodeRotation(int YarnIndex, int NodeIndex) con
 {
 	return m_YarnAngles[YarnIndex][NodeIndex];
 }
+
+//void CTextileBraidCurved::AddLayers(int NumberOfLayers) const
+//{
+//	for (int l = 1; l < NumberOfLayers; l++)
+//	{
+//		vector<int> Yarns;
+//
+//		double r, theta, z;
+//		double x, y;
+//
+//		// add weft yarns (x yarns)
+//		int i, j, k, iYarn;
+//		double startr = m_dMandrel_Rad+(l*m_dFabricThickness);
+//		double startTheta = 0;
+//		double starty = 0;
+//		double a;
+//		//double dbraidAngle =  atan((2 * m_dHornGearVelocity * m_dRadius) / (m_iNumHornGear*m_dVelocity));
+//		//double vol_fraction = (1 - (((m_WeftYarnData[0].dWidth / 1000)*(2 * m_iNumHornGear)) / (4 * PI*m_dRadius*cos(m_dbraidAngle))));
+//		//double dCoverFactor = 1 - pow(vol_fraction, 2.0);
+//
+//		//double K = dCoverFactor;
+//		//double b = (2 * dCoverFactor*(m_WeftYarnData[0].dWidth / 1000.0)) - (2 * (m_WeftYarnData[0].dWidth / 1000.0));
+//		//double c = (dCoverFactor - 1)*((m_WeftYarnData[0].dWidth / 1000.0)*(m_WeftYarnData[0].dWidth / 1000.0));
+//
+//		//double gap, dSpacing;
+//		//gap = ((-b) + sqrt((b*b) - (4 * K*c))) / (2 * K);
+//		//dSpacing = ((gap * 1000.0) / cos(m_dbraidAngle - 0.7853)) + (m_WeftYarnData[0].dWidth / cos(m_dbraidAngle - 0.7853));
+//
+//		////m_Pattern.resize(m_iNumWeftYarns*m_iNumWarpYarns);
+//		//vector<YARNDATA>YarnData;
+//		//YarnData[l].dSpacing = dSpacing;
+//		//YarnData[l].dWidth = m_WeftYarnData[0].dWidth;
+//		//YarnData[l].dHeight = m_dFabricThickness / 2.0;
+//		////m_WeftYarnData.resize(m_iNumWeftYarns, YarnData);
+//		////m_WarpYarnData.resize(m_iNumWarpYarns, YarnData);
+//	
+//		//PolarCoor.resize(m_iNumYarns*iNumLayers);
+//		for (i = 0; i < m_iNumWeftYarns; i++)
+//		{
+//
+//			theta = startTheta;
+//			y = starty;
+//			Yarns.clear();
+//
+//			for (j = 0; j <= m_iNumWarpYarns; j++)
+//			{
+//				const vector<PATTERNBIAX> &Cell = GetCell(j%m_iNumWarpYarns, i);
+//				if (j == 0)
+//				{
+//					for (k = 0; k < (int)Cell.size(); k++)
+//					{
+//						if (Cell[k] == PATTERN_WEFTYARN)
+//						{
+//							Yarns.push_back(AddYarn(CYarn()));
+//
+//						}
+//					}
+//				}
+//				m_WeftYarns[i] = Yarns;
+//				iYarn = 0;
+//				r = startr;
+//				for (k = 0; k < (int)Cell.size(); k++)
+//				{
+//					if (Cell[k] == PATTERN_WEFTYARN)
+//					{
+//						PolarCoor[i+(l*m_iNumYarns)].push_back(RThetaZ(r, theta, y));
+//						z = r * cos(theta);
+//						x = r * sin(theta);
+//						a = (r*2.0) / (2.0*cos((PI / 2) - ((PI / 2) - m_dbraidAngle)));
+//						//if (x==0 || r==0)
+//							//m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(sin(m_dbraidAngle), cos(m_dbraidAngle), 0)));
+//						//m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(sin(m_dbraidAngle), cos(m_dbraidAngle), (-x) / sqrt((r*r) - (x*x)))));
+//						//m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(sin(m_dbraidAngle), cos(m_dbraidAngle),-1.0*((r*r)*x)/((a*a)*z))));
+//						m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), GetNodeTangents(i, j)));
+//						iYarn++;
+//					}
+//					r += m_dFabricThickness / Cell.size();
+//				}
+//				if (j < m_iNumWarpYarns)
+//				{
+//					y += m_WarpYarnData[j].dSpacing*cos(m_dbraidAngle);
+//					theta += (m_WarpYarnData[j].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI);
+//				}
+//			}
+//			//CheckUpVectors(i, true);
+//			starty += m_WeftYarnData[i].dSpacing*cos(m_dbraidAngle);
+//			startTheta += -1 * (m_WeftYarnData[i].dSpacing*sin(m_dbraidAngle) / (PI*m_dMandrel_Rad * 2))*(2 * PI);
+//		}
+//
+//
+//
+//		// Add the Warp Yarns
+//
+//
+//		startr = m_dMandrel_Rad+(l*m_dFabricThickness);
+//		startTheta = 0;
+//		starty = 0;
+//		for (i = 0; i < m_iNumWarpYarns; i++)
+//		{
+//
+//			theta = startTheta;
+//			y = starty;
+//			Yarns.clear();
+//			for (j = 0; j <= m_iNumWeftYarns; j++)
+//			{
+//				const vector<PATTERNBIAX> &Cell = GetCell(j%m_iNumWeftYarns, i);
+//				if (j == 0)
+//				{
+//					for (k = 0; k < (int)Cell.size(); k++)
+//					{
+//						if (Cell[k] == PATTERN_WARPYARN)
+//						{
+//							Yarns.push_back(AddYarn(CYarn()));
+//						}
+//					}
+//				}
+//				m_WarpYarns[i] = Yarns;
+//				iYarn = 0;
+//				r = startr;
+//				for (k = 0; k < (int)Cell.size(); k++)
+//				{
+//					if (Cell[k] == PATTERN_WARPYARN)
+//					{
+//						PolarCoor[i + m_iNumWeftYarns+(l*m_iNumYarns)].push_back(RThetaZ(r, theta, y));
+//						z = r * cos(theta);
+//						x = -1 * r * sin(theta);
+//						//if(x==0 || r==0)
+//							//m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(-sin(m_dbraidAngle), cos(m_dbraidAngle), 0)));
+//						//m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), XYZ(-sin(m_dbraidAngle), cos(m_dbraidAngle),((r*r)*x)/((a*a)*z))));
+//						m_Yarns[Yarns[iYarn]].AddNode(CNode(XYZ(x, y, z), GetNodeTangents(i + m_iNumWeftYarns, j)));
+//
+//						iYarn++;
+//					}
+//					r += m_dFabricThickness / Cell.size();
+//				}
+//				if (j < m_iNumWeftYarns)
+//				{
+//					y += m_WeftYarnData[j].dSpacing*cos(m_dbraidAngle);
+//					theta += (m_WeftYarnData[j].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI);
+//				}
+//			}
+//			//CheckUpVectors(i, false);
+//			starty += m_WarpYarnData[i].dSpacing*cos(m_dbraidAngle);
+//			startTheta += -1 * (m_WarpYarnData[i].dSpacing*sin(m_dbraidAngle) / (PI*m_dMandrel_Rad * 2))*(2 * PI);
+//		}
+//		double dWidthWeft;
+//		double dHeightWeft;
+//		double dWidthWarp;
+//		double dHeightWarp;
+//		dWidthWeft = GetWidthWeft();
+//		dHeightWeft = GetHeightWeft();
+//		dWidthWarp = GetWidthWarp();
+//		dHeightWarp = GetHeightWarp();
+//
+//		vector<int>::iterator itpYarn;
+//		double dWidth, dHeight, position;
+//		for (i = 0; i < m_iNumWeftYarns; ++i)
+//		{
+//			dWidth = m_WeftYarnData[i].dWidth;
+//			dHeight = m_WeftYarnData[i].dHeight;
+//			CSectionLenticular Section(dWidth, dHeight);
+//			CYarnSectionInterpPosition AngledYarnSection(true, true);
+//			for (int j = 0; j <= m_iNumWeftYarns; j++)
+//			{
+//				position = ((double)j / m_iNumWeftYarns);
+//				k = (l*(m_iNumWeftYarns + m_iNumWarpYarns) + i);
+//				double rotation = GetNodeRotation(k, j);
+//				m_YarnAngles[i][j] = rotation;
+//				AngledYarnSection.AddSection(position, CSectionRotated(Section, rotation));
+//
+//			}
+//			if (m_pSectionMesh)
+//				Section.AssignSectionMesh(*m_pSectionMesh);
+//			for (itpYarn = m_WeftYarns[i].begin(); itpYarn != m_WeftYarns[i].end(); ++itpYarn)
+//			{
+//				m_Yarns[*itpYarn].AssignSection((AngledYarnSection));
+//
+//			}
+//
+//		}
+//		for (i = 0; i < m_iNumWarpYarns; ++i)
+//		{
+//			dWidth = m_WarpYarnData[i].dWidth;
+//			dHeight = m_WarpYarnData[i].dHeight;
+//			CSectionLenticular Section(dWidth, dHeight);
+//			CYarnSectionInterpPosition AngledYarnSection(true, true);
+//			for (int j = 0; j <= m_iNumWarpYarns; j++)
+//			{
+//				position = (double)j / m_iNumWarpYarns;
+//				k = (l*(m_iNumWeftYarns + m_iNumWarpYarns) + i);
+//				double rotation = GetNodeRotation(i + m_iNumWeftYarns, j);
+//				m_YarnAngles[i + m_iNumWeftYarns][j] = rotation;
+//				AngledYarnSection.AddSection(position, CSectionRotated(Section, rotation));
+//			}
+//			if (m_pSectionMesh)
+//				Section.AssignSectionMesh(*m_pSectionMesh);
+//			for (itpYarn = m_WarpYarns[i].begin(); itpYarn != m_WarpYarns[i].end(); ++itpYarn)
+//			{
+//				m_Yarns[*itpYarn].AssignSection(AngledYarnSection);
+//			}
+//		}
+//	}
+//	
+//}

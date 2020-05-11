@@ -129,6 +129,7 @@ enum
 	ID_AdjustSpacing,
 
 	ID_BraidAngle,
+	ID_NumLayers,
 
 	ID_ShearedDomain,
 	ID_DefaultDomain,

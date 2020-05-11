@@ -10,6 +10,8 @@
 
 BEGIN_EVENT_TABLE(CBraidWizard, wxWizard)
 	EVT_WIZARD_PAGE_CHANGING(wxID_ANY, CBraidWizard::OnWizardPageChanging)
+	EVT_CHECKBOX(ID_Curved, CBraidWizard::OnCurved)
+	EVT_CHECKBOX(ID_CreateLayers, CBraidWizard::OnLayers)
 	EVT_TEXT(ID_Width, CBraidWizard::OnWidthChanged)
 	EVT_TEXT(ID_Spacing, CBraidWizard::OnSpacingChanged)
 	EVT_TEXT(ID_Thickness, CBraidWizard::OnThicknessChanged)
@@ -38,7 +40,9 @@ CBraidWizard::CBraidWizard(wxWindow* parent, wxWindowID id)
 	, m_bSpacingChanged(false)
 	, m_bThicknessChanged(false)
 	, m_bCurved(false)
-	, m_bAdjustSpacing(true)
+	, m_bAdjustSpacing(false)
+	, m_pLayersSpin(NULL)
+	, m_bLayers(false)
 	//, m_bAddedDomainHeight(true)
 {
 	BuildPages();
@@ -131,12 +135,26 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 		wxCheckBox* pRefineBox;
 		wxCheckBox* pCurvedBox;
 		wxCheckBox* pAdjustSpacingBox;
+		wxCheckBox* pLayersBox;
 		pSubSizer->Add(pDomainBox = new wxCheckBox(pPage, ID_DefaultDomain, wxT("Create Default Domain"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bCreateDomain)), SizerFlags);
 		pSubSizer->Add(pRefineBox = new wxCheckBox(pPage, ID_Refine, wxT("Refine model"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bRefine)), SizerFlags);
 		pSubSizer->Add(pCurvedBox = new wxCheckBox(pPage, ID_Curved, wxT("Curved Unit Cell"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bCurved)), SizerFlags);
 		pSubSizer->Add(pAdjustSpacingBox = new wxCheckBox(pPage, ID_AdjustSpacing, wxT("Adjust Yarn Spacing"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bAdjustSpacing)), SizerFlags);
 		if (m_bCurved)
 			pAdjustSpacingBox->Disable();
+		
+
+		pSubSizer->Add(pLayersBox = new wxCheckBox(pPage, ID_CreateLayers, wxT("Layers"), wxDefaultPosition, wxDefaultSize, 0, wxGenericValidator(&m_bLayers)), SizerFlags);
+		if (!m_bCurved)
+			pLayersBox->Disable();
+
+		pSubSizer->Add(new wxStaticText(pPage, wxID_ANY, wxT("layers:")), SizerFlags);
+		pSubSizer->Add(m_pLayersSpin = new wxSpinCtrl(pPage, ID_NumLayers, wxT(""), wxDefaultPosition, wxDefaultSize, wxSP_ARROW_KEYS, 1, 100), SizerFlags);
+		m_pWeftYarnsSpin->SetToolTip(wxT("Controls the number of layers of fabric in the model"));
+		if (!m_bLayers)
+			m_pLayersSpin->Disable();
+
+
 	}
 	pMainSizer->Add(pSubSizer, SizerFlags);
 	SizerFlags.Align(0);
@@ -147,6 +165,7 @@ wxWizardPageSimple* CBraidWizard::BuildFirstPage()
 	m_pWeftYarnsSpin->SetValue(4);
 	m_pWarpYarnsSpin->SetValue(4);
 	m_pHornGearSpin->SetValue(24);
+	m_pLayersSpin->SetValue(1);
 
 
 	return pPage; 
@@ -188,7 +207,7 @@ string CBraidWizard::GetCreateTextileCommand(string ExistingTextile)
 {
 	stringstream StringStream;
 	double dFabricThickness, dWidth, dHeight, dRadius, dHornGearVelocity, dVelocity;
-	int iNumWeftYarns, iNumWarpYarns, iNumHornGear;
+	int iNumWeftYarns, iNumWarpYarns, iNumHornGear, iNumLayers;
 	bool bRefine, bCurved, bAdjustSpacing;
 	string braidPattern;
 	//m_YarnSpacing.ToDouble(&dYarnSpacing);
@@ -203,11 +222,12 @@ string CBraidWizard::GetCreateTextileCommand(string ExistingTextile)
 	iNumWarpYarns = m_pWarpYarnsSpin->GetValue();
 	iNumHornGear = m_pHornGearSpin->GetValue();
 	braidPattern = pBraidPattern->GetString(pBraidPattern->GetSelection());
+	iNumLayers = m_pLayersSpin->GetValue();
 
 	if (m_bCurved)
 	{
 		StringStream<< "braid = CTextileBraidCurved(" << iNumWeftYarns << ", " << iNumWarpYarns << ", " << dWidth << ", " << dHeight << ", " << dFabricThickness << ", "
-			<< dRadius / 1000 << ", " << dHornGearVelocity * ((2 * PI) / 60) << ", " << iNumHornGear << ", " << dVelocity / 1000 << ", bool(" << m_bCurved << ")" << ", bool(" << m_bRefine << "))"  << endl;
+			<< dRadius / 1000 << ", " << dHornGearVelocity * ((2 * PI) / 60) << ", " << iNumHornGear << ", " << dVelocity / 1000 << ", bool(" << m_bCurved << ")" << ", bool(" << m_bRefine << "), " << iNumLayers<< ")" << endl;
 	}
 	else
 	{
@@ -225,8 +245,7 @@ string CBraidWizard::GetCreateTextileCommand(string ExistingTextile)
 			}
 		}
 	}
-
-	if (m_bCreateDomain)
+		if (m_bCreateDomain)
 	{
 		if (m_bCurved)
 		{
@@ -304,3 +323,43 @@ bool CBraidWizard::RebuildBraidPatternCtrl()
 
 	return true;
 }
+
+void CBraidWizard::OnCurved(wxCommandEvent& event)
+{
+	RefreshGapTextBox();
+}
+
+void CBraidWizard::OnLayers(wxCommandEvent& event)
+{
+	RefreshGapTextBox();
+}
+
+void CBraidWizard::RefreshGapTextBox()
+{
+	wxCheckBox* pCurved = (wxCheckBox*)FindWindowById(ID_Curved, this);
+	wxCheckBox* pAdjustSpacing = (wxCheckBox*)FindWindowById(ID_AdjustSpacing, this);
+	wxCheckBox* pLayer = (wxCheckBox*)FindWindowById(ID_CreateLayers, this);
+	wxSpinCtrl* pNumLayers = (wxSpinCtrl*)FindWindowById(ID_NumLayers, this);
+
+	if (pCurved && pAdjustSpacing && pLayer && pNumLayers)
+	{
+		if (pCurved->GetValue())
+		{
+			pAdjustSpacing->Disable();
+			pLayer->Enable();
+			if (pLayer->GetValue())
+			{
+				pNumLayers->Enable();
+			}
+			else
+				pNumLayers->Disable();
+		}
+		else
+		{
+			pAdjustSpacing->Enable();
+			pLayer->Disable();
+		}
+	}
+	
+}
+

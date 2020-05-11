@@ -41,6 +41,7 @@ protected:
 	bool m_bRefine;
 	bool m_bCurved;
 	bool m_bAdjustSpacing;
+	bool m_bLayers;
 	
 	
 	bool m_bWidthChanged;
@@ -51,6 +52,13 @@ protected:
 	wxDialog *m_pBraidPatternDialog;
 	//wxWizardPageSimple *m_pBraidPatternPage;
 	//wxDialog *m_pBraidPatternDialog; 
+
+	void OnCurved(wxCommandEvent& event);
+	void OnLayers(wxCommandEvent& event);
+	void RefreshGapTextBox();
+
+	wxSpinCtrl *m_pLayersSpin;
+
 
 	DECLARE_EVENT_TABLE()
 };
