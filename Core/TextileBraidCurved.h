@@ -24,7 +24,7 @@ namespace TexGen
 		double GetNodeRotation(int YarnIndex, int NodeIndex) const;
 		void AddAdditionalNodes() const; 
 		mutable vector<vector<RThetaZ> >PolarCoor;
-		//void AddLayers(int NumberOfLayers) const;
+		
 
 	protected:
 		bool BuildTextile() const;
@@ -38,7 +38,7 @@ namespace TexGen
 		void SaveCrossSection(string& FileName, int YarnIndex, int NodeIndex) const;
 		double ReturnNodeRotation(int YarnIndex, int NodeIndex) const;
 		mutable vector<vector<double>> m_YarnAngles;
-		//int iNumLayers;
+		int iNumLayers;
 
 		
 		

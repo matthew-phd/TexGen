@@ -256,7 +256,7 @@ bool CTextileBraid::BuildTextile() const
 			itYarn->SetResolution(m_iResolution);
 			itYarn->AddRepeat(XYZ(dWidthWeft, -dHeightWeft, 0));
 			itYarn->AddRepeat(XYZ(dWidthWarp, dHeightWarp, 0));
-			itYarn->AddRepeat(XYZ(0, 0, m_dFabricThickness+0.01));
+			//itYarn->AddRepeat(XYZ(m_WarpYarnData[0].dSpacing*sin(m_dbraidAngle), 0.0, 0.9*m_dFabricThickness));
 		}
 		
 		if (!m_bRefine&& !m_bAdjustSpacing)
@@ -278,6 +278,11 @@ bool CTextileBraid::BuildTextile() const
 const vector<PATTERNBIAX>& TexGen::CTextileBraid::GetCell(int x, int y) const
 {
 	return m_Pattern[x + m_iNumWarpYarns * y];
+}
+
+double CTextileBraid::GetBraidAngle() const
+{
+	return m_dbraidAngle;
 }
 
 double CTextileBraid::GetWidthWarp() const {
@@ -717,7 +722,7 @@ void CTextileBraid::CorrectBraidYarnWidths() const
 	XYZ Side, Up;
 	YARN_POSITION_INFORMATION YarnPosInfo;
 
-	RepeatLimits.resize(3, pair<int, int>(-1, 0));
+	RepeatLimits.resize(2, pair<int, int>(-1, 0));
 	vector<double> YarnMaxWidth;
 	YarnMaxWidth.resize(m_Yarns.size(), -1);
 
@@ -868,7 +873,7 @@ void CTextileBraid::CorrectInterference() const
 	CSlaveNode Node;
 	XYZ Side, Up;
 	YARN_POSITION_INFORMATION YarnPosInfo;
-	RepeatLimits.resize(3, pair<int, int>(-1, 0));
+	RepeatLimits.resize(2, pair<int, int>(-1, 0));
 	vector<double> Modifiers;
 	vector<vector<vector<double> > > YarnSectionModifiers;
 	YarnSectionModifiers.resize(m_Yarns.size());
@@ -1243,27 +1248,55 @@ void CTextileBraid::AdjustSpacing() const
 		pYarn2 = &m_Yarns[j+1];
 		for (int i = 0; i < 4; i++)
 		{
-			CNode* Nodes1 = (CNode*)pYarn1->GetNode(i);
-			CNode* Nodes2 = (CNode*)pYarn2->GetNode(i);
-			Pos1 = Nodes1->GetPosition();
-			Pos2 = Nodes2->GetPosition();
-			Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j+i] + m_WeftYarnData[0].dWidth));
-			Pos2.y = Pos1.y - (cos(m_dbraidAngle)*(spacing[j+i] + m_WeftYarnData[0].dWidth));
-			Tan2 = Nodes2->GetTangent();
-			CNode NewNode(Pos2, Tan2);
-			pYarn2->ReplaceNode(i, NewNode);
-			if (i == 0)
+			if (j == 0 && i == 2)
 			{
-				CNode* Nodes1 = (CNode*)pYarn1->GetNode(i+4);
-				CNode* Nodes2 = (CNode*)pYarn2->GetNode(i+4);
+				CNode* Nodes1 = (CNode*)pYarn1->GetNode(i);
+				CNode* Nodes2 = (CNode*)pYarn2->GetNode(i);
 				Pos1 = Nodes1->GetPosition();
 				Pos2 = Nodes2->GetPosition();
 				Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
 				Pos2.y = Pos1.y - (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
 				Tan2 = Nodes2->GetTangent();
 				CNode NewNode(Pos2, Tan2);
-				pYarn2->ReplaceNode(i+4, NewNode);
+				pYarn2->ReplaceNode(i, NewNode);
+				if (i == 0)
+				{
+					CNode* Nodes1 = (CNode*)pYarn1->GetNode(i + 4);
+					CNode* Nodes2 = (CNode*)pYarn2->GetNode(i + 4);
+					Pos1 = Nodes1->GetPosition();
+					Pos2 = Nodes2->GetPosition();
+					Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+					Pos2.y = Pos1.y - (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+					Tan2 = Nodes2->GetTangent();
+					CNode NewNode(Pos2, Tan2);
+					pYarn2->ReplaceNode(i + 4, NewNode);
+				}
 			}
+			else if (j == 1 && i == 3)
+			{
+				CNode* Nodes1 = (CNode*)pYarn1->GetNode(i);
+				CNode* Nodes2 = (CNode*)pYarn2->GetNode(i);
+				Pos1 = Nodes1->GetPosition();
+				Pos2 = Nodes2->GetPosition();
+				Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+				Pos2.y = Pos1.y - (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+				Tan2 = Nodes2->GetTangent();
+				CNode NewNode(Pos2, Tan2);
+				pYarn2->ReplaceNode(i, NewNode);
+				if (i == 0)
+				{
+					CNode* Nodes1 = (CNode*)pYarn1->GetNode(i + 4);
+					CNode* Nodes2 = (CNode*)pYarn2->GetNode(i + 4);
+					Pos1 = Nodes1->GetPosition();
+					Pos2 = Nodes2->GetPosition();
+					Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+					Pos2.y = Pos1.y - (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+					Tan2 = Nodes2->GetTangent();
+					CNode NewNode(Pos2, Tan2);
+					pYarn2->ReplaceNode(i + 4, NewNode);
+				}
+			}
+
 		}
 	}
 
@@ -1274,27 +1307,55 @@ void CTextileBraid::AdjustSpacing() const
 		pYarn2 = &m_Yarns[j + 1];
 		for (int i = 0; i < 4; i++)
 		{
-			CNode* Nodes1 = (CNode*)pYarn1->GetNode(i);
-			CNode* Nodes2 = (CNode*)pYarn2->GetNode(i);
-			Pos1 = Nodes1->GetPosition();
-			Pos2 = Nodes2->GetPosition();
-			Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
-			Pos2.y = Pos1.y + (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
-			Tan2 = Nodes2->GetTangent();
-			CNode NewNode(Pos2, Tan2);
-			pYarn2->ReplaceNode(i, NewNode);
-			if (i == 0)
+			if (j == 5 && i == 1)
 			{
-				CNode* Nodes1 = (CNode*)pYarn1->GetNode(i + 4);
-				CNode* Nodes2 = (CNode*)pYarn2->GetNode(i + 4);
+				CNode* Nodes1 = (CNode*)pYarn1->GetNode(i);
+				CNode* Nodes2 = (CNode*)pYarn2->GetNode(i);
 				Pos1 = Nodes1->GetPosition();
 				Pos2 = Nodes2->GetPosition();
 				Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
 				Pos2.y = Pos1.y + (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
 				Tan2 = Nodes2->GetTangent();
 				CNode NewNode(Pos2, Tan2);
-				pYarn2->ReplaceNode(i + 4, NewNode);
+				pYarn2->ReplaceNode(i, NewNode);
+				if (i == 0)
+				{
+					CNode* Nodes1 = (CNode*)pYarn1->GetNode(i + 4);
+					CNode* Nodes2 = (CNode*)pYarn2->GetNode(i + 4);
+					Pos1 = Nodes1->GetPosition();
+					Pos2 = Nodes2->GetPosition();
+					Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+					Pos2.y = Pos1.y + (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+					Tan2 = Nodes2->GetTangent();
+					CNode NewNode(Pos2, Tan2);
+					pYarn2->ReplaceNode(i + 4, NewNode);
+				}
 			}
+			else if (j == 6 && i == 2)
+			{
+				CNode* Nodes1 = (CNode*)pYarn1->GetNode(i);
+				CNode* Nodes2 = (CNode*)pYarn2->GetNode(i);
+				Pos1 = Nodes1->GetPosition();
+				Pos2 = Nodes2->GetPosition();
+				Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+				Pos2.y = Pos1.y + (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+				Tan2 = Nodes2->GetTangent();
+				CNode NewNode(Pos2, Tan2);
+				pYarn2->ReplaceNode(i, NewNode);
+				if (i == 0)
+				{
+					CNode* Nodes1 = (CNode*)pYarn1->GetNode(i + 4);
+					CNode* Nodes2 = (CNode*)pYarn2->GetNode(i + 4);
+					Pos1 = Nodes1->GetPosition();
+					Pos2 = Nodes2->GetPosition();
+					Pos2.x = Pos1.x + (sin(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+					Pos2.y = Pos1.y + (cos(m_dbraidAngle)*(spacing[j + i] + m_WeftYarnData[0].dWidth));
+					Tan2 = Nodes2->GetTangent();
+					CNode NewNode(Pos2, Tan2);
+					pYarn2->ReplaceNode(i + 4, NewNode);
+				}
+			}
+
 		}
 	}
 	

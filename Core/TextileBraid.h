@@ -45,6 +45,7 @@ namespace TexGen
 		double GetYarnSpacing() const; 
 		double GetYarnWidth() const;
 		double GetFabricThickness() const { return m_dFabricThickness; }
+		double GetBraidAngle() const;
 
 		double GetWeftYarnWidth(int iIndex) const;
 		double GetWarpYarnWidth(int iIndex) const;
