@@ -21,6 +21,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "Mesher.h"
 #include "TexGen.h"
 #include "PeriodicBoundaries.h"
+#include "RevolvedPeriodicBoundaries.h"
 //#include "Yarn.h"
 extern "C"
 {

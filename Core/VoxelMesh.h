@@ -117,5 +117,6 @@ namespace TexGen
 
 		//CObjectContainer<CPeriodicBoundaries> m_PeriodicBoundaries;
 		CPeriodicBoundaries* m_PeriodicBoundaries;
+		
 	};
 };	// namespace TexGen

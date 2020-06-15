@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "PeriodicBoundaries.h"
 #include "ShearedPeriodicBoundaries.h"
 #include "StaggeredPeriodicBoundaries.h"
+#include "RevolvedPeriodicBoundaries.h"
 #include <iterator>
 //#define SHINY_PROFILER TRUE
 

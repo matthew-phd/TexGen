@@ -70,6 +70,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "TextileBraid.h"
 #include "ShellElementExport.h"
 #include "TextileBraidCurved.h"
+#include "RevolvedPeriodicBoundaries.h"
 
 
 /// Helper macro to get the texgen instance

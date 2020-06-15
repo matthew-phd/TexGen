@@ -171,28 +171,28 @@ void CPeriodicBoundaries::OutputEquations( ostream& Output, int iBoundaryConditi
 	Output << "*Equation\n3\n";
 	Output << "FaceA, 1, 1.0, FaceB, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
 
-	Output << "*Equation\n2\n";
-	Output << "FaceA, 2, 1.0, FaceB, 2, -1.0" << endl;
-
-	Output << "*Equation\n2\n";
-	Output << "FaceA, 3, 1.0, FaceB, 3, -1.0" << endl;
+	Output << "*Equation\n3\n";
+	Output << "FaceA, 2, 1.0, FaceB, 2, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.x << endl;
 
 	Output << "*Equation\n3\n";
-	Output << "FaceC, 1, 1.0, FaceD, 1, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.y << endl;
+	Output << "FaceA, 3, 1.0, FaceB, 3, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.x << endl;
+
+	Output << "*Equation\n2\n";
+	Output << "FaceC, 1, 1.0, FaceD, 1, -1.0" << endl;
 
 	Output << "*Equation\n3\n";
 	Output << "FaceC, 2, 1.0, FaceD, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
 
-	Output << "*Equation\n2\n";
-	Output << "FaceC, 3, 1.0, FaceD, 3, -1.0" << endl;
+	Output << "*Equation\n3\n";
+	Output << "FaceC, 3, 1.0, FaceD, 3, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.y << endl;
 
-	if ( iBoundaryConditions == MATERIAL_CONTINUUM )
+	if (iBoundaryConditions == MATERIAL_CONTINUUM)
 	{
-		Output << "*Equation\n3\n";
-		Output << "FaceE, 1, 1.0, FaceF, 1, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.z << endl;
+		Output << "*Equation\n2\n";
+		Output << "FaceE, 1, 1.0, FaceF, 1, -1.0" << endl;
 
-		Output << "*Equation\n3\n";
-		Output << "FaceE, 2, 1.0, FaceF, 2, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.z << endl;
+		Output << "*Equation\n2\n";
+		Output << "FaceE, 2, 1.0, FaceF, 2, -1.0" << endl;
 
 		Output << "*Equation\n3\n";
 		Output << "FaceE, 3, 1.0, FaceF, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
@@ -201,109 +201,109 @@ void CPeriodicBoundaries::OutputEquations( ostream& Output, int iBoundaryConditi
 	Output << "*Equation\n3\n";
 	Output << "Edge2, 1, 1.0, Edge1, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
 
-	Output << "*Equation\n2\n";
-	Output << "Edge2, 2, 1.0, Edge1, 2, -1.0" << endl;
+	Output << "*Equation\n3\n";
+	Output << "Edge2, 2, 1.0, Edge1, 2, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.x << endl;
 
-	Output << "*Equation\n2\n";
-	Output << "Edge2, 3, 1.0, Edge1, 3, -1.0" << endl;
+	Output << "*Equation\n3\n";
+	Output << "Edge2, 3, 1.0, Edge1, 3, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.x << endl;
+
+	Output << "*Equation\n3\n";
+	Output << "Edge3, 1, 1.0, Edge1, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
 
 	Output << "*Equation\n4\n";
-	Output << "Edge3, 1, 1.0, Edge1, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << ", ConstraintsDriver3, 1, -" << m_DomSize.y << endl;
+	Output << "Edge3, 2, 1.0, Edge1, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << ", ConstraintsDriver3, 1, -" << m_DomSize.x << endl;
 
-	Output << "*Equation\n3\n";
-	Output << "Edge3, 2, 1.0, Edge1, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
+	Output << "*Equation\n4\n";
+	Output << "Edge3, 3, 1.0, Edge1, 3, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.x << ", ConstraintsDriver5, 1, -" << m_DomSize.y << endl;
 
 	Output << "*Equation\n2\n";
-	Output << "Edge3, 3, 1.0, Edge1, 3, -1.0" << endl;
-
-	Output << "*Equation\n3\n";
-	Output << "Edge4, 1, 1.0, Edge1, 1, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.y << endl;
+	Output << "Edge4, 1, 1.0, Edge1, 1, -1.0" << endl;
 
 	Output << "*Equation\n3\n";
 	Output << "Edge4, 2, 1.0, Edge1, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
 
-	Output << "*Equation\n2\n";
-	Output << "Edge4, 3, 1.0, Edge1, 3, -1.0" << endl;
+	Output << "*Equation\n3\n";
+	Output << "Edge4, 3, 1.0, Edge1, 3, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.y << endl;
 
 	Output << "*Equation\n3\n";
 	Output << "Edge6, 1, 1.0, Edge5, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
 
-	Output << "*Equation\n2\n";
-	Output << "Edge6, 2, 1.0, Edge5, 2, -1.0" << endl;
+	Output << "*Equation\n3\n";
+	Output << "Edge6, 2, 1.0, Edge5, 2, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.x << endl;
 
-	Output << "*Equation\n2\n";
-	Output << "Edge6, 3, 1.0, Edge5, 3, -1.0" << endl;
+	Output << "*Equation\n3\n";
+	Output << "Edge6, 3, 1.0, Edge5, 3, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.x << endl;
 
-	if ( iBoundaryConditions == SINGLE_LAYER_RVE )
+	if (iBoundaryConditions == SINGLE_LAYER_RVE)
 	{
 		Output << "*Equation\n3\n";
 		Output << "Edge7, 1, 1.0, Edge8, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
 
-		Output << "*Equation\n2\n";
-		Output << "Edge7, 2, 1.0, Edge8, 2, -1.0" << endl;
+		Output << "*Equation\n3\n";
+		Output << "Edge7, 2, 1.0, Edge8, 2, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.x << endl;
 
-		Output << "*Equation\n2\n";
-		Output << "Edge7, 3, 1.0, Edge8, 3, -1.0" << endl;
+		Output << "*Equation\n4\n";
+		Output << "Edge7, 3, 1.0, Edge8, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << ", ConstraintsDriver4, 1, -" << m_DomSize.x << endl;
 
 	}
 	else
 	{
+		Output << "*Equation\n3\n";
+		Output << "Edge7, 1, 1.0, Edge8, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
+
+		Output << "*Equation\n3\n";
+		Output << "Edge7, 2, 1.0, Edge8, 2, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.x << endl;
+
 		Output << "*Equation\n4\n";
-		Output << "Edge7, 1, 1.0, Edge5, 1, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.z << ", ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
+		Output << "Edge7, 3, 1.0, Edge8, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << ", ConstraintsDriver4, 1, -" << m_DomSize.x << endl;
 
-		Output << "*Equation\n3\n";
-		Output << "Edge7, 2, 1.0, Edge5, 2, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.z << endl;
+		Output << "*Equation\n2\n";
+		Output << "Edge8, 1, 1.0, Edge5, 1, -1.0" << endl;
 
-		Output << "*Equation\n3\n";
-		Output << "Edge7, 3, 1.0, Edge5, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
-
-		Output << "*Equation\n3\n";
-		Output << "Edge8, 1, 1.0, Edge5, 1, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.z << endl;
-
-		Output << "*Equation\n3\n";
-		Output << "Edge8, 2, 1.0, Edge5, 2, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.z << endl;
+		Output << "*Equation\n2\n";
+		Output << "Edge8, 2, 1.0, Edge5, 2, -1.0" << endl;
 
 		Output << "*Equation\n3\n";
 		Output << "Edge8, 3, 1.0, Edge5, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
 	}
 
-	Output << "*Equation\n3\n";
-	Output << "Edge10, 1, 1.0, Edge9, 1, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.y << endl;
+	Output << "*Equation\n2\n";
+	Output << "Edge10, 1, 1.0, Edge9, 1, -1.0" << endl;
 
 	Output << "*Equation\n3\n";
 	Output << "Edge10, 2, 1.0, Edge9, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
 
-	Output << "*Equation\n2\n";
-	Output << "Edge10, 3, 1.0, Edge9, 3, -1.0" << endl;
+	Output << "*Equation\n3\n";
+	Output << "Edge10, 3, 1.0, Edge9, 3, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.y << endl;
 
-	if ( iBoundaryConditions == SINGLE_LAYER_RVE )
+	if (iBoundaryConditions == SINGLE_LAYER_RVE)
 	{
-		Output << "*Equation\n3\n";
-		Output << "Edge11, 1, 1.0, Edge12, 1, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.y << endl;
+		Output << "*Equation\n2\n";
+		Output << "Edge11, 1, 1.0, Edge12, 1, -1.0" << endl;
 
 		Output << "*Equation\n3\n";
 		Output << "Edge11, 2, 1.0, Edge12, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
 
-		Output << "*Equation\n2\n";
-		Output << "Edge11, 3, 1.0, Edge12, 3, -1.0" << endl;
+		Output << "*Equation\n4\n";
+		Output << "Edge11, 3, 1.0, Edge12, 3, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.y << ", ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
 
 	}
 	else
 	{
+		Output << "*Equation\n2\n";
+		Output << "Edge11, 1, 1.0, Edge12, 1, -1.0" << endl;
+
+		Output << "*Equation\n3\n";
+		Output << "Edge11, 2, 1.0, Edge12, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
+
 		Output << "*Equation\n4\n";
-		Output << "Edge11, 1, 1.0, Edge9, 1, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.y << ", ConstraintsDriver4, 1, -" << m_DomSize.z << endl;
+		Output << "Edge11, 3, 1.0, Edge12, 3, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.y << ", ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
 
-		Output << "*Equation\n4\n";
-		Output << "Edge11, 2, 1.0, Edge9, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << ", ConstraintsDriver5, 1, -" << m_DomSize.z << endl;
+		Output << "*Equation\n2\n";
+		Output << "Edge12, 1, 1.0, Edge9, 1, -1.0" << endl;
 
-		Output << "*Equation\n3\n";
-		Output << "Edge11, 3, 1.0, Edge9, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
-
-		Output << "*Equation\n3\n";
-		Output << "Edge12, 1, 1.0, Edge9, 1, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.z << endl;
-
-		Output << "*Equation\n3\n";
-		Output << "Edge12, 2, 1.0, Edge9, 2, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.z << endl;
+		Output << "*Equation\n2\n";
+		Output << "Edge12, 2, 1.0, Edge9, 2, -1.0" << endl;
 
 		Output << "*Equation\n3\n";
 		Output << "Edge12, 3, 1.0, Edge9, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
@@ -312,31 +312,31 @@ void CPeriodicBoundaries::OutputEquations( ostream& Output, int iBoundaryConditi
 	Output << "*Equation\n3\n";
 	Output << "MasterNode2, 1, 1.0, MasterNode1, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
 
-	Output << "*Equation\n2\n";
-	Output << "MasterNode2, 2, 1.0, MasterNode1, 2, -1.0" << endl;
-	
-	Output << "*Equation\n2\n";
-	Output << "MasterNode2, 3, 1.0, MasterNode1, 3, -1.0" << endl;
+	Output << "*Equation\n3\n";
+	Output << "MasterNode2, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.x << endl;
+
+	Output << "*Equation\n3\n";
+	Output << "MasterNode2, 3, 1.0, MasterNode1, 3, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.x << endl;
+
+	Output << "*Equation\n3\n";
+	Output << "MasterNode3, 1, 1.0, MasterNode1, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
 
 	Output << "*Equation\n4\n";
-	Output << "MasterNode3, 1, 1.0, MasterNode1, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << ", ConstraintsDriver3, 1, -" << m_DomSize.y << endl;
+	Output << "MasterNode3, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << ", ConstraintsDriver3, 1, -" << m_DomSize.x << endl;
 
-	Output << "*Equation\n3\n";
-	Output << "MasterNode3, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
+	Output << "*Equation\n4\n";
+	Output << "MasterNode3, 3, 1.0, MasterNode1, 3, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.x << ", ConstraintsDriver5, 1, -" << m_DomSize.y << endl;
 
 	Output << "*Equation\n2\n";
-	Output << "MasterNode3, 3, 1.0, MasterNode1, 3, -1.0" << endl;
-
-	Output << "*Equation\n3\n";
-	Output << "MasterNode4, 1, 1.0, MasterNode1, 1, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.y << endl;
+	Output << "MasterNode4, 1, 1.0, MasterNode1, 1, -1.0" << endl;
 
 	Output << "*Equation\n3\n";
 	Output << "MasterNode4, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
 
-	Output << "*Equation\n2\n";
-	Output << "MasterNode4, 3, 1.0, MasterNode1, 3, -1.0" << endl;
+	Output << "*Equation\n3\n";
+	Output << "MasterNode4, 3, 1.0, MasterNode1, 3, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.y << endl;
 
-	if ( iBoundaryConditions == SINGLE_LAYER_RVE )
+	if (iBoundaryConditions == SINGLE_LAYER_RVE)
 	{
 		Output << "*Equation\n3\n";
 		Output << "MasterNode6, 1, 1.0, MasterNode5, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
@@ -352,16 +352,16 @@ void CPeriodicBoundaries::OutputEquations( ostream& Output, int iBoundaryConditi
 		Output << "ConstraintsDriver3, 1, -" << m_DomSize.y << endl;
 
 		Output << "*Equation\n3\n";
-		Output << "MasterNode7, 2, 1.0, MasterNode5, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl; 
+		Output << "MasterNode7, 2, 1.0, MasterNode5, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
 
 		Output << "*Equation\n2\n";
 		Output << "MasterNode7, 3, 1.0, MasterNode5, 3, -1.0" << endl;
 
 		Output << "*Equation\n3\n";
-		Output << "MasterNode8, 1, 1.0, MasterNode5, 1, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.y << endl; 
+		Output << "MasterNode8, 1, 1.0, MasterNode5, 1, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.y << endl;
 
 		Output << "*Equation\n3\n";
-		Output << "MasterNode8, 2, 1.0, MasterNode5, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl; 
+		Output << "MasterNode8, 2, 1.0, MasterNode5, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
 
 		Output << "*Equation\n2\n";
 		Output << "MasterNode8, 3, 1.0, MasterNode5, 3, -1.0" << endl;
@@ -369,43 +369,44 @@ void CPeriodicBoundaries::OutputEquations( ostream& Output, int iBoundaryConditi
 	}
 	else
 	{
-		Output << "*Equation\n3\n";
-		Output << "MasterNode5, 1, 1.0, MasterNode1, 1, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.z << endl;
+		Output << "*Equation\n2\n";
+		Output << "MasterNode5, 1, 1.0, MasterNode1, 1, -1.0" << endl;
 
-		Output << "*Equation\n3\n";
-		Output << "MasterNode5, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.z << endl;
+		Output << "*Equation\n2\n";
+		Output << "MasterNode5, 2, 1.0, MasterNode1, 2, -1.0" << endl;
 
 		Output << "*Equation\n3\n";
 		Output << "MasterNode5, 3, 1.0, MasterNode1, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
 
+		Output << "*Equation\n3\n";
+		Output << "MasterNode6, 1, 1.0, MasterNode1, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
+
+		Output << "*Equation\n3\n";
+		Output << "MasterNode6, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.x << endl;
+
 		Output << "*Equation\n4\n";
-		Output << "MasterNode6, 1, 1.0, MasterNode1, 1, -1.0, ConstraintsDriver4, 1, -" << m_DomSize.z << ", ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
+		Output << "MasterNode6, 3, 1.0, MasterNode1, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << ", ConstraintsDriver4, 1, -" << m_DomSize.x << endl;
 
 		Output << "*Equation\n3\n";
-		Output << "MasterNode6, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver5, 1, -" << m_DomSize.z << endl;
+		Output << "MasterNode7, 1, 1.0, MasterNode1, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << endl;
 
-		Output << "*Equation\n3\n";
-		Output << "MasterNode6, 3, 1.0, MasterNode1, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
+		Output << "*Equation\n4\n";
+		Output << "MasterNode7, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.x << ", ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
 
 		Output << "*Equation\n5\n";
-		Output << "MasterNode7, 1, 1.0, MasterNode1, 1, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.x << ", ConstraintsDriver4, 1, -" << m_DomSize.z << "," << endl;
-		Output << "ConstraintsDriver3, 1, -" << m_DomSize.y << endl;
+		Output << "MasterNode7, 3, 1.0, MasterNode1, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << ", ConstraintsDriver4, 1, -" << m_DomSize.x << "," << endl;
+		Output << "ConstraintsDriver5, 1, -" << m_DomSize.y << endl;
 
-		Output << "*Equation\n4\n";
-		Output << "MasterNode7, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << ", ConstraintsDriver5, 1, -" << m_DomSize.z << endl;
-
-		Output << "*Equation\n3\n";
-		Output << "MasterNode7, 3, 1.0, MasterNode1, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
-
-		Output << "*Equation\n4\n";
-		Output << "MasterNode8, 1, 1.0, MasterNode1, 1, -1.0, ConstraintsDriver3, 1, -" << m_DomSize.y << ", ConstraintsDriver4, 1, -" << m_DomSize.z << endl;
-
-		Output << "*Equation\n4\n";
-		Output << "MasterNode8, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << ", ConstraintsDriver5, 1, -" << m_DomSize.z << endl;
+		Output << "*Equation\n2\n";
+		Output << "MasterNode8, 1, 1.0, MasterNode1, 1, -1.0" << endl;
 
 		Output << "*Equation\n3\n";
-		Output << "MasterNode8, 3, 1.0, MasterNode1, 3, -1.0, ConstraintsDriver2, 1, -" << m_DomSize.z << endl;
+		Output << "MasterNode8, 2, 1.0, MasterNode1, 2, -1.0, ConstraintsDriver1, 1, -" << m_DomSize.y << endl;
+
+		Output << "*Equation\n4\n";
+		Output << "MasterNode8, 3, 1.0, MasterNode1, 3, -1.0, ConstraintsDriver0, 1, -" << m_DomSize.z << ", ConstraintsDriver5, 1, -" << m_DomSize.y << endl;
 	}
+
 	
 }
 
