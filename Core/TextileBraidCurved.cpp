@@ -247,9 +247,10 @@ bool CTextileBraidCurved::BuildTextile() const
 double CTextileBraidCurved::DomainAngle()
 {
 	RThetaZ Min, Max;
-	Min.theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*((m_iNumWeftYarns - 1) / 2);
-	Max.theta = (m_WarpYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*((m_iNumWarpYarns - 1) / 2);
-
+	Min.theta = 0.0;
+	//Min.theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*((m_iNumWeftYarns - 1) / 2);
+	//Max.theta = (m_WarpYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*((m_iNumWarpYarns - 1) / 2);
+	Max.theta = 0.159355;
 	double angle = Max.theta - Min.theta;
 	if (fmod((2 * PI / angle), 1.0) == 0) return angle;
 	else
@@ -268,11 +269,12 @@ CDomainPrism CTextileBraidCurved::GetDefaultCurvedDomain(bool bAddedHeight)
 	vector<XY> points;
 	double dGap = 0.0;
 	if (bAddedHeight)
-		dGap = 0.0*m_dFabricThickness;
+		dGap = 0.05*m_dFabricThickness;
 	double angle = DomainAngle() / 20;
 	double theta;
 
-	theta = -(angle * 10);
+	theta = 0.0;
+	//theta = -(angle * 10);
 	//theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*(m_iNumWeftYarns / 2);
 	double radius = 1000 * m_dRadius - dGap;
 	for (int i = 0; i < 21; i++)
@@ -309,6 +311,8 @@ void CTextileBraidCurved::AssignDefaultDomain(bool bAddedHeight)
 	CDomainPrism Domain = GetDefaultCurvedDomain(bAddedHeight);
 	Domain.GeneratePlanes();
 	AssignDomain(Domain);
+
+	TGLOG("Domain Volume: " << Domain.GetVolume());
 }
 
 XYZ CTextileBraidCurved::GetUpVector(XYZ CheckNodes[], bool bYarn) const
@@ -1224,3 +1228,8 @@ double CTextileBraidCurved::ReturnNodeRotation(int YarnIndex, int NodeIndex) con
 	return m_YarnAngles[YarnIndex][NodeIndex];
 }
 
+double CTextileBraidCurved::ReturnNodeTheta(int YarnIndex, int NodeIndex) const
+{
+	TGLOG("Theta: " << PolarCoor[YarnIndex][NodeIndex].theta);
+	return PolarCoor[YarnIndex][NodeIndex].theta;
+}

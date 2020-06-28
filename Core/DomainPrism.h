@@ -71,6 +71,11 @@ namespace TexGen
 		/// Generate a set of planes corresponding to the mesh elements
 		void GeneratePlanes();
 
+		///Return the points used to create domain
+		vector<XY> GetPoints();
+		XYZ GetStart();
+		XYZ GetEnd();
+
 	protected:
 		/// Get the limits for a single given repeat vector and surface mesh
 		/**
@@ -107,6 +112,10 @@ namespace TexGen
 
 		/// Planes corresponding to mesh elements
 		vector<PLANE> m_ElementPlanes;
+
+		vector<XY> m_Points;
+		XYZ m_Start;
+		XYZ m_End;
 	};
 
 };	// namespace TexGen

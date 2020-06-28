@@ -22,6 +22,7 @@ namespace TexGen
 		void AssignDefaultDomain(bool bAddedHeight);
 		void CheckUpVectors(int WarpIndex, bool Yarn = PATTERN_WEFTYARN) const;
 		double GetNodeRotation(int YarnIndex, int NodeIndex) const;
+		double ReturnNodeTheta(int YarnIndex, int NodeIndex) const;
 		void AddAdditionalNodes() const; 
 		mutable vector<vector<RThetaZ> >PolarCoor;
 		

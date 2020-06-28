@@ -25,6 +25,9 @@ using namespace TexGen;
 
 CDomainPrism::CDomainPrism(const vector<XY> &Points, XYZ &start, XYZ &end)
 {
+	m_Points = Points;
+	m_Start = start;
+	m_End = end;
 	CNode Node = CNode(start);
 	m_Yarn.AddNode(Node);
 	Node = CNode(end);
@@ -1107,4 +1110,19 @@ bool CDomainPrism::FillGaps(CMesh &Mesh, const PLANE &Plane, vector<int> &Polygo
 
 	return true;
 
+}
+
+vector<XY> CDomainPrism::GetPoints()
+{
+	return m_Points;
+}
+
+XYZ CDomainPrism::GetStart()
+{
+	return m_Start;
+}
+
+XYZ CDomainPrism::GetEnd()
+{
+	return m_End;
 }
