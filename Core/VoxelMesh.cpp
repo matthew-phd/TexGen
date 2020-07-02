@@ -23,6 +23,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 #include "PeriodicBoundaries.h"
 #include "ShearedPeriodicBoundaries.h"
 #include "StaggeredPeriodicBoundaries.h"
+#include "ArcPeriodicBoundaries.h"
 #include <iterator>
 //#define SHINY_PROFILER TRUE
 
@@ -30,12 +31,14 @@ using namespace TexGen;
 
 CVoxelMesh::CVoxelMesh(string Type)
 {
-	if ( Type == "CShearedPeriodicBoundaries" )
+	if (Type == "CShearedPeriodicBoundaries")
 		m_PeriodicBoundaries = new CShearedPeriodicBoundaries;
-	else if ( Type == "CStaggeredPeriodicBoundaries" )
+	else if (Type == "CStaggeredPeriodicBoundaries")
 		m_PeriodicBoundaries = new CStaggeredPeriodicBoundaries;
-	else if ( Type == "CRotatedPeriodicBoundaries" )
+	else if (Type == "CRotatedPeriodicBoundaries")
 		m_PeriodicBoundaries = new CRotatedPeriodicBoundaries;
+	else if (Type == "CArcPeriodicBoundaries")
+		m_PeriodicBoundaries = new CArcPeriodicBoundaries;
 	else
 		m_PeriodicBoundaries = new CPeriodicBoundaries;
 }

@@ -79,9 +79,9 @@ namespace TexGen
 		/// Output 8 corner node sets
 		void OutputVertexSets(ostream& Output );
 		/// Output a step including field outputs
-		void OutputStep( ostream& Output, int iBoundaryConditions );
+		virtual void OutputStep( ostream& Output, int iBoundaryConditions );
 		/// Output 6 load cases
-		void OutputLoadCase( ostream& Output, int iCase );
+		virtual void OutputLoadCase( ostream& Output, int iCase );
 		
 	};
 }; // namespace TexGen

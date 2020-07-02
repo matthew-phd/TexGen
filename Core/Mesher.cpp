@@ -44,6 +44,8 @@ CMesher::CMesher( int iBoundaryConditions )
 		case SHEARED_BC:
 			m_PeriodicBoundaries = new CShearedPeriodicBoundaries;
 			break;
+		case ARC_RVE:
+			m_PeriodicBoundaries = new CArcPeriodicBoundaries;
 		case NO_BOUNDARY_CONDITIONS:
 		default:
 			m_PeriodicBoundaries = NULL;

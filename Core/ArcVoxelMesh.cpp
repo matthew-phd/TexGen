@@ -47,11 +47,57 @@ bool CArcVoxelMesh::CalculateVoxelSizes(CTextile &Textile)
 	// Calculate change in y per voxel
 	m_ArcPolarSize.z = y / m_YVoxels;
 
+	m_dCosAngle = cos(TotalTheta);
+	m_dSinAngle = sin(TotalTheta);
 
 	return true;
 }
 
 void CArcVoxelMesh::OutputNodes(ostream &Output, CTextile &Textile, int Filetype)
 {
+	int x, y, z;
+	int iNodeIndex = 1;
+	vector<XYZ> CentrePoints;
+	vector<POINT_INFO> RowInfo;
+	XYZ StartPoint = m_StartPoint;
+	double dRadius;
 
+	for (int z = 0; z <= m_ZVoxels; z++)
+	{
+		dRadius = m_StartPoint.z + m_ArcPolarSize.r*z;
+		StartPoint.x = m_StartPoint.x;
+		StartPoint.z = dRadius;
+		for (y = 0; y <= m_YVoxels; y++)
+		{
+			StartPoint.y = m_StartPoint.y + m_ArcPolarSize.z*y;
+
+			for (x = 0; x <= m_XVoxels; x++)
+			{
+				XYZ Point;
+				Point.x = dRadius * sin(0 + m_ArcPolarSize.theta*x);
+				Point.y = StartPoint.y;
+				Point.z = dRadius * cos(0 + m_ArcPolarSize.theta*x);
+
+				Output << iNodeIndex << ", ";
+				Output << Point << "\n";
+
+				if (x < m_XVoxels && y < m_YVoxels && z < m_ZVoxels)
+				{
+					Point.x += (0.5*m_ArcPolarSize.r) *sin(0.5*m_ArcPolarSize.theta);
+					Point.y += 0.5*m_ArcPolarSize.z;
+					Point.z += (0.5*m_ArcPolarSize.r) *sin(0.5*m_ArcPolarSize.theta);
+					CentrePoints.push_back(Point);
+				}
+
+				iNodeIndex++;
+			}
+		}
+		RowInfo.clear();   // Changed to do layer at a time instead of row to optimise
+		Textile.GetPointInformation(CentrePoints, RowInfo);
+		m_ElementsInfo.insert(m_ElementsInfo.end(), RowInfo.begin(), RowInfo.end());
+		CentrePoints.clear();
+	}
+
+	Output << "*PARAMETER" << endl;
+	Output << "SS=" << m_dSinAngle << "; CC=" << m_dCosAngle << endl;
 }
