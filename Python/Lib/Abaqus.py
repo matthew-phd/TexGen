@@ -16,6 +16,7 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
 
 import re
+import csv
 from sys import stderr
 from TexGen.Core import *
 import os, shutil
@@ -222,9 +223,11 @@ class TextileDeformerAbaqus(CTextileDeformerVolumeMesh, CSimulationAbaqus):
 		class to deform the TexGen textile.
 		'''
 		inpFilename = baseName + '.inp'
-		datFilename = baseName + '.dat'	
+		#datFilename = baseName + '.dat'
+		CSVFilename = baseName +'.csv'
 		nodes, elements, elsets = self._ParseInpFile(inpFilename)
-		nodeDisplacements = self._ParseDatFile(datFilename)
+		nodeDisplacements = self._ParceCSVFile(CSVFilename)
+		#nodeDisplacements = self._ParseDatFile(datFilename)
 		# nodeDisplacements = {}
 		#print nodes
 		#print nodeDisplacements
@@ -233,11 +236,10 @@ class TextileDeformerAbaqus(CTextileDeformerVolumeMesh, CSimulationAbaqus):
 		dispData = XYZMeshData("Displacements", CMeshDataBase.NODE)
 		for nodeNum, node in nodes.items():
 			nodeMap[nodeNum] = mesh.AddNode(XYZ(node[0], node[1], node[2]))
-			try:
-				x = nodeDisplacements[nodeNum]
-				d = XYZ(x['U.U1'], x['U.U2'], x['U.U3'])
-			except:
-				d = XYZ()
+			#print node
+				#x = nodeDisplacements[str(nodeNum)]
+			d = XYZ(float(nodeDisplacements[str(nodeNum)]['U-U1']), float(nodeDisplacements[str(nodeNum)]['U-U2']),float(nodeDisplacements[str(nodeNum)]['U-U3']))
+			print d
 			dispData.m_Data.append(d)
 		for elemNum, elem in elements.items():
 			mesh.AddElement(elem[0], [nodeMap[x] for x in elem[1]])
@@ -260,10 +262,11 @@ class TextileDeformerAbaqus(CTextileDeformerVolumeMesh, CSimulationAbaqus):
 			iYarn += 1
 
 		CTextileDeformerVolumeMesh.SetRepeatVectorDeformation(self, self.GetDeformation())
-		CTextileDeformerVolumeMesh.DeformTextile(self, textile, deformDomain)
-
-		# tg3DeformedFile = baseName + '-def.tg3'
-		# SaveToXML(tg3DeformedFile)
+		#CTextileDeformerVolumeMesh.DeformTextile(self, textile, deformDomain)
+		CTextileDeformerVolumeMesh.DeformTextile(self, textile)
+		
+		tg3DeformedFile = baseName + '-def.tg3'
+		SaveToXML(tg3DeformedFile)
 
 	def SetRepeatVectorDeformation(self, deformation):
 		raise AttributeError, "This method is protected, please use SetDeformation instead"
@@ -324,7 +327,13 @@ class TextileDeformerAbaqus(CTextileDeformerVolumeMesh, CSimulationAbaqus):
 	def GetSimulationFilesPrefix(self):
 		return self._simulationFilesPrefix
 
+	def _ParceCSVFile(self, CSVFileName):
+		''' This is used to collect the displacements of the abaqus file. Requires manual rearrangement of the CVS file to hold only node number, U1, U2, U3 and MagU. 
+		The idea is that you could ask for nodeDisplacements[20]['U1'] and it will give you the U1 displacement for node 20. '''
+		reader=csv.DictReader(open(CSVFileName))
 
-
-
-
+		nodeDisplacements= {}
+		for row in reader:
+			nodeNum=row.pop('Node Label')
+			nodeDisplacements[nodeNum] = row
+		return nodeDisplacements

@@ -34,7 +34,8 @@ CTextileDeformer::~CTextileDeformer(void)
 
 void CTextileDeformer::DeformTextile(CTextile &Textile, bool bDeformDomain)
 {
-	const CDomain* pDomain = Textile.GetDomain();
+	/// Old Method
+	/*const CDomain* pDomain = Textile.GetDomain();
 	if (!pDomain)
 		return;
 	int i, j;
@@ -131,7 +132,128 @@ void CTextileDeformer::DeformTextile(CTextile &Textile, bool bDeformDomain)
 		{
 			pDomain->Deform(m_RepeatDeformation);
 		}
+	}*/
+
+	/// New Method
+	const CDomain* pDomain = Textile.GetDomain();
+	if (!pDomain)
+		return;
+	int i, j;
+	CYarn* pYarn;
+	vector<CYarn> newYarn;
+	//	const CNode *pNode;
+	CNode NewNode;
+	XYZ Pos, Disp, BestDisp;
+	XYZ NodeDisp, Adjust;
+	double dAccuracy, dBestAccuracy;
+	vector<CSlaveNode>::const_iterator itNode;
+	vector<XYZ> Translations;
+	vector<XYZ>::iterator itTranslation;
+	newYarn.resize(Textile.GetNumYarns());
+	//	vector<XYZ>::const_iterator itSecPt;
+	//	vector<XY>::const_iterator itSecPt2D;
+	//	double dX;
+	//	XYZ Side;
+	for (i = 0; i < Textile.GetNumYarns(); ++i)
+	{
+		CYarnSectionInterpNode NewYarnSection(false, true);
+		pYarn = Textile.GetYarn(i);
+		vector<XYZ> NewPos; 
+		//Textile.AddYarn(newYarn);
+
+		// Deform the textile path and cross-sections
+		///CInterpolationAdjusted AdjustedInterp(*pYarn->GetInterpolation());
+		CYarnSectionAdjusted AdjustedYarnSection(*pYarn->GetYarnSection());
+		Translations = pDomain->GetTranslations(*pYarn);
+		const vector<CSlaveNode> &Nodes = pYarn->GetSlaveNodes(CYarn::SURFACE);
+		/// Add Master Nodes in the new yarn for slave nodes in original yarn
+		for (int k =0; k<Nodes.size(); k++)
+		{
+			
+			// Adjust center-line
+			for (itTranslation = Translations.begin(); itTranslation != Translations.end(); ++itTranslation)
+			{
+				dAccuracy = GetDisplacement(Nodes[k].GetPosition() + *itTranslation, i, NodeDisp);
+				if (itTranslation == Translations.begin() || dAccuracy > dBestAccuracy)
+				{
+					Adjust = m_RepeatDeformation * (*itTranslation) - *itTranslation;
+					dBestAccuracy = dAccuracy;
+					BestDisp = NodeDisp - Adjust;
+				}
+			}
+			NodeDisp = BestDisp;
+			NewPos.push_back(Nodes[k].GetPosition() + NodeDisp);
+			newYarn[i].AddNode(CNode(NewPos[k], Nodes[k].GetTangent()));
+			///AdjustedInterp.AddAdjustment(itNode->GetIndex(), itNode->GetT(), NodeDisp);
+
+			// Adjust yarn twist
+			vector<XY> NewSection;
+			const vector<XYZ> &SectionPoints = Nodes[k].GetSectionPoints();
+			const int iSectionPoints = SectionPoints.size();
+			NewSection.resize(iSectionPoints);
+			for (j = 0; j < iSectionPoints; ++j)
+			{
+				double dU = j / double(iSectionPoints);
+				Pos = SectionPoints[j];
+				dAccuracy = 0;
+				for (itTranslation = Translations.begin(); itTranslation != Translations.end(); ++itTranslation)
+				{
+					dAccuracy = GetDisplacement(Pos + *itTranslation, i, Disp);
+					if (itTranslation == Translations.begin() || dAccuracy > dBestAccuracy)
+					{
+						Adjust = m_RepeatDeformation * (*itTranslation) - *itTranslation;
+						dBestAccuracy = dAccuracy;
+						BestDisp = Disp - Adjust;
+					}
+				}
+				Disp = BestDisp;
+				// Subtract the node displacement otherwise we are adjusting twice for node
+				// displacement
+				Disp -= NodeDisp;
+				XY PlaneDisp;
+				PlaneDisp.x = DotProduct(Nodes[k].GetSide(), Disp);
+				PlaneDisp.y = DotProduct(Nodes[k].GetUp(), Disp);
+				NewSection[j].x = Nodes[k].Get2DSectionPoints()[j].x + PlaneDisp.x;
+				NewSection[j].y = Nodes[k].Get2DSectionPoints()[j].y + PlaneDisp.y;
+				//SectionAdjust.push_back(make_pair(dU, PlaneDisp));
+			}
+			CSectionPolygon Section(NewSection);
+			NewYarnSection.AddSection(Section);
+			/*if (!SectionAdjust.empty())
+			{
+				// Add the first displacement back to the end of the list with dU = 1
+				SectionAdjust.push_back(SectionAdjust.front());
+				SectionAdjust.back().first = 1.0;
+				AdjustedYarnSection.AddAdjustment(itNode->GetIndex(), itNode->GetT(), SectionAdjust);
+			}*/
+		}
+		newYarn[i].AssignSection(NewYarnSection);
+		//pYarn->AssignInterpolation(AdjustedInterp);
+		//pYarn->AssignSection(AdjustedYarnSection);
+
+		// Adjust the repeat vectors
+		/*vector<XYZ> Repeats = pYarn->GetRepeats();
+		vector<XYZ>::iterator itRepeat;
+		for (itRepeat = Repeats.begin(); itRepeat != Repeats.end(); ++itRepeat)
+		{
+			*itRepeat = m_RepeatDeformation * (*itRepeat);
+		}
+		pYarn->SetRepeats(Repeats);*/
 	}
+	
+	for (int h = 0; h < newYarn.size(); h++)
+	{
+		Textile.AddYarn(newYarn[h]);
+		Textile.DeleteYarn(0);
+	}
+	/*if (bDeformDomain)
+	{
+		CDomain* pDomain = Textile.GetDomain();
+		if (pDomain)
+		{
+			pDomain->Deform(m_RepeatDeformation);
+		}
+	}*/
 }
 
 CTextile* CTextileDeformer::GetDeformedCopyOfTextile(CTextile &Textile, bool bDeformDomain)
@@ -142,7 +264,6 @@ CTextile* CTextileDeformer::GetDeformedCopyOfTextile(CTextile &Textile, bool bDe
 	delete pCopy;
 	return TEXGEN.GetTextile(Name);
 }
-
 
 
 

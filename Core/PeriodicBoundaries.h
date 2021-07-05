@@ -75,7 +75,7 @@ namespace TexGen
 		/// Output 6 face node sets
 		virtual void OutputFaceSets( ostream& Output );
 		/// Output 12 edge node sets
-		void OutputEdgeSets( ostream& Output );
+		virtual void OutputEdgeSets( ostream& Output );
 		/// Output 8 corner node sets
 		void OutputVertexSets(ostream& Output );
 		/// Output a step including field outputs

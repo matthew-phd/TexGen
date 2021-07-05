@@ -229,7 +229,7 @@ bool CTextileBraidCurved::BuildTextile() const
 	{
 		itYarn->AssignInterpolation(CInterpolationBezier());
 		itYarn->SetResolution(m_iResolution);
-		itYarn->AddRepeat(XYZ(0.0,0.0,m_dFabricThickness));
+		//itYarn->AddRepeat(XYZ(0.0,0.0,1.1*m_dFabricThickness));
 		//itYarn->AddRotationalRepeat(XYZ(dWidthWarp, dHeightWarp,0),0.45);
 	}
 	/*if (iNumLayers > 1)
@@ -247,11 +247,16 @@ bool CTextileBraidCurved::BuildTextile() const
 double CTextileBraidCurved::DomainAngle()
 {
 	RThetaZ Min, Max;
-	Min.theta = 0.0;
+	//Min.theta = -0.159355;
 	//Min.theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*((m_iNumWeftYarns - 1) / 2);
 	//Max.theta = (m_WarpYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*((m_iNumWarpYarns - 1) / 2);
-	Max.theta = 0.159355;
-	double angle = Max.theta - Min.theta;
+	Min.theta = -1 * asin((m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) * 2) / m_dMandrel_Rad);
+	Max.theta = asin((m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) * 2) / m_dMandrel_Rad);
+	//Max.theta = 0.159355; //braid-1
+	//Max.theta = 0.142599; // Braid-2
+	//Max.theta = 0.142649; // Braid-3
+	//Max.theta = 0.246999;
+	double angle = Max.theta - Min.theta;   
 	if (fmod((2 * PI / angle), 1.0) == 0) return angle;
 	else
 	{
@@ -269,12 +274,12 @@ CDomainPrism CTextileBraidCurved::GetDefaultCurvedDomain(bool bAddedHeight)
 	vector<XY> points;
 	double dGap = 0.0;
 	if (bAddedHeight)
-		dGap = 0.05*m_dFabricThickness;
+		dGap = 0.                                                                         *m_dFabricThickness;
 	double angle = DomainAngle() / 20;
 	double theta;
 
-	theta = 0.0;
-	//theta = -(angle * 10);
+	//theta = 0.0;
+	theta = -(angle * 10);
 	//theta = -(m_WeftYarnData[0].dSpacing*sin(m_dbraidAngle) / (PI*(m_dMandrel_Rad * 2)))*(2 * PI)*(m_iNumWeftYarns / 2);
 	double radius = 1000 * m_dRadius - dGap;
 	for (int i = 0; i < 21; i++)
@@ -291,8 +296,10 @@ CDomainPrism CTextileBraidCurved::GetDefaultCurvedDomain(bool bAddedHeight)
 		theta = theta - angle;
 
 	}
-	double MinY = m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) * 2 * (m_iNumWeftYarns / 4);
-	double MaxY = MinY + m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) *  (m_iNumWeftYarns / 2);
+	//double MinY = m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) * 2 * (m_iNumWeftYarns / 4);
+	//double MaxY = MinY + m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) *  (m_iNumWeftYarns / 2);
+	double MinY = m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) * 2 * (2);
+	double MaxY = m_WeftYarnData[0].dSpacing*cos(m_dbraidAngle) * 2 * (4);
 	return CDomainPrism(points, XYZ(0, MinY, 0), XYZ(0, MaxY, 0));
 	/*vector<XY> points;
 	points.push_back(XY(-10, -10));

@@ -77,8 +77,8 @@ namespace TexGen
 		void SetThickness(double dThickness);
 		void SetResolution(int iResolution);
 		void SetGapSize(double dGapSize);
+		void GetYarnPoints(int iYarnIndex, int iNodeIndex) const;
 
-	
 		
 
 
@@ -87,10 +87,12 @@ namespace TexGen
 		bool BuildTextile() const;
 		void CorrectBraidYarnWidths() const;
 		void CorrectInterference() const;
+		void CorrectInterferenceWithMidPoints() const;
 		bool AdjustSectionsForRotation(bool bPeriodic) const; 
 		void Refine(bool bCorrectWidths = true, bool bPeriodic = true) const;
 		bool NeedsMidSection(int iYarn, int iSection) const;
 		void AdjustSpacing() const;
+		
 		
 		struct YARNDATA
 		{
@@ -123,7 +125,7 @@ namespace TexGen
 		double m_dCoverFactor;
 		double m_dMandrel_Rad;
 		int m_iNumYarns;
-		
+		double m_PowerEllipse;
 		
 	};
 

@@ -25,17 +25,19 @@ bool CArcVoxelMesh::CalculateVoxelSizes(CTextile &Textile)
 	Node2.z = Points[20].y;
 	Node4.x = Points[41].x;
 	Node4.z = Points[41].y;
-	double TotalTheta, R, l, theta, z;
+	double TotalTheta, dInnerR, l, theta, z, dOuterR;
 	l = sqrt(((Node2.x - m_StartPoint.x)*(Node2.x - m_StartPoint.x)) + ((Node2.z - m_StartPoint.z)*(Node2.z - m_StartPoint.z)));
-	R = m_StartPoint.z;
-
+	dInnerR = sqrt((m_StartPoint.x*m_StartPoint.x) + (m_StartPoint.z*m_StartPoint.z));
+	dOuterR = sqrt((Node4.x*Node4.x) + (Node4.z*Node4.z));
 	// Calculate total theta of domain
-	TotalTheta = 2 * asin(l / (2*R));
+	TotalTheta = 2 * asin(l / (2*dInnerR));
 	// Calculate change in theta for one voxel;
 	theta = TotalTheta / m_XVoxels;
 	m_ArcPolarSize.theta = theta;
 	//Calculate total change in r
-	z = Node4.z - m_StartPoint.z;
+	///z = Node4.z - m_StartPoint.z;
+	z = dOuterR - dInnerR;
+	m_dInnerR = dInnerR;
 	// Change in z per voxel
 	m_ArcPolarSize.r = z / m_ZVoxels;
 
@@ -49,6 +51,7 @@ bool CArcVoxelMesh::CalculateVoxelSizes(CTextile &Textile)
 
 	m_dCosAngle = cos(TotalTheta);
 	m_dSinAngle = sin(TotalTheta);
+	m_dTheta = TotalTheta;
 
 	return true;
 }
@@ -60,13 +63,15 @@ void CArcVoxelMesh::OutputNodes(ostream &Output, CTextile &Textile, int Filetype
 	vector<XYZ> CentrePoints;
 	vector<POINT_INFO> RowInfo;
 	XYZ StartPoint = m_StartPoint;
-	double dRadius;
+	double dRadius, dStartz, theta;
 
 	for (int z = 0; z <= m_ZVoxels; z++)
 	{
-		dRadius = m_StartPoint.z + m_ArcPolarSize.r*z;
-		StartPoint.x = m_StartPoint.x;
-		StartPoint.z = dRadius;
+		//dStartz = m_StartPoint.z + (m_ArcPolarSize.r*z*cos(m_dTheta/2));
+		//StartPoint.x = m_StartPoint.x + (m_ArcPolarSize.r*z*sin(m_dTheta / 2));
+		//StartPoint.z = dStartz;
+		//dRadius = sqrt((StartPoint.x*StartPoint.x) + (StartPoint.z*StartPoint.z));
+		dRadius = m_dInnerR + (z*m_ArcPolarSize.r);
 		for (y = 0; y <= m_YVoxels; y++)
 		{
 			StartPoint.y = m_StartPoint.y + m_ArcPolarSize.z*y;
@@ -74,18 +79,22 @@ void CArcVoxelMesh::OutputNodes(ostream &Output, CTextile &Textile, int Filetype
 			for (x = 0; x <= m_XVoxels; x++)
 			{
 				XYZ Point;
-				Point.x = dRadius * sin(0 + m_ArcPolarSize.theta*x);
+				theta = (-m_dTheta / 2) + m_ArcPolarSize.theta*x;
+				Point.x = dRadius * sin(theta);
 				Point.y = StartPoint.y;
-				Point.z = dRadius * cos(0 + m_ArcPolarSize.theta*x);
+				Point.z = dRadius * cos(theta);
 
 				Output << iNodeIndex << ", ";
 				Output << Point << "\n";
 
 				if (x < m_XVoxels && y < m_YVoxels && z < m_ZVoxels)
 				{
-					Point.x += (0.5*m_ArcPolarSize.r) *sin(0.5*m_ArcPolarSize.theta);
+					double dCentreTheta, dCentreRadius;
+					dCentreTheta = theta + 0.5*m_ArcPolarSize.theta;
+					dCentreRadius = dRadius + 0.5*m_ArcPolarSize.r;
+					Point.x = dCentreRadius*sin(dCentreTheta);
 					Point.y += 0.5*m_ArcPolarSize.z;
-					Point.z += (0.5*m_ArcPolarSize.r) *sin(0.5*m_ArcPolarSize.theta);
+					Point.z = dCentreRadius*cos(dCentreTheta);
 					CentrePoints.push_back(Point);
 				}
 

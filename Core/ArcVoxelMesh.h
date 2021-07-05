@@ -24,5 +24,7 @@ namespace TexGen
 
 		double m_dSinAngle;
 		double m_dCosAngle;
+		double m_dTheta;// total theta
+		double m_dInnerR;
 	};
 };

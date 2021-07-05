@@ -13,6 +13,7 @@ namespace TexGen
 
 		void SetDomainSize(const CMesh& Mesh);
 		void OutputLoadCase(ostream &Output, int iCase);
+		void OutputEdgeSets(ostream& Output);
 		void OutputStep(ostream& Output, int iBoundaryConditions);
 	private:
 		void OutputEquations(ostream& Output, int iBoundaryConitions);
